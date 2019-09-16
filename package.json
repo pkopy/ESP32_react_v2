@@ -1,0 +1,50 @@
+{
+  "name": "eso32",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@devexpress/dx-react-core": "^2.0.2",
+    "@devexpress/dx-react-grid": "^2.0.2",
+    "@devexpress/dx-react-grid-material-ui": "^2.0.2",
+    "@material-ui/core": "^4.3.1",
+    "@material-ui/icons": "^4.2.1",
+    "@material-ui/styles": "^4.3.0",
+    "cors": "^2.8.5",
+    "devextreme": "19.1.5",
+    "devextreme-react": "19.1.5",
+    "dotenv": "^8.1.0",
+    "file-saver": "^2.0.2",
+    "material-table": "^1.50.0",
+    "mysql": "^2.17.1",
+    "node-sass": "^4.12.0",
+    "node-wifi": "^2.0.12",
+    "pdfkit": "^0.10.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "3.0.1",
+    "typeface-roboto": "0.0.75",
+    "uuid": "^3.3.3",
+    "xlsx": "^0.15.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

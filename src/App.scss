@@ -1,0 +1,139 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.scales {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.scales ol {
+    display: flex;
+    padding: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.scale {
+    list-style-type: none;
+    font-weight: bold;
+    padding: 1em;
+    text-align: center;
+    text-transform: uppercase;
+    border: 1px solid ;
+    border-color: rgb(0,0,0);
+    border-radius: 10px;
+    margin: 5px;
+    cursor: pointer;
+    transition-duration: .4s;
+    min-height: 10em;
+    &:hover {
+        // border:2px solid #000
+    }
+}
+
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+//================================
+
+.root {
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: end
+}
+.paper {
+    // marginTop: theme.spacing(3),
+    width: 100%;
+    overflow-x: 'auto';
+    // marginBottom: theme.spacing(2),
+}
+
+.imgContainer {
+    display: flex;
+    flex-direction: row-reverse;
+    margin-bottom: 20px
+
+}
+.imgContainer1 {
+    display: flex;
+    // flex-direction: row-reverse;
+    // margin-bottom: 20px
+
+}
+.rangeContainer {
+    display: flex;
+    justify-content: center;
+}
+.datePickerContainer {
+    display: flex;
+    justify-content: center;
+}
+.imgDiv {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: 0.5s;
+    &:hover {
+        background-color: #282c3425;
+        cursor: pointer
+    }
+}
+
+.rangePicker {
+    margin-top: 19px;
+    width: 200px
+}
+
+.img {
+    width: 24px;
+    top: 8px;
+    left: -7px;
+    position: relative
+}
+.img2 {
+    position: relative;
+    width: 32px;
+    top: 7px;
+    left: 8px
+}
+
+.head {
+    text-align: left;
+    margin-left: 15px;
+    padding-top: 5px;
+}
+.buttonX {
+    margin-left: 15px
+}
