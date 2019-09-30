@@ -17,7 +17,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Groups from '../ItemTree/Groups'
-
+import Loader from '../helpers/Loader'
 
 
 const useStyles = makeStyles(theme => ({
@@ -50,29 +50,30 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const operators = [
-    {
-        value: 'JK1',
-        label: 'Jan Kowalski',
-    },
-    {
-        value: 'JN',
-        label: 'Jan Nowak',
-    },
-    {
-        value: 'ZH',
-        label: 'Zbigniew Habadzibadło',
-    },
-    {
-        value: 'OK',
-        label: 'Okiro Kurosawa',
-    },
-];
+// const operators = [
+//     {
+//         value: 'JK1',
+//         label: 'Jan Kowalski',
+//     },
+//     {
+//         value: 'JN',
+//         label: 'Jan Nowak',
+//     },
+//     {
+//         value: 'ZH',
+//         label: 'Zbigniew Habadzibadło',
+//     },
+//     {
+//         value: 'OK',
+//         label: 'Okiro Kurosawa',
+//     },
+// ];
 
 
 export default function TextFields(props) {
     const classes = useStyles();
     const scales = props.scales
+    const operators = props.operators
     const order = props.order && Object.keys(props.order).length > 0 ? props.order : {
         name: '',
         base: '',
@@ -110,6 +111,7 @@ export default function TextFields(props) {
     const [openItem, setOpenItem] = React.useState(false);
     const [connection, setConnection] = React.useState()
     const [scale, setScale] = React.useState({})
+    const [loader, setLoader] = React.useState(false)
     // const [item, setItem] = React.useState({})
 
     const addItem = (item) => {
@@ -174,10 +176,23 @@ export default function TextFields(props) {
             setError(err)
             setOpen(true)
         } else {
+            setLoader(true)
             const connection = SocketLib.connectToSocket(values.scale)
             console.log(connection)
-            setConnection(connection)
-            setOpen(true)
+            connection.onopen = () => {
+                setConnection(connection)
+                setOpen(true)
+                setLoader(false)
+            }
+
+            connection.onerror = () => {
+                alert('soket niedostępnty')
+                setLoader(false)
+            }
+
+            setTimeout((connection) => {
+
+            }, 5000)
         }
     }
 
@@ -206,6 +221,8 @@ export default function TextFields(props) {
                 console.log(values)
                 SocketLib.sendToSocket(
                     values, connection)
+                props.setCurrentOrder(values)
+                props.drawerView('orderDetails')
             })
             .catch((err) => {
                 console.log(err)
@@ -220,10 +237,11 @@ export default function TextFields(props) {
         if (order.scaleName) {
             setCurrentScale(order.scale)
         }
-    }, [])
+    })
     console.log('NORDER: ', openItem)
     return (
         <div>
+            {loader&&<Loader/>}
             <Dialog
                 open={openItem}
                 maxWidth='lg'
@@ -244,19 +262,19 @@ export default function TextFields(props) {
                     
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={()=>setOpenItem(false)} color="primary">
+                    {/* <Button onClick={()=>setOpenItem(false)} color="primary">
                         Wybierz
-                    </Button>
+                    </Button> */}
                     <Button onClick={()=>setOpenItem(false)} color="primary" autoFocus>
-                        Powrót
+                        {props.lang.back}
                     </Button>
                 </DialogActions>
             </Dialog>
-            <Typography variant="h4" style={{ marginBottom: 20 }}>Podaj szczegóły zlecenia</Typography>
+            <Typography variant="h4" style={{ marginBottom: 20 }}>{props.lang.orderDetails}</Typography>
             <div className={classes.container} noValidate autoComplete="off">
                 <TextField
                     id="name"
-                    label="Twoja nazwa"
+                    label={props.lang.orderName}
                     error={errors.name}
                     className={classes.textField}
                     value={values.name}
@@ -272,7 +290,7 @@ export default function TextFields(props) {
                     id="operator"
                     select
                     error={errors.operator}
-                    label="Operator"
+                    label={props.lang.operator}
                     className={classes.textField}
                     value={values.operator}
                     onChange={handleChange('operator')}
@@ -289,8 +307,8 @@ export default function TextFields(props) {
                     variant="outlined"
                 >
                     {operators.map(option => (
-                        <MenuItem key={option.label} value={option.label}>
-                            {option.label}
+                        <MenuItem key={option.id} value={option.firstName + ' ' + option.lastName}>
+                            {option.firstName + ' ' + option.lastName}
                         </MenuItem>
                     ))}
 
@@ -300,7 +318,7 @@ export default function TextFields(props) {
                     id="scale"
                     select
                     error={errors.scale}
-                    label="Waga"
+                    label={props.lang.scaleName}
                     className={classes.textField}
                     value={values.scale}
                     onChange={handleChange('scale')}
@@ -328,7 +346,7 @@ export default function TextFields(props) {
             <div className={classes.container} noValidate autoComplete="off">
                 <TextField
                     id="item"
-                    label="Produkt"
+                    label={props.lang.item}
                     // error={errors.name}
                     className={classes.textField}
                     value={values.item}
@@ -342,7 +360,7 @@ export default function TextFields(props) {
                 />
                 <TextField
                     id="base"
-                    label="Podstwa"
+                    label={props.lang.base}
                     value={values.base}
                     error={errors.base}
                     type="number"
@@ -359,7 +377,7 @@ export default function TextFields(props) {
                 />
                 <TextField
                     id="max"
-                    label="Max"
+                    label={props.lang.max}
                     error={errors.max}
                     value={values.max}
                     onChange={handleChange('max')}
@@ -376,7 +394,7 @@ export default function TextFields(props) {
                 />
                 <TextField
                     id="min"
-                    label="Min"
+                    label={props.lang.min}
                     value={values.min}
                     error={errors.min}
                     onChange={handleChange('min')}
@@ -394,7 +412,7 @@ export default function TextFields(props) {
 
                 <TextField
                     id="treshold"
-                    label="Próg LO"
+                    label={props.lang.treshold}
                     error={errors.treshold}
                     value={values.treshold}
                     onChange={handleChange('treshold')}
@@ -417,7 +435,7 @@ export default function TextFields(props) {
                     control={
                         <Checkbox color="primary" id="test" value={values.manualWeighing} onChange={changeCheckboxValue('manualWeighing')} />
                     }
-                    label="Ważenie ręczne"
+                    label={props.lang.manualWeighing}
                 />
                 <FormControlLabel
                     control={
@@ -425,7 +443,6 @@ export default function TextFields(props) {
                     }
                     label="Pilnuj zakresów ważenia"
                 />
-                {values.range && <div>HHHHHHHHHHHHHHHHHHHHHHHHHHHH</div>}
             </div>
             <div className={classes.container} noValidate autoComplete="off">
 
@@ -435,7 +452,7 @@ export default function TextFields(props) {
                         <FormControlLabel
                             value="quantity"
                             control={<Radio color="primary" />}
-                            label="Ilość"
+                            label={props.lang.quantity}
                             labelPlacement="start"
                         />
                         <FormControlLabel
@@ -517,9 +534,9 @@ export default function TextFields(props) {
 
 
             <div className={classes.hr} />
-            <Button className={classes.button} variant="outlined" color="primary" onClick={validate}>Wyślij zlecenie</Button>
+            <Button className={classes.button} variant="outlined" color="primary" onClick={validate}>{props.lang.sendOrder}</Button>
             <Button className={classes.button} variant="outlined" color="primary">Zapisz zlecenie</Button>
-            <Button className={classes.button} variant="outlined" color="primary" onClick={() => props.drawerView('ordersList')}>POWRÓT</Button>
+            <Button className={classes.button} variant="outlined" color="primary" onClick={() => props.drawerView('ordersList')}>{props.lang.back}</Button>
             <Dialog
                 open={open}
                 // onClose={handleClose}

@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import ProgressBar from '../helpers/ProgressBar'
 import SocketLib from '../Socket'
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
-import Scale from '../Scales/Scale';
 
 
 
@@ -31,70 +29,53 @@ export default function PaperSheet(props) {
     const [connection, setConnection] = React.useState()
     const [button, setButton] = React.useState(true)
     
-    // React.useEffect(() => {
-    //     console.log(connection)
-    //     return function cleanup() {
-    //         if (connection) {
-
-    //             stopConnection()
-    //         }
-    //     }
-    // })
-    // const x = SocketLib.connectToSocket('10.10.1.71')
-    // // console.log(connection)
-    // setConnection(x)
-    // const [measure, setMeasure] = React.useState('0.0')
+    React.useEffect(() => {
+        
+    })
     
-    // connection.onmessage = (e) => {
-        // let data = e.data;
-        // const measure = JSON.parse(data);
-        // setMeasure(measure.measure)
-        // console.log(measure.measure)
-    // }
-    // console.log(connection)
     function freeMeasurements() {
-        // const socketsConns = Object.keys(connection)
-        // const x = SocketLib.connectToSocket(props.curentScale.address)
+        
         if (SocketLib.connection) {
 
             console.log(SocketLib.connection)
         }
-        // if (SocketLib.connection && !SocketLib.connection['url'].startsWith(`ws://${props.curentScale.address}`)) {
-        //     console.log(`ws://${props.curentScale.address}:7000`)
-        //     SocketLib.connection.close()
-        // }
-        const x = SocketLib.connectToSocket(props.curentScale.address)
         
-        // console.log(SocketLib.connection)
-        // connection[props.curentScale.address] = x
-        setConnection(x)
-        // console.log(x)
-        setTimeout(() => {
-
+        const x = SocketLib.connectToSocket(props.curentScale.address)
+        x.onerror = () => {
+            alert('soket niedostępnty')
+            
+        }
+        
+        x.onopen = () =>  {
+            setConnection(x)
             x.send(JSON.stringify({command:'C'}), x)
+            setButton(false)
+        }
+        
+        setTimeout(() => {
+        
+
         },500)
-        // console.log(x)
+        
         x.onmessage = (e) => {
             let data = e.data;
             const measure = JSON.parse(data);
             props.setMeasure(measure.measure)
-            // console.log(measure.measure)
-        }
-        x.onerror = (err) => {
-            console.log(err)
-        }
-        setButton(false)
+        }   
     }
+
     function stopConnection() {
-        connection.send(JSON.stringify({command:'STOP'}));
-        connection.close();
-        setButton(true);
-        props.setMeasure('0.0');
+        if (connection) {
+
+            connection.send(JSON.stringify({command:'STOP'}));
+            connection.close();
+            setButton(true);
+            props.setMeasure('0.0');
+        }
     }
 
     function showScales() {
         if (connection) {
-            console.log(connection)
             stopConnection();
         }
         props.drawerView('scales');
@@ -111,9 +92,6 @@ export default function PaperSheet(props) {
                             R
                     </Avatar>
                     <h1 style={{margin:0, marginLeft: 10}}>{props.curentScale.name}</h1>
-                    {/* <Scale
-                        scale={props.curentScale}
-                    /> */}
                 </div>
             </Paper>
             <Button className={classes.button} variant="outlined" color="primary" onClick={button?freeMeasurements:stopConnection}>

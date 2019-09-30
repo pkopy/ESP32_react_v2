@@ -1,7 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { relative } from 'path';
 
 const useStyles = makeStyles({
     root: {
@@ -43,8 +42,6 @@ export default function LinearDeterminate(props) {
 
     return (
         <div className={classes.root}>
-            {/* <LinearProgress variant="determinate" value={completed} />
-      <br /> */}
             <LinearProgress color="primary" variant="determinate" value={props.value > 0 ? (100 / (3100 / props.value)) : 0} style={{ height: '80px' }} />
             <div className={classes.value}>{props.value} g</div>
         </div>

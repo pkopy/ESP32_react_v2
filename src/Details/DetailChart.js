@@ -1,33 +1,31 @@
 import React from 'react';
 import Paper from '@material-ui/core/Paper';
-
+import Button from 'devextreme-react/button';
 import Chart, {
     ArgumentAxis,
     CommonSeriesSettings,
     Legend,
     Series,
-    Tooltip,
     ValueAxis,
     ConstantLine,
     Label
 } from 'devextreme-react/chart';
-import { Title } from 'devextreme-react/vector-map';
 
-// import { complaintsData } from './data.js';
-// const complaintsData = [
-//     { complaint: 'Cold pizza', count: 1500 },
-//     { complaint: 'Not enough cheese', count: 120 },
-//     { complaint: 'Underbaked or Overbaked', count: 52 },
-//     { complaint: 'Delayed delivery', count: 1123 },
-//     { complaint: 'Damaged pizza', count: 321 },
-//     { complaint: 'Incorrect billing', count: 89 },
-//     { complaint: 'Wrong size delivered', count: 222 }
-// ]
-
-
-// const complaintsData = []
 
 class DetailChart extends React.Component {
+    constructor(props) {
+        super(props);
+ 
+        this.chartRef = React.createRef();
+ 
+        this.getValue = () => {
+            const x = this.textBox.getValueAxis()
+        };
+    }
+
+    get textBox() {
+        return this.chartRef.current.instance;
+    }
     // complaintsData = this.props.data
     state={
         range: true,
@@ -50,28 +48,25 @@ setRange = () => {
     console.log(this.state.range1)
 }
 
-create = () => {
-    return `<ValueAxis name={'frequency'} position={'left'} visualRange={this.state.range1}>
-    <ConstantLine value={this.props.data.base + this.props.data.max} width={2} color={'#4cae4c'} dashStyle={'dash'}>
-        <Label visible={true} />
-    </ConstantLine>
-    <ConstantLine value={this.props.data.base} width={2} color={'#fc3535'} dashStyle={'dash'}>
-        <Label visible={true} />
-    </ConstantLine>
-    <ConstantLine value={this.props.data.base - this.props.data.min} width={2} color={'#4cae4c'} dashStyle={'dash'}>
-        <Label visible={true} />
-    </ConstantLine>
-</ValueAxis>`
-}
 
     render() {
         console.log(this.props.data)
         // range1 = this.state.range?[this.props.data.base - this.props.data.min*1.1, this.props.data.base + this.props.data.max*1.1]:[]
         return (
-            <Paper style={{ height: '600px' }}>
-                <div onClick={this.setRange}>HHHHHHH</div>
-                <Chart
-                    style={{ height: '90%', width: '90%', marginLeft: 'auto', marginRight: 'auto', marginTop: '20px', marginBottom: '30px' }}
+            <Paper style={{ height: '800px' }}>
+                <div style={{ margin: 20, textAlign: 'left', position: 'relative', left: '60px', top: '15px' }}>
+                        <h2>Zlecenie:  {this.props.data.name}</h2>
+                        <span style={{ marginRight: '10px' }}><b>Operator:</b> {this.props.data.operator}</span>
+                        <span style={{ marginRight: '10px' }}><b>Ilość ważeń:</b> {this.props.data.quantity}</span>
+                        <span style={{ marginRight: '10px' }}><b>Typ:</b> {this.props.data.type}</span>
+                        <span style={{ marginRight: '10px' }}><b>Waga:</b> {this.props.data.scaleName}</span>
+                        <span style={{ marginRight: '10px' }}><b>Ważony produkt:</b> {this.props.data.item}</span>
+                    </div>
+                    <div className="hr" style={{ width: '90%' }} />
+                <Button text="Focus TextBox" onClick={() => {this.getValue(); this.setState({range1:[]})}} />
+                
+                <Chart ref={this.chartRef}
+                    style={{ height: '70%', width: '80%', marginLeft: 'auto', marginRight: 'auto', marginTop: '20px', marginBottom: '30px' }}
                     className='test'
                     // title={{
                     //     text:'Wykres zlecenia',
@@ -82,29 +77,33 @@ create = () => {
 
                         enabled:false
                     }}
-                    scrollBar={{
-                        visible:true
-                    }}
+                    // scrollBar={{
+                    //     visible:false
+                    // }}
                     zoomAndPan= {{
-                        argumentAxis: "both"
+                        argumentAxis: "zoom",
+                        // valueAxis: 'zoom'
                     }}
-                    visualRange={{
-                        startValue: this.props.data.base - this.props.data.min*1.1,
-                        endValue: this.props.data.base + this.props.data.max*1.1
-                    }}
+                    // visualRange={{
+                    //     startValue: 100,
+                    //     endValue: 120,
+
+                    // }}
                     // scheduleHiding={false}
                     dataSource={this.props.rows}
                     // palette={'Harmony Light'}
                     id={'chart'}
                 >
-                    <Title text={'Wykres'} margin={{ top: 50 }} >
+                    {/* <Title text={'Wykres'} margin={{ top: 50 }} >
 
-                    </Title>
+                    </Title> */}
                     <ArgumentAxis allowDecimals={false}>
                         {/* <Label overlappingBehavior={'stagger'} /> */}
                     </ArgumentAxis>
 
-                    <ValueAxis name={'frequency'} position={'left'} >
+                    <ValueAxis name={'frequency'} position={'left'} visualRange={this.state.range1}>
+                    {/* <ValueAxis name={'frequency'} position={'left'} breaks={[{startValue: 100, endValue: 500 },
+                { startValue: 1000, endValue: 2000 }]}> */}
                         <ConstantLine value={this.props.data.base + this.props.data.max} width={2} color={'#4cae4c'} dashStyle={'dash'}>
                             <Label visible={true} />
                         </ConstantLine>
@@ -115,7 +114,6 @@ create = () => {
                             <Label visible={true} />
                         </ConstantLine>
                     </ValueAxis>
-                    {/* {this.create()} */}
                     <Series
                         name={'Wartość'}
                         valueField={'measure'}
@@ -128,6 +126,7 @@ create = () => {
                     <Legend
                         verticalAlignment={'top'}
                         horizontalAlignment={'center'}
+                        visible={false}
                     />
 
                     <CommonSeriesSettings argumentField={'measureNumber'} />

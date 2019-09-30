@@ -12,6 +12,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import SettingsIcon from '@material-ui/icons/Settings';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -28,8 +29,11 @@ import OrdersList from './Details/OrdersList'
 import Detail from './Details/Detail'
 import OrderDetails from './Details/OrderDetails'
 import Groups from './ItemTree/Groups'
+import Operators from './Operators/Operators'
+import AllMeasurements from './Details/AllMeasurments'
 import TextF from './MyComponents/TextFieldwithTitle'
 // import './Details/OrderDetails.scss'
+import Settings from './Settings/Settings'
 
 
 const drawerWidth = 240;
@@ -105,7 +109,10 @@ export default function PersistentDrawerLeft(props) {
         freeWeighing:false,
         orderDetails: false,
         items: false,
-        name:''
+        name:props.lang.scales,
+        allMeasurements:false,
+        operators: false,
+        settings: false
     })
 
     function handleDrawerOpen() {
@@ -130,7 +137,14 @@ export default function PersistentDrawerLeft(props) {
     function myOrders () {
         props.orders()
         drawerView('ordersList')
-
+    }
+    function myMeasurements () {
+        // props.orders()
+        drawerView('allMeasurements')
+    }
+    function myOperators () {
+        // props.orders()
+        drawerView('operators')
     }
     
     function viewOrder (order) {
@@ -151,10 +165,39 @@ export default function PersistentDrawerLeft(props) {
                 helpView[value] = true
             }
         }
-        helpView.name = name
+
+        switch (name) {
+            case 'items':
+                helpView.name = props.lang.items;
+                break;
+            case 'operators':
+                helpView.name = props.lang.operators;
+                break;
+            case 'ordersList':
+                helpView.name = props.lang.orders;
+                break;
+            case 'allMeasurements':
+                helpView.name = props.lang.allMeasurement;
+                break;
+            case 'scales':
+                helpView.name = props.lang.scales;
+                break;
+            case 'settings':
+                helpView.name = props.lang.settings;
+                break;
+            case 'order':
+                helpView.name = props.lang.newOrder;
+                break;
+            case 'orderDetails':
+                helpView.name = props.lang.orderDetails;
+                break;
+            default:
+                helpView.name = props.lang.scales;
+        }
+        
+
         setOrder({})
         setView(helpView)
-        console.log(view.name)
         handleDrawerClose()
 
     }
@@ -182,7 +225,7 @@ export default function PersistentDrawerLeft(props) {
                         E2R LITE - 
                     </Typography>
                     <Typography variant="h6" noWrap>
-                    &nbsp;{view.name}
+                    &nbsp;{view.name.toUpperCase()}
                     </Typography>
                     {/* <IconButton>
                         E2R LITE
@@ -207,37 +250,45 @@ export default function PersistentDrawerLeft(props) {
 
 
                 <List>
-                    <ListItem button onClick={search}>
+                    {/* <ListItem button onClick={search}>
                         <ListItemIcon><SearchIcon color="primary"/></ListItemIcon>
                         <ListItemText primary='Szukaj' />
+                    </ListItem> */}
+                    <ListItem button onClick={() => drawerView('items')}>
+                        <ListItemIcon><AddCircleOutlineIcon color="primary"/></ListItemIcon>
+                        <ListItemText primary={props.lang.items} />
                     </ListItem>
-                    <ListItem button onClick={myScales}>
-                        <ListItemIcon><InboxIcon color="primary"/></ListItemIcon>
-                        <ListItemText primary='Twoje wagi (ESP32)' />
+                    <ListItem button onClick={myOperators}>
+                        <ListItemIcon><SupervisorAccountIcon color="primary"/></ListItemIcon>
+                        <ListItemText primary={props.lang.operators} />
                     </ListItem>
                 </List>
                 <Divider />
                 <List>
                     <ListItem button onClick={myOrders}>
                         <ListItemIcon><FormatListBulletedIcon color="primary"/></ListItemIcon>
-                        <ListItemText primary='Twoje zlecenia' />
+                        <ListItemText primary={props.lang.orders} />
                     </ListItem>
                     {/* <ListItem button onClick={() => drawerView('order')}>
                         <ListItemIcon><AddCircleOutlineIcon color="primary"/></ListItemIcon>
                         <ListItemText primary='Nowe zlecenie' />
                     </ListItem> */}
-                    <ListItem button onClick={myOrders}>
+                    <ListItem button onClick={myMeasurements}>
                         <ListItemIcon><SupervisorAccountIcon color="primary"/></ListItemIcon>
-                        <ListItemText primary='Operatorzy' />
+                        <ListItemText primary={props.lang.allMeasurement} />
                     </ListItem>
                 </List>
                 <Divider />
                 <List>
-                    
-                    <ListItem button onClick={() => drawerView('items')}>
-                        <ListItemIcon><AddCircleOutlineIcon color="primary"/></ListItemIcon>
-                        <ListItemText primary='Towary' />
+                    <ListItem button onClick={myScales}>
+                        <ListItemIcon><InboxIcon color="primary"/></ListItemIcon>
+                        <ListItemText primary={props.lang.scales} />
                     </ListItem>
+                    <ListItem button onClick={() => drawerView('settings')}>
+                        <ListItemIcon><SettingsIcon color="primary"/></ListItemIcon>
+                        <ListItemText primary={props.lang.settings} />
+                    </ListItem>
+                    
                 </List>
             </Drawer>
             <main
@@ -248,6 +299,7 @@ export default function PersistentDrawerLeft(props) {
                 <div className={classes.drawerHeader} />
 
                 {view.scales&&<Scales
+                    lang={props.lang}
                     scales={props.scales}
                     drawerView={drawerView}
                     setCurrentScale={setCurrentScale}
@@ -259,6 +311,7 @@ export default function PersistentDrawerLeft(props) {
                     setCurrentOrder={setCurrentOrder}
                     drawerView={drawerView}
                     orders={props.orders}
+                    lang={props.lang}
                 />}
 
                 
@@ -267,7 +320,10 @@ export default function PersistentDrawerLeft(props) {
                     address={props.address}
                     scales={props.scales}
                     order={order}
+                    setCurrentOrder={setCurrentOrder}
+                    operators={props.operators}
                     drawerView={drawerView}
+                    lang={props.lang}
                 />}
 
                 {view.freeWeighing&&<Detail
@@ -279,12 +335,32 @@ export default function PersistentDrawerLeft(props) {
                 {view.orderDetails&&<OrderDetails
                     data={currentOrder}
                     drawerView={drawerView}
+                    viewOrder={viewOrder}
+                    order={order}
+                    lang={props.lang}
                 />}
+                {view.allMeasurements&&<AllMeasurements
+                    drawerView={drawerView}
+                    lang={props.lang}
+                />}
+                {view.operators&&<Operators
+                drawerView={drawerView}
+                updateOperators={props.updateOperators}
+                lang={props.lang}
+                ></Operators>}
 
-                {view.items&&<Groups />}
+                {view.items&&<Groups 
+                    lang={props.lang}
+                />}
                 <Typography paragraph>
 
                 </Typography>
+
+                {view.settings&&<Settings
+                    drawerView={drawerView}
+                    lang={props.lang}
+                    changeLang={props.changeLang}
+                />}
                 {/* <TextF
                     title={'okokoko'}
                 /> */}

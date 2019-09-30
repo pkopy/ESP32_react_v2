@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import TreeList, { Column, ColumnChooser, RemoteOperations, FilterRow, HeaderFilter, SearchPanel, Selection, Lookup } from 'devextreme-react/tree-list';
+import TreeList, { Column, RemoteOperations, Selection } from 'devextreme-react/tree-list';
 import Paper from '@material-ui/core/Paper';
 import Tabs from 'devextreme-react/tabs';
 import Typography from '@material-ui/core/Typography';
@@ -14,19 +14,16 @@ let data = {
             let parentIdsParam = loadOptions.parentIds.join(',');
             return fetch(`http://localhost:5000/item?parentId=${parentIdsParam}`)
                 .then(response => response.json())
-                .catch(() => { throw 'Data Loading Error'; });
+                .catch((err) => console.log(err));
 
         } else {
             return fetch(`http://localhost:5000/item?parentId=`)
                 .then(response => response.json())
-                .catch(() => { throw 'Data Loading Error'; });
+                .catch((err) => console.log(err));
         }
     }
 }
 
-const selected = () => {
-    return document.querySelector('#groups').getSelectedRowsData()
-}
 
 const useStyles = makeStyles(theme => ({
     itemDetails: {
@@ -63,12 +60,12 @@ export default (props) => {
                     let parentIdsParam = loadOptions.parentIds.join(',');
                     return fetch(`http://localhost:5000/item?parentId=${parentIdsParam}`)
                         .then(response => response.json())
-                        .catch(() => { throw 'Data Loading Error'; });
+                        .catch((err) => console.log(err));
         
                 } else {
                     return fetch(`http://localhost:5000/item?parentId=`)
                         .then(response => response.json())
-                        .catch(() => { throw 'Data Loading Error'; });
+                        .catch((err) => console.log(err));
                 }
             }
         }
@@ -118,7 +115,7 @@ export default (props) => {
                         {/* <FilterRow visible={true} /> */}
                         {/* <ColumnChooser enabled={true} />  */}
                         <Column dataField={'name'}
-                            caption={'Wybierz grupę i towar'}
+                            caption={props.lang.chooseGroupAndItem}
                             onClick={() => console.log('xxxx')}
                         />
                         <RemoteOperations  />
@@ -135,27 +132,28 @@ export default (props) => {
                         <div>
 
                             <Typography variant="h5" align='left'>
-                                Grupa: {currentGroup.parentId}
+                                {props.lang.group}: {currentGroup.parentId}
 
                             </Typography>
                             <Typography paragraph={true} align='left'>
-                                Produkt: {currentGroup.name}
+                            {props.lang.item}: {currentGroup.name}
 
                             </Typography>
                         </div>}
                     {currentGroup && !currentGroup.parentId &&
                         <div>
                             <Typography variant="h5" align='left'>
-                                Grupa: {currentGroup.name}
+                            {props.lang.group}: {currentGroup.name}
                             </Typography>
                             {!openAddItem&&<Button color="primary" variant="outlined" onClick={openAddItemForm}>
-                                DODAJ PRODUKT
+                                {props.lang.addItem}
                             </Button>}
                             {openAddItem&&
                             <div>
                                 <TestElement
                                     setOpenAddItem={setOpenAddItem}
                                     new={true}
+                                    lang={props.lang}
                                     groupId={currentGroup.id}
                                     setTree={setTree}
                                     openItem={props.openItem}
@@ -181,6 +179,7 @@ export default (props) => {
                         <TestElement
                             group={currentGroup}
                             openItem={props.openItem}
+                            lang={props.lang}
                         />}
                     {currentGroup && currentGroup.parentId && index === 0 && props.addItem &&
                         <Button color="primary" variant="outlined" onClick={() => addItemToOrder(currentGroup)}>Dodaj do zlecenia</Button>}

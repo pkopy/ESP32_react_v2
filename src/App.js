@@ -4,14 +4,12 @@ import React, { Component } from 'react';
 import  './App.scss'
 import Drawer from './Drawer'
 import Loader from './helpers/Loader'
+import plLang from './Lang/pl'
 
 
 
 const dotenv = require('dotenv');
 dotenv.config();
-console.log(`Your port is ${process.env.REACT_APP_PORTX}`)
-// const PORT = PORT || 5000
-// const URL = URL || 'localhost'
 
 class App extends Component {
     state ={
@@ -21,14 +19,29 @@ class App extends Component {
         findedScales: [],
         scales: [],
         currentScale: {},
-        details:false,
         end:false,
         yourOrders:[],
-        measure:''
+        measure:'',
+        operators:[],
+        lang:localStorage.getItem('lang') ? JSON.parse(localStorage.getItem('lang')) : plLang
     }
     componentDidMount = () => {
         this.yourScales()
         this.orders()
+        this.operators()
+    }
+
+    operators = () => {fetch('http://localhost:5000/operators', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+        .then(data => data.json())
+        .then(operators => {
+            this.setState({operators})
+        })
+        .catch(err => console.log(err))
     }
 
     orders = () => {
@@ -36,7 +49,6 @@ class App extends Component {
         fetch('http://localhost:5000/order')
             .then(data => data.json())
             .then(yourOrders => {
-                // console.log(yourOrders)
                 if (yourOrders.length > 0 ) {
                     for (let order of yourOrders) {
                         switch (order.status) {
@@ -98,6 +110,11 @@ class App extends Component {
 
                 }, 2000)
             })
+    } 
+
+    changeLang = (lang) => {
+        this.setState({lang})
+        localStorage.setItem('lang', JSON.stringify(lang))
     }
     
     setScale = (scale) => {   
@@ -128,7 +145,10 @@ class App extends Component {
                 yourOrders={this.state.yourOrders}
                 measure={this.state.measure}
                 setMeasure={this.setMeasure}
-                orders={this.orders}
+                operators={this.state.operators}
+                updateOperators={this.operators}
+                lang={this.state.lang}
+                changeLang={this.changeLang}
             />
         </div>
       );

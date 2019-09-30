@@ -1,21 +1,13 @@
 import React, { Component } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-// import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import excelLogo from '../img/excel_logo.svg';
 import pdfLogo from '../img/Adobe_PDF_icon.svg';
 import chartIcon from '../img/chart.svg';
 import listIcon from '../img/Plan.svg'
-import MaterialTable from 'material-table';
 import DetailChart from './DetailChart';
-// import { saveAs } from 'file-saver';
-import XLSX from 'xlsx'
-// import DevExpressTable from './DevExpressTable'
+import CreatePdf from '../helpers/CreatePDF';
+import CreateXLSX from '../helpers/ExportToXLS';
 
 import {
     PagingState,
@@ -24,8 +16,6 @@ import {
     IntegratedGrouping,
     IntegratedPaging,
     SummaryState,
-    DataTypeProvider,
-    RowDetailState
 } from '@devexpress/dx-react-grid';
 import {
     Grid,
@@ -36,130 +26,93 @@ import {
     DragDropProvider,
     Toolbar,
     PagingPanel,
-    TableSummaryRow,
-    TableRowDetail,
 } from '@devexpress/dx-react-grid-material-ui';
 
-
-
-
-
-const useStyles = makeStyles(theme => ({
-    root: {
-        maxWidth: '80%',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        textAlign: 'end'
-    },
-    paper: {
-        marginTop: theme.spacing(3),
-        width: '100%',
-        overflowX: 'auto',
-        marginBottom: theme.spacing(2),
-    },
-    table: {
-        // minWidth: 650,
-    },
-    imgContainer: {
-        display: 'flex',
-        flexDirection: 'row-reverse',
-        marginBottom: '20px'
-
-    },
-    imgDiv: {
-        width: '40px',
-        height: '40px',
-        borderRadius: '50%',
-        transition: '0.5s',
-        '&:hover': {
-            backgroundColor: '#282c3425',
-            cursor: 'pointer'
-        }
-    },
-
-    img: {
-        width: '24px',
-        top: '8px',
-        left: '-7px',
-        position: 'relative',
-    },
-
-    head: {
-        textAlign: 'left',
-        marginLeft: '15px',
-        paddingTop: '5px',
-    },
-    button: {
-        marginLeft: '15px'
-    }
-}));
-
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 
 class OrderDetails extends Component {
-    // classes = useStyles();
-    // console.log('details:')
 
     state = {
         chart: false,
         rows: [],
         data: this.props.data ? this.props.data : [],
-        details:{}
+        details: {},
+        open: false
     }
 
 
-    
-    
-    
-    componentDidMount = () => {
-        const orders = () => {fetch('http://localhost:5000/addDevice', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'orderguid': this.props.data.guid,
 
-            }
-        })
-            .then(data => data.json())
-            .then(measurments => {
-                // data.measurments = measurments; 
-                this.setState({ rows: measurments })
-                console.log(measurments)
+
+
+    componentDidMount = () => {
+        const orders = () => {
+            fetch('http://localhost:5000/addDevice', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'orderguid': this.props.data.guid,
+
+                }
             })
-            .catch(err => console.log(err))
+                .then(data => data.json())
+                .then(measurments => {
+                    // data.measurments = measurments; 
+                    this.setState({ rows: measurments })
+                    console.log(measurments)
+                })
+                .catch(err => console.log(err))
         }
 
-        console.log(this.props.data)
-        if (this.props.data.status === 'Zakończone') {
+        if (this.props.data.status === 'Zakończone' || !this.props.data.guid || this.state.chart) {
             orders()
 
         } else {
             const details = setInterval(() => {
                 orders()
             }, 500)
-            this.setState({details})
+            this.setState({ details })
 
         }
-        
-        
-    }
 
+
+    }
+    componentDidUpdate = () => {
+        if (this.state.chart) {
+            clearInterval(this.state.details)
+        }
+    }
     componentWillUnmount = () => {
         clearInterval(this.state.details)
     }
 
-    pageSizes = [5, 10, 15, 0];
+    handleClickOpen = () => {
+        this.setState({ open: true })
+    }
+
+    handleClose = () => {
+        // setOpen(false);
+        this.setState({ open: false })
+    }
+
+    pageSizes = [10, 20, 50];
     columns = [
-        { title: 'Numer ważenia', name: 'measureNumber' },
+        { title: 'Numer ważenia', name: 'measureNumber', width: 10 },
         { title: 'Waga (g)', name: 'measure' },
-        { title: 'Data', name: 'time', type: 'date' },
-        { title: 'Max', name: 'max', type: 'numeric' },
-        { title: 'Min', name: 'min', type: 'numeric' },
-        { title: 'Próg LO', name: 'treshold', type: 'date' },
-        { title: 'Ilość ważeń', name: 'quantity', type: 'numeric' },
+        { title: this.props.lang.date, name: 'time', type: 'date' },
+        { title: this.props.lang.item, name: 'item'},
+        { title: this.props.lang.operator, name: 'operator' },
+        { title: this.props.lang.orderName, name: 'name'},
+        // { title: 'Ilość ważeń', name: 'quantity', type: 'numeric' },
     ];
+    tableColumnExtensions = [
+        { columnName: 'measureNumber', align: 'center' }
+    ]
     totalSummaryItems = [
         { columnName: 'measure', type: 'sum' },
     ];
@@ -175,7 +128,10 @@ class OrderDetails extends Component {
             console.log(this.props.data)
             const data = this.props.data ? this.props.data.measurments : []
             console.log(data)
-            this.setState({rows:data})
+            // for (let x of data) {
+
+            // }
+            this.setState({ rows: data })
         }
     }
 
@@ -185,63 +141,90 @@ class OrderDetails extends Component {
         this.setState({ chart: !this.state.chart })
     }
 
+    orderDetails = (data) => {
 
+        fetch('http://localhost:5000/addDevice', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'orderguid': data.guid,
 
-    exportToXLS = () => {
-        const workbook = XLSX.utils.book_new()
-        const ws_name = "Arkusz1";
-        const ws_data = [];
-        const ws = XLSX.utils.aoa_to_sheet(ws_data);
-        XLSX.utils.book_append_sheet(workbook, ws, ws_name);
-        const dataLength = this.state.rows.length
-        let cellR = XLSX.utils.encode_cell({ c: 4, r: dataLength })
-        const sheet = workbook.Sheets['Arkusz1']
-        sheet['!ref'] = `A1:${cellR}`
-        sheet[XLSX.utils.encode_cell({ c: 0, r: 0 })] = { v: 'Numer' }
-        console.log(sheet['!cols'])
-        var wscols = [
-            { wch: 6 },
-            { wch: 7 },
-            { wch: 25 },
+            },
+        })
+            .then(data => data.json())
+            .then(measurments => {
+                data.measurments = measurments;
 
-        ];
-
-        sheet['!cols'] = wscols;
-        for (let i = 0; i < dataLength; i++) {
-            let cellA = XLSX.utils.encode_cell({ c: 0, r: i + 1 })
-            sheet[cellA] = { v: this.state.rows[i]['measureNumber'] }
-            let cellB = XLSX.utils.encode_cell({ c: 1, r: i + 1 })
-            sheet[cellB] = { v: this.state.rows[i]['measure'] }
-            let cellC = XLSX.utils.encode_cell({ c: 2, r: i + 1 })
-            sheet[cellC] = { v: this.state.rows[i]['time'] }
-
-        }
-        const fileName = this.props.data.name + '.xlsx'
-        console.log(workbook)
-        XLSX.writeFile(workbook, fileName);
-
-        // saveAs(new Blob([wbout],{type:"application/octet-stream"}), "test.xlsx")
-        // var blob = new Blob([wbout], {type:"application/octet-stream"});
-        // saveAs(blob, "test.xlsx");
-
+                
+                this.props.drawerView('orderDetails')
+            })
+            .catch(err => console.log(err))
     }
+
+    deleteOrder = (data) => {
+
+        fetch('http://localhost:5000/order', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'guid': data.guid,
+
+            },
+        })
+            .then(data => data.json())
+            .then(order => {
+                console.log(order)
+                // clearInterval(this.state.details)
+                this.props.drawerView('ordersList')
+                this.setState({ open: false })
+            })
+            .catch(err => console.log(err))
+    }
+ 
 
     render() {
         return (
-            
+
             <div className="root">
+                <Dialog
+                    open={this.state.open}
+                    onClose={this.handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{this.props.lang.deleting}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                        {this.props.lang.deleteConfirm} <b>{this.state.data.name}?</b>:
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => this.deleteOrder(this.state.data)} color="primary">
+                            {this.props.lang.delete}
+                        </Button>
+                        <Button onClick={this.handleClose} color="primary" autoFocus>
+                            {this.props.lang.back}
+                        </Button>
+                    </DialogActions>
+                </Dialog>
                 <div className="imgContainer">
-                    <Button style={{marginLeft:'15px'}} variant="outlined" color="primary" onClick={() => { this.props.drawerView('ordersList')}}>
-                        POWRÓT
+                    <Button style={{ marginLeft: '15px' }} variant="outlined" color="primary" onClick={() => { this.props.drawerView('ordersList') }}>
+                        {this.props.lang.back}
                     </Button>
-                    <div onClick={this.exportToXLS} className="imgDiv">
-                        <img className="img" src={excelLogo} />
+                    <Button style={{ marginLeft: '15px' }} variant="outlined" color="primary" onClick={() => {this.props.viewOrder(this.state.data) }}>
+                        {this.props.lang.details}
+                    </Button>
+                    <Button style={{ marginLeft: '15px' }} variant="outlined" color="secondary" onClick={() => { this.handleClickOpen() }}>
+                        {this.props.lang.delete}
+                    </Button>
+                    <div onClick={() => CreateXLSX({rows:this.state.rows, name:this.state.data.name})} className="imgDiv">
+                        <img className="img" alt="export-to-xlsx"src={excelLogo} />
                     </div>
-                    <div className="imgDiv" >
-                        <img  className="img" src={pdfLogo} width="24px"/>
+                    <div onClick={() => CreatePdf({measurments:this.state.rows, name:this.state.data.name})} className="imgDiv" >
+                        <img className="img" alt="export-to-pdf" src={pdfLogo} width="24px" />
                     </div>
                     <div className="imgDiv" onClick={this.toggleChart} >
-                        <img className="img" src={!this.state.chart ? chartIcon : listIcon} />
+                        <img className="img" alt="chart-toggle-icon" src={!this.state.chart ? chartIcon : listIcon} />
                     </div>
                 </div>
 
@@ -256,59 +239,75 @@ class OrderDetails extends Component {
                     data={props.data}
                     columns={columns}
                 />} */}
-                {!this.state.chart && <Paper>
-                    <div >
-                        <h2></h2>
-                        <p>Waga całkowita:  (g)</p>
-                        <p>Ilość ważeń: </p>
+                {!this.state.chart && <Paper >
+                        <div style={{ margin: 20, textAlign: 'left', position: 'relative', left: '60px', top: '15px' }}>
+                            <h2>{this.props.lang.order}:  {this.props.data.name}</h2>
+                            <span style={{ marginRight: '10px' }}><b>{this.props.lang.operator}:</b> {this.props.data.operator}</span>
+                            <span style={{ marginRight: '10px' }}><b>{this.props.lang.quantity}:</b> {this.props.data.quantity}</span>
+                            <span style={{ marginRight: '10px' }}><b>Typ:</b> {this.props.data.type}</span>
+                            <span style={{ marginRight: '10px' }}><b>{this.props.lang.scaleName}:</b> {this.props.data.scaleName}</span>
+                            <span style={{ marginRight: '10px' }}><b>{this.props.lang.item}:</b> {this.props.data.item}</span>
+
                     </div>
-                    <Grid
-                        rows={this.state.rows}
-                        columns={this.columns}
-                        
-                    // rowUpdated={setRows(generateRows)}
-                    >
-                        <PagingState
-                            defaultCurrentPage={0}
-                            defaultPageSize={10}
-                        />
-                        {/* <RowDetailState
+                    <div className="hr" style={{ width: '90%' }} />
+                    <div style={{ width: '90%', marginLeft: 'auto', marginRight: 'auto' }}>
+
+
+                        <Grid
+                            rows={this.state.rows}
+                            columns={this.columns}
+
+                        // margin-left: auto;
+                        // margin-right: auto;
+
+                        // rowUpdated={setRows(generateRows)}
+                        >
+                            <PagingState
+                                defaultCurrentPage={0}
+                                defaultPageSize={10}
+                            />
+                            {/* <RowDetailState
                         // defaultExpandedRowIds={[2, 5]}
                         /> */}
 
-                        <IntegratedPaging />
-                        <DragDropProvider />
-                        <GroupingState />
-                        {/* <GroupingState defaultGrouping={[{ columnName: 'city' }]} /> */}
+                            <IntegratedPaging />
+                            <DragDropProvider />
+                            <GroupingState />
+                            {/* <GroupingState defaultGrouping={[{ columnName: 'city' }]} /> */}
 
-                        <IntegratedGrouping />
-                        <SummaryState
-                        // totalItems={totalSummaryItems}
-                        />
-                        <IntegratedSummary />
-                        {/* <TableSummaryRow /> */}
-                        <Table />
-                        <TableHeaderRow />
-                        {/* <TableRowDetail
+                            <IntegratedGrouping />
+                            <SummaryState
+                            // totalItems={totalSummaryItems}
+                            />
+                            <IntegratedSummary />
+                            {/* <TableSummaryRow /> */}
+                            <Table
+                                columnExtensions={[
+                                    { columnName: 'measureNumber', align: 'center', width: 100 },
+                                    { columnName: 'measure', align: 'center', width: 100 }
+                                ]} />
+                            <TableHeaderRow />
+                            {/* <TableRowDetail
                             contentComponent={RowDetail}
                         /> */}
-                        <TableGroupRow />
-                        <Toolbar />
-                        <GroupingPanel
-                            messages={{
-                                groupByColumn: 'Przeciągnij kolumnę tutaj aby pogrupować'
-                            }}
+                            <TableGroupRow />
+                            <Toolbar />
+                            <GroupingPanel
+                                messages={{
+                                    groupByColumn: this.props.lang.dragColumn
+                                }}
 
-                        />
-                        <PagingPanel
-                            pageSizes={this.pageSizes}
-                            messages={{
-                                rowsPerPage: 'Wierszy na stronę',
-                                showAll: 'Wszystkie',
+                            />
+                            <PagingPanel
+                                pageSizes={this.pageSizes}
+                                messages={{
+                                    rowsPerPage: 'Wierszy na stronę',
+                                    showAll: 'Wszystkie',
 
-                            }}
-                        />
-                    </Grid>
+                                }}
+                            />
+                        </Grid>
+                    </div>
                 </Paper>}
 
 

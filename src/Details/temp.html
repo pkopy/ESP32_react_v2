@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .hp {
+            color: red;
+            font-size: 40pt;
+            text-align: right;
+            
+        }
+        .oko {
+            /* background-color: aqua; */
+            width: 50px;
+            /* height: 50px; */
+            border-bottom: 1px solid rgba(4, 0, 255, 0.137);
+            
+        }
+    </style>
+</head>
+<body>
+    <h1 class="hp">User List</h1>
+    <hr/>
+
+    <ul>
+        <div class="oko">
+
+            {{#each allData}}
+            <li>Name: {{this.id}}</li>
+            <li>Age: {{this.measure}}</li>
+            <br>
+            {{/each}}
+
+        </div>
+    </ul>
+
+</body>
+</html>

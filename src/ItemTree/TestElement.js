@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import clsx from 'clsx';
-import Paper from '@material-ui/core/Paper';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import Radio from '@material-ui/core/Radio';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Button from '@material-ui/core/Button';
 
 
@@ -57,8 +51,7 @@ const useStyles = makeStyles(theme => ({
 
 export default (props) => {
     const classes = useStyles();
-    const [value, setValue] = React.useState('free');
-    console.log('TEST: ',props.openItem)
+    console.log('Props: ', props )
     React.useEffect(()=>{
         if (!props.new) {
 
@@ -71,7 +64,7 @@ export default (props) => {
             }
             setValues(group)
         }
-    })
+    }, [props.new, props.group])
     const group = props.group ? props.group : {
         name: '',
         base: 0,
@@ -103,7 +96,12 @@ export default (props) => {
             body: JSON.stringify(values)
         })
             .then(data => data.json())
-            .then(data=>console.log(data))
+            .then(data=>{
+                console.log(data);
+                props.setOpenAddItem(false); 
+                props.setTree(false)
+            
+            })
             .catch(err => console.log(err))
     }
  
@@ -191,10 +189,10 @@ export default (props) => {
             <div className={classes.hr} />
             {props.new&&<div>
                 <Button className={classes.button} color="primary" variant="outlined" onClick={sendItem}>
-                    DODAJ
+                    {props.lang.add}
                 </Button>
                 <Button className={classes.button} color="primary" variant="outlined" onClick={() => {props.setOpenAddItem(false); props.setTree(false)}}>
-                    ANULUJ
+                    {props.lang.cancel}
                 </Button>
 
             </div>}
@@ -203,7 +201,7 @@ export default (props) => {
                     EDYTUJ
                 </Button>
                 <Button className={classes.button} color="secondary" variant="outlined" >
-                    USUŃ
+                    {props.lang.delete}
                 </Button>
 
             </div>}
