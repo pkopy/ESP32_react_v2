@@ -258,6 +258,7 @@ export default function TextFields(props) {
                             addItem={addItem}
                             setOpenItem={setOpenItem}
                             openItem={openItem}
+                            lang={props.lang}
                         />
                     
                 </DialogContent>
@@ -438,6 +439,7 @@ export default function TextFields(props) {
                     label={props.lang.manualWeighing}
                 />
                 <FormControlLabel
+                disabled={true}
                     control={
                         <Checkbox color="primary" value={values.range} onChange={changeCheckboxValue('range')} />
                     }
@@ -458,7 +460,7 @@ export default function TextFields(props) {
                         <FormControlLabel
                             value="weight"
                             control={<Radio color="primary" />}
-                            label="Masa (g)"
+                            label={`${props.lang.weight} (g)`}
                             labelPlacement="start"
                             disabled={true}
                         />
@@ -479,7 +481,7 @@ export default function TextFields(props) {
                     }}
                     InputProps={{
                         min: "1",
-                        startAdornment: <InputAdornment position="start">{values.type === 'quantity' ? 'szt' : 'g'}</InputAdornment>,
+                        startAdornment: <InputAdornment position="start">{values.type === 'quantity' ? props.lang.qty : 'g'}</InputAdornment>,
                     }}
                     margin="normal"
                     variant="outlined"
@@ -535,7 +537,7 @@ export default function TextFields(props) {
 
             <div className={classes.hr} />
             <Button className={classes.button} variant="outlined" color="primary" onClick={validate}>{props.lang.sendOrder}</Button>
-            <Button className={classes.button} variant="outlined" color="primary">Zapisz zlecenie</Button>
+            {/* <Button className={classes.button} variant="outlined" color="primary">Zapisz zlecenie</Button> */}
             <Button className={classes.button} variant="outlined" color="primary" onClick={() => props.drawerView('ordersList')}>{props.lang.back}</Button>
             <Dialog
                 open={open}

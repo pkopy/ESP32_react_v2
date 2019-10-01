@@ -8,6 +8,7 @@ import plLang from './Lang/pl'
 
 
 
+
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -150,6 +151,7 @@ class App extends Component {
                 lang={this.state.lang}
                 changeLang={this.changeLang}
             />
+            
         </div>
       );
     }

@@ -198,7 +198,7 @@ export default (props) => {
             </div>}
             {!props.new&&!props.openItem&&<div>
                 <Button className={classes.button} color="primary" variant="outlined" >
-                    EDYTUJ
+                {props.lang.edit}
                 </Button>
                 <Button className={classes.button} color="secondary" variant="outlined" >
                     {props.lang.delete}

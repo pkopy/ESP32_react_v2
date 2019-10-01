@@ -2,6 +2,7 @@ const data = {
     //-------GLOBAL-------------
     settings:'Settings',
     scales: 'Scales',
+    scale: 'Scale',
     back: 'Back',
     items: 'Items',
     orders: 'Orders',
@@ -15,12 +16,17 @@ const data = {
     of: 'of',
     search: 'Search...',
     details: 'Details',
+    addressIp: 'Address IP',
+    port: 'Port',
+    start: 'Start',
+    stop: 'Stop',
 
     //------------ITEMS----------
     chooseGroupAndItem: 'Choose group and item',
     addItem: 'Add item',
     group: 'Group',
     item: 'Item',
+    edit: 'Edit',
 
     //--------OPERATORS----------
     firstName: 'First name',
@@ -45,6 +51,10 @@ const data = {
     orderDetails: 'Order details',
     deleteConfirm: 'Do you want delete order',
     deleting: 'Deleting order',
+    measureNumber: 'Measure number',
+    measure: 'Measure value',
+    weight: 'Weight',
+    qty: 'qty',
 
     //---------CALENDAR-PICKER------------
     orderRange: 'Orders range',

@@ -54,11 +54,6 @@ class AllMeasurments extends React.Component {
         return this.dataGrid.current.instance;
     }
     state = {
-        columns: [
-            { name: 'measureNumber', title: 'Numer ważenia' },
-            { name: 'measure', title: 'Wartość ważenia' },
-            { name: 'time', title: 'Czas ważenia' }
-        ],
         rows: []
     }
 
@@ -180,9 +175,10 @@ class AllMeasurments extends React.Component {
                             showPageSizeSelector={true}
                             allowedPageSizes={[5, 10, 20]}
                             showInfo={true}
+                            infoText={`${this.props.lang.page} {0} ${this.props.lang.of}  {1}`}
                         />
-                        <Column dataField={'measureNumber'} caption={'Numer ważenia'} width={70} />
-                        <Column dataField={'measure'} caption={'Wartość ważenia'} />
+                        <Column dataField={'measureNumber'} caption={this.props.lang.measureNumber} width={70} />
+                        <Column dataField={'measure'} caption={this.props.lang.measure} />
                         <Column dataField={'item'} caption={this.props.lang.item} />
                         <Column dataField={'time'} dataType={'date'} caption={this.props.lang.date} format={"yyyy/MM/dd"} />
                         {/* <Column dataField={'time'} dataType={'date'} format={"yyyy/MM/dd"} width={100}/> */}

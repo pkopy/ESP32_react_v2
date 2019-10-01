@@ -42,8 +42,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function RecipeReviewCard(props) {
     const classes = useStyles();
-    
-    function startWeighing (scale) {
+
+    function startWeighing(scale) {
         props.drawerView('freeWeighing')
         props.setCurrentScale(scale)
     }
@@ -71,13 +71,13 @@ export default function RecipeReviewCard(props) {
             />
             <CardContent>
                 <Typography variant="body2" color="textSecondary" component="p">
-                    Waga: {props.scale.name}
+                    {props.lang.scale}: {props.scale.name}
                 </Typography> <Typography variant="body2" color="textSecondary" component="p">
-                    Address: {props.scale.address}
+                    {props.lang.addressIp}: {props.scale.address}
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
 
-                    Port: {props.scale.port}
+                    {props.lang.port}: {props.scale.port}
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>

@@ -102,12 +102,12 @@ class OrderDetails extends Component {
 
     pageSizes = [10, 20, 50];
     columns = [
-        { title: 'Numer ważenia', name: 'measureNumber', width: 10 },
-        { title: 'Waga (g)', name: 'measure' },
+        { title: this.props.lang.measureNumber, name: 'measureNumber', width: 10 },
+        { title: this.props.lang.measure, name: 'measure' },
         { title: this.props.lang.date, name: 'time', type: 'date' },
-        { title: this.props.lang.item, name: 'item'},
+        { title: this.props.lang.item, name: 'item' },
         { title: this.props.lang.operator, name: 'operator' },
-        { title: this.props.lang.orderName, name: 'name'},
+        { title: this.props.lang.orderName, name: 'name' },
         // { title: 'Ilość ważeń', name: 'quantity', type: 'numeric' },
     ];
     tableColumnExtensions = [
@@ -155,7 +155,7 @@ class OrderDetails extends Component {
             .then(measurments => {
                 data.measurments = measurments;
 
-                
+
                 this.props.drawerView('orderDetails')
             })
             .catch(err => console.log(err))
@@ -180,7 +180,7 @@ class OrderDetails extends Component {
             })
             .catch(err => console.log(err))
     }
- 
+
 
     render() {
         return (
@@ -195,7 +195,7 @@ class OrderDetails extends Component {
                     <DialogTitle id="alert-dialog-title">{this.props.lang.deleting}</DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
-                        {this.props.lang.deleteConfirm} <b>{this.state.data.name}?</b>:
+                            {this.props.lang.deleteConfirm} <b>{this.state.data.name}?</b>:
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
@@ -211,16 +211,16 @@ class OrderDetails extends Component {
                     <Button style={{ marginLeft: '15px' }} variant="outlined" color="primary" onClick={() => { this.props.drawerView('ordersList') }}>
                         {this.props.lang.back}
                     </Button>
-                    <Button style={{ marginLeft: '15px' }} variant="outlined" color="primary" onClick={() => {this.props.viewOrder(this.state.data) }}>
+                    <Button style={{ marginLeft: '15px' }} variant="outlined" color="primary" onClick={() => { this.props.viewOrder(this.state.data) }}>
                         {this.props.lang.details}
                     </Button>
                     <Button style={{ marginLeft: '15px' }} variant="outlined" color="secondary" onClick={() => { this.handleClickOpen() }}>
                         {this.props.lang.delete}
                     </Button>
-                    <div onClick={() => CreateXLSX({rows:this.state.rows, name:this.state.data.name})} className="imgDiv">
-                        <img className="img" alt="export-to-xlsx"src={excelLogo} />
+                    <div onClick={() => CreateXLSX({ rows: this.state.rows, name: this.state.data.name })} className="imgDiv">
+                        <img className="img" alt="export-to-xlsx" src={excelLogo} />
                     </div>
-                    <div onClick={() => CreatePdf({measurments:this.state.rows, name:this.state.data.name})} className="imgDiv" >
+                    <div onClick={() => CreatePdf({ measurments: this.state.rows, name: this.state.data.name })} className="imgDiv" >
                         <img className="img" alt="export-to-pdf" src={pdfLogo} width="24px" />
                     </div>
                     <div className="imgDiv" onClick={this.toggleChart} >
@@ -240,13 +240,13 @@ class OrderDetails extends Component {
                     columns={columns}
                 />} */}
                 {!this.state.chart && <Paper >
-                        <div style={{ margin: 20, textAlign: 'left', position: 'relative', left: '60px', top: '15px' }}>
-                            <h2>{this.props.lang.order}:  {this.props.data.name}</h2>
-                            <span style={{ marginRight: '10px' }}><b>{this.props.lang.operator}:</b> {this.props.data.operator}</span>
-                            <span style={{ marginRight: '10px' }}><b>{this.props.lang.quantity}:</b> {this.props.data.quantity}</span>
-                            <span style={{ marginRight: '10px' }}><b>Typ:</b> {this.props.data.type}</span>
-                            <span style={{ marginRight: '10px' }}><b>{this.props.lang.scaleName}:</b> {this.props.data.scaleName}</span>
-                            <span style={{ marginRight: '10px' }}><b>{this.props.lang.item}:</b> {this.props.data.item}</span>
+                    <div style={{ margin: 20, textAlign: 'left', position: 'relative', left: '60px', top: '15px' }}>
+                        <h2>{this.props.lang.order}:  {this.props.data.name}</h2>
+                        <span style={{ marginRight: '10px' }}><b>{this.props.lang.operator}:</b> {this.props.data.operator}</span>
+                        <span style={{ marginRight: '10px' }}><b>{this.props.lang.quantity}:</b> {this.props.data.quantity}</span>
+                        <span style={{ marginRight: '10px' }}><b>Typ:</b> {this.props.data.type}</span>
+                        <span style={{ marginRight: '10px' }}><b>{this.props.lang.scaleName}:</b> {this.props.data.scaleName}</span>
+                        <span style={{ marginRight: '10px' }}><b>{this.props.lang.item}:</b> {this.props.data.item}</span>
 
                     </div>
                     <div className="hr" style={{ width: '90%' }} />

@@ -96,10 +96,10 @@ export default function PaperSheet(props) {
             </Paper>
             <Button className={classes.button} variant="outlined" color="primary" onClick={button?freeMeasurements:stopConnection}>
                 {/* {errors.errors ? <span>Popraw</span> : <span>Zamknij</span>} */}
-                {button?'URUCHOM':'ZATRZYMAJ'}
+                {button? props.lang.start: props.lang.stop}
             </Button>
             <Button className={classes.button} variant="outlined" color="primary" onClick={showScales}>
-                POWRÓT
+                {props.lang.back}
             </Button>
         </div>
     );

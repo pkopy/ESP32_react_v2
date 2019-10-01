@@ -2,6 +2,7 @@ const data = {
     //-------GLOBAL-------------
     settings:'Ustawienia',
     scales: 'Twoje wagi',
+    scale: 'Waga',
     back: 'Powrót',
     items: 'Towary',
     orders: 'Twoje zlecenia',
@@ -15,6 +16,10 @@ const data = {
     of: 'z',
     search: 'Szukaj...',
     details: 'Szczegóły',
+    addressIp: 'Adres IP',
+    port: 'Port',
+    start: 'Start',
+    stop: 'Stop',
 
 
     //------------ITEMS----------
@@ -22,6 +27,7 @@ const data = {
     addItem: 'Dodaj produkt',
     group: 'Grupa',
     item: 'Produkt',
+    edit: 'Edytuj',
     
     //--------OPERATORS----------
     firstName: 'Imię',
@@ -46,6 +52,10 @@ const data = {
     orderDetails: 'Szczegóły zlecenia',
     deleteConfirm: 'Czy chesz usunąć zlecenie',
     deleting: 'Usuwanie zlecenia',
+    measureNumber: 'Numer ważenia',
+    measure: 'Wartość ważenia',
+    weight: 'Masa',
+    qty: 'szt',
 
 
     //---------CALENDAR-PICKER------------

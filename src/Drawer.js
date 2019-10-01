@@ -20,7 +20,6 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import MailIcon from '@material-ui/icons/Mail';
 import SearchIcon from '@material-ui/icons/Search';
-// import Details from './Details/Details'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import NewOrder from './Details/NewOrder'
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
@@ -31,10 +30,8 @@ import OrderDetails from './Details/OrderDetails'
 import Groups from './ItemTree/Groups'
 import Operators from './Operators/Operators'
 import AllMeasurements from './Details/AllMeasurments'
-import TextF from './MyComponents/TextFieldwithTitle'
-// import './Details/OrderDetails.scss'
 import Settings from './Settings/Settings'
-
+import Contaractors from './Contractors/Contractors'
 
 const drawerWidth = 240;
 
@@ -331,6 +328,7 @@ export default function PersistentDrawerLeft(props) {
                     drawerView={drawerView}
                     measure={props.measure}
                     setMeasure={props.setMeasure}
+                    lang={props.lang}
                 />}
                 {view.orderDetails&&<OrderDetails
                     data={currentOrder}
@@ -361,6 +359,8 @@ export default function PersistentDrawerLeft(props) {
                     lang={props.lang}
                     changeLang={props.changeLang}
                 />}
+
+                {/* <Contaractors/> */}
                 {/* <TextF
                     title={'okokoko'}
                 /> */}

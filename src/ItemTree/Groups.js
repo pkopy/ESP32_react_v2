@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
         // maxHeight:600
     },
     tree: {
-        maxHeight: '800px'
+        maxHeight: '600px'
     }
 
 }));
