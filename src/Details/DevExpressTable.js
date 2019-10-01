@@ -17,7 +17,8 @@ import CalendarPicker from './CalendarPicker'
 
 
 
-
+const PORT = process.env.REACT_APP_PORT || 5000;
+const URL = process.env.REACT_APP_URL || 'localhost'
 
 class DevexpressTable extends Component {
 
@@ -52,7 +53,7 @@ class DevexpressTable extends Component {
             end = new Date((this.setDate() + (86400000 * 1)))
         }
         
-        fetch('http://localhost:5000/order', {
+        fetch(`http://${URL}:${PORT}/order`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -81,7 +82,7 @@ class DevexpressTable extends Component {
 
                 }
                 if (Array.isArray(yourOrders)) {
-                    console.log(yourOrders)
+                    // console.log(yourOrders)
                     // setRows(yourOrders)
                     this.setState({ rows: yourOrders })
                 } else {
@@ -142,7 +143,7 @@ class DevexpressTable extends Component {
     }
 
     deleteOrder = (row) => {
-        fetch('http://localhost:5000/order', {
+        fetch(`http://${URL}:${PORT}/order`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

@@ -98,7 +98,8 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-
+const PORT = process.env.REACT_APP_PORT || 5000;
+const URL = process.env.REACT_APP_URL || 'localhost'
 export default (props) => {
     console.log(props)
     
@@ -127,7 +128,7 @@ export default (props) => {
         console.log(numberDays, rangeValue)
         const date = new Date(now-86400000 * numberDays)
         console.log(`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`)
-        fetch('http://localhost:5000/order',{
+        fetch(`http://${URL}:${PORT}/order`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -218,7 +219,7 @@ export default (props) => {
 
     const deleteOrder = (row) => {
         console.log(row)
-        fetch('http://localhost:5000/order', {
+        fetch(`http://${URL}:${PORT}/order`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

@@ -10,6 +10,8 @@ export default () => {
     //     selectedRowPicture: '',
     //     selectedRowNotes: ''
     // };
+    const PORT = process.env.REACT_APP_PORT || 5000;
+    const URL = process.env.REACT_APP_URL || 'localhost'
     const employees = [{
         'ID': 1,
         'FirstName': 'John',
@@ -36,7 +38,7 @@ export default () => {
 
     const onSelectionChanged = ({ selectedRowsData }) => {
         const data = selectedRowsData[0];
-        console.log(data)
+        // console.log(data)
         setShowEmployeeInfo(true)
         setSelectedRowNotes(data.scaleName)
         // this.setState({showEmployeeInfo: true,
@@ -52,7 +54,7 @@ export default () => {
             start = new Date(newDate - (86400000 * 30))
             end = new Date((newDate + (86400000 * 1)))
         }
-        fetch('http://localhost:5000/addDevice', {
+        fetch(`http://${URL}:${PORT}/addDevice`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

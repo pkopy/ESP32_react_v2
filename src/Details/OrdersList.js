@@ -24,6 +24,8 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
+const PORT = process.env.REACT_APP_PORT || 5000;
+const URL = process.env.REACT_APP_URL || 'localhost'
 export default function MaterialTableDemo(props) {
     const classes = useStyles();
 
@@ -39,7 +41,7 @@ export default function MaterialTableDemo(props) {
 
     const orderDetails = (data) => {
 
-        fetch('http://localhost:5000/addDevice', {
+        fetch(`http://${URL}:${PORT}/addDevice`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -54,7 +56,7 @@ export default function MaterialTableDemo(props) {
                 if (SocketLib.connection) {
                     SocketLib.connection.close()
                 }
-                console.log(data)
+                // console.log(data)
                 props.setCurrentOrder(data); props.drawerView('orderDetails')
             })
             .catch(err => console.log(err))

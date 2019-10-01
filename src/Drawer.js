@@ -300,6 +300,8 @@ export default function PersistentDrawerLeft(props) {
                     scales={props.scales}
                     drawerView={drawerView}
                     setCurrentScale={setCurrentScale}
+                    PORT={props.PORT}
+                    URL={props.URL}
                 />}
 
                 {view.ordersList&&<OrdersList 
@@ -340,6 +342,8 @@ export default function PersistentDrawerLeft(props) {
                 {view.allMeasurements&&<AllMeasurements
                     drawerView={drawerView}
                     lang={props.lang}
+                    PORT={props.PORT}
+                    URL={props.URL}
                 />}
                 {view.operators&&<Operators
                 drawerView={drawerView}

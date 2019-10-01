@@ -25,7 +25,7 @@ class CalendarPicker extends Component {
     }
 
     handleDateChange = (date, name, cb, rangeValue) => {
-        console.log(date)
+        // console.log(date)
         let start = new Date(this.setDate() - (86400000 * 30))
         let end = new Date((this.setDate() + (86400000 * 1)))
         let newEnd, newStart
@@ -50,8 +50,8 @@ class CalendarPicker extends Component {
                 this.setState({ selectedDateEnd: new Date((this.setDate())) })
                 start = new Date(this.setDate())
                 end = new Date((this.setDate() + (86400000 * 1)))
-                console.log('start: ', `${start.getFullYear()}-${start.getMonth() + 1}-${start.getDate()}`)
-                console.log('end: ', `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()}`)
+                // console.log('start: ', `${start.getFullYear()}-${start.getMonth() + 1}-${start.getDate()}`)
+                // console.log('end: ', `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()}`)
                 // cb(start, end)
                 break
             case 1:
@@ -70,8 +70,8 @@ class CalendarPicker extends Component {
                 start = new Date(newStart + (86400000 * 0))
                 end = new Date(newEnd + (86400000 * 1))
                 
-                console.log('start: ', start)
-                console.log('end: ',end)
+                // console.log('start: ', start)
+                // console.log('end: ',end)
                 break
             default:
                 this.setState({ selectedDateStart: new Date(this.setDate() - (86400000 * 30)) })

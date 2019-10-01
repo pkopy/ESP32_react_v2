@@ -37,7 +37,7 @@ export default function PaperSheet(props) {
         
         if (SocketLib.connection) {
 
-            console.log(SocketLib.connection)
+            // console.log(SocketLib.connection)
         }
         
         const x = SocketLib.connectToSocket(props.curentScale.address)

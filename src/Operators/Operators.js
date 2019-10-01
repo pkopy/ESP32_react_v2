@@ -12,7 +12,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 
-
+const PORT = process.env.REACT_APP_PORT || 5000;
+const URL = process.env.REACT_APP_URL || 'localhost'
 
 class Operators extends Component {
     state = {
@@ -42,7 +43,7 @@ class Operators extends Component {
         // this.generateRows(this.state.rows)
     }
 
-    operators = () => {fetch('http://localhost:5000/operators', {
+    operators = () => {fetch(`http://${URL}:${PORT}/operators`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -76,7 +77,7 @@ class Operators extends Component {
             })
                 .then(data => data.json())
                 .then(data => {
-                    console.log(data)
+                    // console.log(data)
                     this.setState({openAddOperator:false})
                     this.operators()
                     this.props.updateOperators()

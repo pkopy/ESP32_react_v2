@@ -1,8 +1,11 @@
+const PORT = process.env.REACT_APP_PORT || 5000;
+const URL = process.env.REACT_APP_URL || 'localhost'
+ 
  export default  function createPdf (data) {
     // console.log(JSON.stringify(this.state.rows))
-    console.log(data)
+    // console.log(data)
     const dataObj = data
-    fetch('http://localhost:5000/pdf', {
+    fetch(`http://${URL}:${PORT}/pdf`, {
         method: 'POST',
         body: JSON.stringify(data)
     })

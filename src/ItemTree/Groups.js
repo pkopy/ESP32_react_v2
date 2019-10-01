@@ -6,18 +6,19 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import TestElement from './TestElement';
 import Button from '@material-ui/core/Button';
-
+const PORT = process.env.REACT_APP_PORT || 5000;
+const URL = process.env.REACT_APP_URL || 'localhost'
 
 let data = {
     load: function (loadOptions) {
         if (loadOptions.parentIds) {
             let parentIdsParam = loadOptions.parentIds.join(',');
-            return fetch(`http://localhost:5000/item?parentId=${parentIdsParam}`)
+            return fetch(`http://${URL}:${PORT}/item?parentId=${parentIdsParam}`)
                 .then(response => response.json())
                 .catch((err) => console.log(err));
 
         } else {
-            return fetch(`http://localhost:5000/item?parentId=`)
+            return fetch(`http://${URL}:${PORT}/item?parentId=`)
                 .then(response => response.json())
                 .catch((err) => console.log(err));
         }
@@ -58,12 +59,12 @@ export default (props) => {
             load: function (loadOptions) {
                 if (loadOptions.parentIds) {
                     let parentIdsParam = loadOptions.parentIds.join(',');
-                    return fetch(`http://localhost:5000/item?parentId=${parentIdsParam}`)
+                    return fetch(`http://${URL}:${PORT}/item?parentId=${parentIdsParam}`)
                         .then(response => response.json())
                         .catch((err) => console.log(err));
         
                 } else {
-                    return fetch(`http://localhost:5000/item?parentId=`)
+                    return fetch(`http://${URL}:${PORT}/item?parentId=`)
                         .then(response => response.json())
                         .catch((err) => console.log(err));
                 }
@@ -85,7 +86,7 @@ export default (props) => {
     const classes = useStyles();
     const [tree, setTree] = useState(false)
     const [openAddItem, setOpenAddItem] = useState(false)
-    console.log('Groups: ', props.openItem)
+    // console.log('Groups: ', props.openItem)
     return (
         <div className={classes.container}>
             <Paper className={classes.root}

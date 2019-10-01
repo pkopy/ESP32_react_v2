@@ -11,6 +11,10 @@ import plLang from './Lang/pl'
 
 const dotenv = require('dotenv');
 dotenv.config();
+// console.log(process.env)
+
+const PORT = process.env.REACT_APP_PORT || 5000;
+const URL = process.env.REACT_APP_URL || 'localhost'
 
 class App extends Component {
     state ={
@@ -32,7 +36,7 @@ class App extends Component {
         this.operators()
     }
 
-    operators = () => {fetch('http://localhost:5000/operators', {
+    operators = () => {fetch(`http://${URL}:${PORT}/operators`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -47,7 +51,7 @@ class App extends Component {
 
     orders = () => {
         this.setState({load: true})
-        fetch('http://localhost:5000/order')
+        fetch(`http://${URL}:${PORT}/order`)
             .then(data => data.json())
             .then(yourOrders => {
                 if (yourOrders.length > 0 ) {
@@ -76,36 +80,36 @@ class App extends Component {
                 
             })
             .catch((err) => {
-                console.log(err)
+                // console.log(err)
                 this.setState({load: false})
             })
     }
 
     yourScales = () => {
         this.setState({load: true})
-        fetch('http://localhost:5000/scale')
+        fetch(`http://${URL}:${PORT}/scale`)
             .then(data => data.json())
             .then(data => {
                 this.setState({scales: data});
                 this.setState({load: false})
             })
             .catch((err) => {
-                console.log(err)
+                // console.log(err)
                 this.setState({load: false})
             })
     }
     findScales = () => {
         this.setState({load:true})
         this.setState({currentScale:{}})
-        fetch(`http://localhost:5000/findscales`)
+        fetch(`http://${URL}:${PORT}/findscales`)
             .then(data => data.json())
             .then(data => {
-                console.log(data)
+                // console.log(data)
                 this.setState({findedScales: data});
                 this.setState({load: false})
             })
             .catch(err => {
-                console.log(err);
+                // console.log(err);
                 setTimeout(() => {
                     this.setState({load: false})
 
@@ -150,6 +154,8 @@ class App extends Component {
                 updateOperators={this.operators}
                 lang={this.state.lang}
                 changeLang={this.changeLang}
+                PORT={PORT}
+                URL={URL}
             />
             
         </div>
