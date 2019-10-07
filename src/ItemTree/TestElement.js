@@ -48,11 +48,10 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-const PORT = process.env.REACT_APP_PORT || 5000;
-const URL = process.env.REACT_APP_URL || 'localhost'
+
 export default (props) => {
     const classes = useStyles();
-    // console.log('Props: ', props )
+    console.log('Props: ', props )
     React.useEffect(()=>{
         if (!props.new) {
 
@@ -92,13 +91,13 @@ export default (props) => {
         values.isDirectory = false
         values.hasItems = false
         // console.log(values)
-        fetch(`http://${URL}:${PORT}/item`, {
+        fetch('http://localhost:5000/item', {
             method: 'POST',
             body: JSON.stringify(values)
         })
             .then(data => data.json())
             .then(data=>{
-                // console.log(data);
+                console.log(data);
                 props.setOpenAddItem(false); 
                 props.setTree(false)
             

@@ -6,19 +6,18 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import TestElement from './TestElement';
 import Button from '@material-ui/core/Button';
-const PORT = process.env.REACT_APP_PORT || 5000;
-const URL = process.env.REACT_APP_URL || 'localhost'
+
 
 let data = {
     load: function (loadOptions) {
         if (loadOptions.parentIds) {
             let parentIdsParam = loadOptions.parentIds.join(',');
-            return fetch(`http://${URL}:${PORT}/item?parentId=${parentIdsParam}`)
+            return fetch(`http://localhost:5000/item?parentId=${parentIdsParam}`)
                 .then(response => response.json())
                 .catch((err) => console.log(err));
 
         } else {
-            return fetch(`http://${URL}:${PORT}/item?parentId=`)
+            return fetch(`http://localhost:5000/item?parentId=`)
                 .then(response => response.json())
                 .catch((err) => console.log(err));
         }
@@ -37,7 +36,7 @@ const useStyles = makeStyles(theme => ({
         minHeight: '600px'
 
     },
-    root: {
+    root1: {
         padding: theme.spacing(3, 2),
         width: '70%',
         marginLeft: 'auto',
@@ -59,12 +58,12 @@ export default (props) => {
             load: function (loadOptions) {
                 if (loadOptions.parentIds) {
                     let parentIdsParam = loadOptions.parentIds.join(',');
-                    return fetch(`http://${URL}:${PORT}/item?parentId=${parentIdsParam}`)
+                    return fetch(`http://localhost:5000/item?parentId=${parentIdsParam}`)
                         .then(response => response.json())
                         .catch((err) => console.log(err));
-        
+
                 } else {
-                    return fetch(`http://${URL}:${PORT}/item?parentId=`)
+                    return fetch(`http://localhost:5000/item?parentId=`)
                         .then(response => response.json())
                         .catch((err) => console.log(err));
                 }
@@ -82,14 +81,20 @@ export default (props) => {
     }
     const [currentGroup, setCurrentGroup] = useState()
     const [index, setIndex] = useState(0)
-    
+
     const classes = useStyles();
     const [tree, setTree] = useState(false)
     const [openAddItem, setOpenAddItem] = useState(false)
-    // console.log('Groups: ', props.openItem)
+    console.log('Groups: ', props.openItem)
     return (
         <div className={classes.container}>
-            <Paper className={classes.root}
+            <div className="imgContainer" style={{width:"70%", marginRight:"auto", marginLeft:"auto"}}>
+                {!props.buttonDisable && <Button onClick={() => props.drawerView('scales')} variant="outlined" color="primary" autoFocus>
+                    {props.lang.back}
+                </Button>}
+
+            </div>
+            <Paper className={classes.root1}
                 style={{ width: props.width }}
             >
                 <div>
@@ -117,9 +122,9 @@ export default (props) => {
                         {/* <ColumnChooser enabled={true} />  */}
                         <Column dataField={'name'}
                             caption={props.lang.chooseGroupAndItem}
-                            onClick={() => console.log('xxxx')}
+                            // onClick={() => console.log('xxxx')}
                         />
-                        <RemoteOperations  />
+                        <RemoteOperations />
                     </TreeList>
 
                 </div>
@@ -137,38 +142,38 @@ export default (props) => {
 
                             </Typography>
                             <Typography paragraph={true} align='left'>
-                            {props.lang.item}: {currentGroup.name}
+                                {props.lang.item}: {currentGroup.name}
 
                             </Typography>
                         </div>}
                     {currentGroup && !currentGroup.parentId &&
                         <div>
                             <Typography variant="h5" align='left'>
-                            {props.lang.group}: {currentGroup.name}
+                                {props.lang.group}: {currentGroup.name}
                             </Typography>
-                            {!openAddItem&&<Button color="primary" variant="outlined" onClick={openAddItemForm}>
+                            {!openAddItem && <Button color="primary" variant="outlined" onClick={openAddItemForm}>
                                 {props.lang.addItem}
                             </Button>}
-                            {openAddItem&&
-                            <div>
-                                <TestElement
-                                    setOpenAddItem={setOpenAddItem}
-                                    new={true}
-                                    lang={props.lang}
-                                    groupId={currentGroup.id}
-                                    setTree={setTree}
-                                    openItem={props.openItem}
-                                ></TestElement>
-                                
-                            </div>
+                            {openAddItem &&
+                                <div>
+                                    <TestElement
+                                        setOpenAddItem={setOpenAddItem}
+                                        new={true}
+                                        lang={props.lang}
+                                        groupId={currentGroup.id}
+                                        setTree={setTree}
+                                        openItem={props.openItem}
+                                    ></TestElement>
+
+                                </div>
                             }
                         </div>
                     }
                     {currentGroup && currentGroup.parentId && <Tabs dataSource={[
                         { text: 'Element testowy' },
-                        { text: 'Zmienna', disabled: true },
-                        { text: 'Alarmy i ostrzeżenia' },
-                        { text: 'Info w obszarze testowym' },
+                        { text: 'Tab1', disabled: true },
+                        { text: 'Tab2', disabled: true },
+                        { text: 'Tab3', disabled: true },
                         // { text: 'favorites' },
                         // { text: 'additional' },
                         // { text: 'clients' },
@@ -183,7 +188,7 @@ export default (props) => {
                             lang={props.lang}
                         />}
                     {currentGroup && currentGroup.parentId && index === 0 && props.addItem &&
-                        <Button color="primary" variant="outlined" onClick={() => addItemToOrder(currentGroup)}>Dodaj do zlecenia</Button>}
+                        <Button color="primary" variant="outlined" onClick={() => addItemToOrder(currentGroup)}>{props.lang.addToOrder}</Button>}
                 </Paper>
             </Paper>
 

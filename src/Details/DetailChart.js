@@ -34,7 +34,7 @@ class DetailChart extends React.Component {
     }
 componentWillUnmount = () => {
     this.setState({range1:''})
-    // console.log(this.state.range1)
+    console.log(this.state.range1)
 }
 
 
@@ -45,12 +45,12 @@ setRange = () => {
     } else {
         this.setState({range1:[]})
     }
-    // console.log(this.state.range1)
+    console.log(this.state.range1)
 }
 
 
     render() {
-        // console.log(this.props.data)
+        console.log(this.props.data)
         // range1 = this.state.range?[this.props.data.base - this.props.data.min*1.1, this.props.data.base + this.props.data.max*1.1]:[]
         return (
             <Paper style={{ height: '800px' }}>

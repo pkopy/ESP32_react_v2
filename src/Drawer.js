@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -32,12 +32,21 @@ import Operators from './Operators/Operators'
 import AllMeasurements from './Details/AllMeasurments'
 import Settings from './Settings/Settings'
 import Contaractors from './Contractors/Contractors'
+import Login from './Login/Login1'
+
+import { createMuiTheme } from '@material-ui/core/styles';
+import purple from '@material-ui/core/colors/purple';
+import green from '@material-ui/core/colors/green';
+import { ThemeProvider } from '@material-ui/styles';
+
+
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
+        
     },
     appBar: {
         transition: theme.transitions.create(['margin', 'width'], {
@@ -91,22 +100,34 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
+
+
 export default function PersistentDrawerLeft(props) {
     const classes = useStyles();
-    const theme = useTheme();
+    // const theme = useTheme();
+    const [color, setColor] = React.useState()
+    const [user, setUser] = React.useState({})
+    const theme = createMuiTheme({
+        palette: {
+          primary: color,
+          
+        },
+        
+      });
     const [open, setOpen] = React.useState(false);
     const [order, setOrder] = React.useState()
     const [curentScale, setCurrentScale] = React.useState({})
     const [currentOrder, setCurrentOrder] = React.useState({})
     const [view, setView] = React.useState({
+        login: true,
         order: false,
         details: false,
-        scales: true,
+        scales: false,
         ordersList:false,
         freeWeighing:false,
         orderDetails: false,
         items: false,
-        name:props.lang.scales,
+        name:props.lang.login,
         allMeasurements:false,
         operators: false,
         settings: false
@@ -122,7 +143,8 @@ export default function PersistentDrawerLeft(props) {
 
     function search() {
         // drawerView('details')
-        props.findScales()
+        // props.findScales()
+        setColor(green)
         // handleDrawerClose()
     }
 
@@ -148,9 +170,11 @@ export default function PersistentDrawerLeft(props) {
         drawerView('order')
         setOrder(order)
     }
+    // useEffect(() => {
 
+    // }, [user])
+    console.log()
     
-
     function drawerView(name) {
         // console.log(props.newOrder)
         const valuesKeys = Object.keys(view)
@@ -189,7 +213,7 @@ export default function PersistentDrawerLeft(props) {
                 helpView.name = props.lang.orderDetails;
                 break;
             default:
-                helpView.name = props.lang.scales;
+                helpView.name = props.lang.login;
         }
         
 
@@ -199,7 +223,17 @@ export default function PersistentDrawerLeft(props) {
 
     }
 
+   
+    
+
+    
+    
+    // console.log(x)
+    // x.palette.primary.main = '#1d9e21'
     return (
+        
+        
+        <ThemeProvider theme={theme}>
         <div className={classes.root}>
             <CssBaseline />
             <AppBar
@@ -209,7 +243,7 @@ export default function PersistentDrawerLeft(props) {
                 })}
             >
                 <Toolbar>
-                    <IconButton
+                    {user.right>0&&<IconButton
                         color="inherit"
                         aria-label="open drawer"
                         onClick={handleDrawerOpen}
@@ -217,7 +251,7 @@ export default function PersistentDrawerLeft(props) {
                         className={clsx(classes.menuButton, open && classes.hide)}
                     >
                         <MenuIcon />
-                    </IconButton>
+                    </IconButton>}
                     <Typography variant="h6" noWrap>
                         E2R LITE - 
                     </Typography>
@@ -230,6 +264,7 @@ export default function PersistentDrawerLeft(props) {
                 </Toolbar>
             </AppBar>
             <Drawer
+                
                 className={classes.drawer}
                 variant="persistent"
                 anchor="left"
@@ -247,18 +282,18 @@ export default function PersistentDrawerLeft(props) {
 
 
                 <List>
-                    {/* <ListItem button onClick={search}>
+                    <ListItem button onClick={search}>
                         <ListItemIcon><SearchIcon color="primary"/></ListItemIcon>
                         <ListItemText primary='Szukaj' />
-                    </ListItem> */}
+                    </ListItem>
                     <ListItem button onClick={() => drawerView('items')}>
                         <ListItemIcon><AddCircleOutlineIcon color="primary"/></ListItemIcon>
                         <ListItemText primary={props.lang.items} />
                     </ListItem>
-                    <ListItem button onClick={myOperators}>
+                    {user.right>2&&<ListItem button onClick={myOperators}>
                         <ListItemIcon><SupervisorAccountIcon color="primary"/></ListItemIcon>
                         <ListItemText primary={props.lang.operators} />
-                    </ListItem>
+                    </ListItem>}
                 </List>
                 <Divider />
                 <List>
@@ -300,8 +335,6 @@ export default function PersistentDrawerLeft(props) {
                     scales={props.scales}
                     drawerView={drawerView}
                     setCurrentScale={setCurrentScale}
-                    PORT={props.PORT}
-                    URL={props.URL}
                 />}
 
                 {view.ordersList&&<OrdersList 
@@ -342,8 +375,6 @@ export default function PersistentDrawerLeft(props) {
                 {view.allMeasurements&&<AllMeasurements
                     drawerView={drawerView}
                     lang={props.lang}
-                    PORT={props.PORT}
-                    URL={props.URL}
                 />}
                 {view.operators&&<Operators
                 drawerView={drawerView}
@@ -353,16 +384,26 @@ export default function PersistentDrawerLeft(props) {
 
                 {view.items&&<Groups 
                     lang={props.lang}
+                    drawerView={drawerView}
                 />}
                 <Typography paragraph>
 
                 </Typography>
 
                 {view.settings&&<Settings
+                    setColor={setColor}
                     drawerView={drawerView}
                     lang={props.lang}
                     changeLang={props.changeLang}
                 />}
+
+                {view.login&&<Login
+                    lang={props.lang}
+                    user={user}
+                    setUser={setUser}
+                >
+                    
+                </Login>}
 
                 {/* <Contaractors/> */}
                 {/* <TextF
@@ -370,5 +411,6 @@ export default function PersistentDrawerLeft(props) {
                 /> */}
             </main>
         </div>
+        </ThemeProvider>
     );
 }

@@ -1,10 +1,13 @@
 const data = {
     //-------GLOBAL-------------
+    language: 'ENGLISH',
+    chooseLanguage: 'Choose language:',
+    theme: 'Theme:',
     settings:'Settings',
     scales: 'Scales',
     scale: 'Scale',
     back: 'Back',
-    items: 'Items',
+    items: 'Articles',
     orders: 'Orders',
     order: 'Order',
     allMeasurement: 'All measurement',
@@ -22,11 +25,12 @@ const data = {
     stop: 'Stop',
 
     //------------ITEMS----------
-    chooseGroupAndItem: 'Choose group and item',
+    chooseGroupAndItem: 'Choose group and article',
     addItem: 'Add item',
     group: 'Group',
-    item: 'Item',
+    item: 'Article',
     edit: 'Edit',
+    addToOrder: 'Add to order',
 
     //--------OPERATORS----------
     firstName: 'First name',
@@ -55,6 +59,7 @@ const data = {
     measure: 'Measure value',
     weight: 'Weight',
     qty: 'qty',
+    rowsOnPage: 'Rows on page',
 
     //---------CALENDAR-PICKER------------
     orderRange: 'Orders range',
@@ -63,7 +68,13 @@ const data = {
     day: 'Day',
     any: 'Any',
     from: 'From',
-    to: 'To'
+    to: 'To',
+
+    //--------------LOGIN--------------
+    login: 'Sign in',
+    user: 'User',
+    password: 'Password',
+    loginAsGuest: 'Sign in as guest'
 }
 
 export default data

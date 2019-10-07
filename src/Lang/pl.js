@@ -1,5 +1,8 @@
 const data = {
     //-------GLOBAL-------------
+    language: 'POLSKI',
+    chooseLanguage: 'Wybierz język:',
+    theme: 'Schemat kolorów:',
     settings:'Ustawienia',
     scales: 'Twoje wagi',
     scale: 'Waga',
@@ -28,6 +31,7 @@ const data = {
     group: 'Grupa',
     item: 'Produkt',
     edit: 'Edytuj',
+    addToOrder: 'Dodaj do zlecenia',
     
     //--------OPERATORS----------
     firstName: 'Imię',
@@ -56,6 +60,7 @@ const data = {
     measure: 'Wartość ważenia',
     weight: 'Masa',
     qty: 'szt',
+    rowsOnPage: 'Wierszy na stronę',
 
 
     //---------CALENDAR-PICKER------------
@@ -65,7 +70,14 @@ const data = {
     day: 'Dzień',
     any: 'Dowolny',
     from: 'Od',
-    to: 'Do'
+    to: 'Do',
+
+
+    //--------------LOGIN--------------
+    login: 'Wpisz się',
+    user: 'Użytkownik',
+    password: 'Hasło',
+    loginAsGuest: 'Wpisz się jako gość'
 
 
 }

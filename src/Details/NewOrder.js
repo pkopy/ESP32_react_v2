@@ -71,8 +71,6 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function TextFields(props) {
-    const PORT = process.env.REACT_APP_PORT || 5000;
-const URL = process.env.REACT_APP_URL || 'localhost'
     const classes = useStyles();
     const scales = props.scales
     const operators = props.operators
@@ -94,7 +92,7 @@ const URL = process.env.REACT_APP_URL || 'localhost'
     }
 
     order.manualWeighing = false
-    // console.log(order)
+    console.log(order)
     const [values, setValues] = React.useState(order);
     const [errors, setError] = React.useState({
         name: false,
@@ -119,11 +117,11 @@ const URL = process.env.REACT_APP_URL || 'localhost'
     const addItem = (item) => {
         // setItem(item)
         setValues({ ...values, 'item':item.name, 'base':item.base, 'max':item.max, 'min':item.min, 'treshold':item.treshold });
-        // console.log(item)
+        console.log(item)
     }
 
     const handleChange = name => event => {
-        // console.log(event.target.value)
+        console.log(event.target.value)
         setValues({ ...values, [name]: event.target.value });
         if (name === 'scale') {
             setCurrentScale(event.target.value)
@@ -159,7 +157,7 @@ const URL = process.env.REACT_APP_URL || 'localhost'
 
         for (let value of valuesKeys) {
             if (value === 'interval' && values.interval === 'interval' && (values.intervalValue === '' || values.intervalValue <= 0 || !values.intervalValue)) {
-                // console.log('OK')
+                console.log('OK')
                 err.intervalValue = true
                 err.errors = true
             } else if ((value === 'intervalValue' && values.interval === 'stab') || value === 'manualWeighing' || value === 'range' || value === 'item') {
@@ -180,7 +178,7 @@ const URL = process.env.REACT_APP_URL || 'localhost'
         } else {
             setLoader(true)
             const connection = SocketLib.connectToSocket(values.scale)
-            // console.log(connection)
+            console.log(connection)
             connection.onopen = () => {
                 setConnection(connection)
                 setOpen(true)
@@ -213,14 +211,14 @@ const URL = process.env.REACT_APP_URL || 'localhost'
         values.max = parseInt(values.max)
         values.treshold = parseInt(values.treshold)
         values.quantity = parseInt(values.quantity)
-        fetch(`http://${URL}:${PORT}/order`, {
+        fetch('http://localhost:5000/order', {
             method: 'POST',
             body: JSON.stringify(values)
         })
             .then(data => data.json())
             .then(data => {
                 values.guid = data
-                // console.log(values)
+                console.log(values)
                 SocketLib.sendToSocket(
                     values, connection)
                 props.setCurrentOrder(values)
@@ -240,7 +238,7 @@ const URL = process.env.REACT_APP_URL || 'localhost'
             setCurrentScale(order.scale)
         }
     })
-    // console.log('NORDER: ', openItem)
+    console.log('NORDER: ', openItem)
     return (
         <div>
             {loader&&<Loader/>}
@@ -248,12 +246,15 @@ const URL = process.env.REACT_APP_URL || 'localhost'
                 open={openItem}
                 maxWidth='lg'
                 // width='80%'
+                fullWidth={true}
                 onClose={()=>setOpenItem(false)}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">{"Towary"}</DialogTitle>
-                <DialogContent>
+                <DialogTitle id="alert-dialog-title">{props.lang.items}</DialogTitle>
+                <DialogContent
+                
+                >
                     
                         <Groups 
                             width={'100%'}
@@ -261,6 +262,7 @@ const URL = process.env.REACT_APP_URL || 'localhost'
                             setOpenItem={setOpenItem}
                             openItem={openItem}
                             lang={props.lang}
+                            buttonDisable={true}
                         />
                     
                 </DialogContent>
