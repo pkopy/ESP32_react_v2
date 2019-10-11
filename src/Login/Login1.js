@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -63,13 +63,27 @@ export default function SignIn(props) {
         let check = !guest
         setGuest(check)
     }
+
+    useEffect(() => {
+        const login = (e) => {
+            if (e.keyCode === 13) {
+                console.log(e)
+                getUser()
+
+            }
+        }
+
+        document.addEventListener('keydown', login)
+        return () => {
+            document.removeEventListener('keydown', login)
+        }
+    })
     const setValue = name => e => {
         // console.log(e.target.value)
         setLogin({...login, [name]:e.target.value})
     }
     const getUser = () => {
         if (!guest) {
-            console.log('login')
             fetch('http://localhost:5000/login', {
                 method: 'POST',
                 body: JSON.stringify(login)
@@ -77,22 +91,20 @@ export default function SignIn(props) {
             .then(user => user.json())
             
             .then(user => {
-                console.log(user.length)
                 if (Array.isArray(user) && user.length > 0) {
                     
                     setError(false)
                     props.setUser(user[0]); 
+                    props.drawerView('scales')
                 } else {
                     setError(true)
                 }
-
-                console.log(user)
             })
             .catch(err => console.log(err))
 
         } else {
-            console.log('fff')
-            props.setUser({right:1})
+            props.setUser({right:1, firstName: 'guest'})
+            props.drawerView('scales')
         }
     }
     return (

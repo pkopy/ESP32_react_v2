@@ -36,7 +36,6 @@ export default () => {
 
     const onSelectionChanged = ({ selectedRowsData }) => {
         const data = selectedRowsData[0];
-        console.log(data)
         setShowEmployeeInfo(true)
         setSelectedRowNotes(data.scaleName)
         // this.setState({showEmployeeInfo: true,
@@ -63,9 +62,7 @@ export default () => {
         })
             .then(data => data.json())
             .then(measurments => {
-
                 setMeasurments(measurments)
-                console.log(measurments)
             })
             .catch(err => console.log(err))
     }

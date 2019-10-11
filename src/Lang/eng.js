@@ -36,6 +36,10 @@ const data = {
     firstName: 'First name',
     lastName: 'Last name',
     addOperator: 'Add operator',
+    rePassword: 'Re-type password',
+    rights: 'Permissions',
+    admin: 'Admin',
+    guest: 'Guest',
 
     //-----------ORDERS-----------
     newOrder: 'New order',
@@ -60,6 +64,10 @@ const data = {
     weight: 'Weight',
     qty: 'qty',
     rowsOnPage: 'Rows on page',
+    inProgress: 'In progress',
+    done: 'Done',
+    unknown: 'Unknown',
+    interrupted: 'Interrupted',
 
     //---------CALENDAR-PICKER------------
     orderRange: 'Orders range',
@@ -74,7 +82,8 @@ const data = {
     login: 'Sign in',
     user: 'User',
     password: 'Password',
-    loginAsGuest: 'Sign in as guest'
+    loginAsGuest: 'Sign in as guest',
+    logout: 'Logout'
 }
 
 export default data

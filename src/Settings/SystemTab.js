@@ -13,6 +13,7 @@ import engLang from '../Lang/eng';
 
 import plFlag from '../img/pl_flag1.png'
 import enFlag from '../img/en_flag1.png'
+import select from '../img/select.svg'
 import { useTheme } from '@material-ui/styles';
 
 import purple from '@material-ui/core/colors/purple';
@@ -89,6 +90,11 @@ const useStyles = makeStyles(theme => ({
             top:0,
             left:0
         }
+    },
+    select: {
+        position:"relative",
+        width: 30,
+        left: 5
     }
 }));
 
@@ -97,7 +103,7 @@ export default (props) => {
     const classes = useStyles();
     const [index, setIndex] = useState(0)
     const [lang, setLang] = useState(props.lang.language)
-    const [color, setColor] = useState()
+    const [color, setColor] = useState("INDIGO")
 
     useEffect(() => {
         props.drawerView('settings')
@@ -125,6 +131,7 @@ export default (props) => {
         switch (color) {
             case 'GREEN':
                 props.setColor(green);
+                
                 break;
             case 'PURPLE':
                 props.setColor(purple);
@@ -138,7 +145,7 @@ export default (props) => {
             default:
                 props.setColor(indigo);
         }
-        console.log(color)
+        setColor(color)
     }
     return (
         <div style={{ height: 600 }}>
@@ -219,10 +226,10 @@ export default (props) => {
 
                 </TextField> */}
                 <Box style={{ textAlign: "left", width: "90%", marginLeft: "auto", marginLeft: 44,  display: "flex" }}>
-                    <Box onClick={() => handleOnChangeColor('GREEN')} style={{backgroundColor: '#fff', width:44, height:44}}><Box className={classes.cr} style={{backgroundColor: '#4caf50', }}></Box></Box>
-                    <Box onClick={() => handleOnChangeColor('PURPLE')} style={{backgroundColor: '#fff', width:44, height:44}}><Box className={classes.cr} style={{backgroundColor: '#9c27b0', }}></Box></Box>
-                    <Box onClick={() => handleOnChangeColor('INDIGO')} style={{backgroundColor: '#fff', width:44, height:44}}><Box className={classes.cr} style={{backgroundColor: '#3f51b5'}}></Box></Box>
-                    <Box onClick={() => handleOnChangeColor('BLUE')} style={{backgroundColor: '#fff', width:44, height:44}}><Box  className={classes.cr} style={{backgroundColor: '#2196f3'}}></Box></Box>
+            <Box onClick={() => handleOnChangeColor('GREEN')} style={{backgroundColor: '#fff', width:44, height:44}}><Box className={classes.cr} style={{backgroundColor: '#4caf50', }}>{color==="GREEN"&&<img className={classes.select} src={select} alt="select_icon"/>}</Box></Box>
+                    <Box onClick={() => handleOnChangeColor('PURPLE')} style={{backgroundColor: '#fff', width:44, height:44}}><Box className={classes.cr} style={{backgroundColor: '#9c27b0', }}>{color==="PURPLE"&&<img className={classes.select} src={select} alt="select_icon"/>}</Box></Box>
+                    <Box onClick={() => handleOnChangeColor('INDIGO')} style={{backgroundColor: '#fff', width:44, height:44}}><Box className={classes.cr} style={{backgroundColor: '#3f51b5'}}>{color==="INDIGO"&&<img className={classes.select} src={select} alt="select_icon"/>}</Box></Box>
+                    <Box onClick={() => handleOnChangeColor('BLUE')} style={{backgroundColor: '#fff', width:44, height:44}}><Box  className={classes.cr} style={{backgroundColor: '#2196f3'}}>{color==="BLUE"&&<img className={classes.select} src={select} alt="select_icon"/>}</Box></Box>
 
                 </Box>
             </Box>

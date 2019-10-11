@@ -12,7 +12,6 @@ export default function exportToXLS (data) {
     sheet['!ref'] = `A1:${cellR}`
     sheet[XLSX.utils.encode_cell({ c: 0, r: 0 })] = { v: 'Numer Ważenia' }
     sheet[XLSX.utils.encode_cell({ c: 1, r: 0 })] = { v: 'Wartość ważenia' }
-    console.log(sheet['!cols'])
     var wscols = [
         { wch: 6 },
         { wch: 7 },

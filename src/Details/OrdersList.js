@@ -75,12 +75,13 @@ export default function MaterialTableDemo(props) {
             <div >
 
                 <DevExpressTable
-                    data={props.yourOrders}
+                    // data={props.yourOrders}
                     columns={columns}
                     viewOrder={props.viewOrder}
                     orderDetails={orderDetails}
                     orders={props.orders}
                     lang={props.lang}
+                    user={props.user}
                 />
 
 

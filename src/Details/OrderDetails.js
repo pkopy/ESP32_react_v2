@@ -64,7 +64,6 @@ class OrderDetails extends Component {
                 .then(measurments => {
                     // data.measurments = measurments; 
                     this.setState({ rows: measurments })
-                    console.log(measurments)
                 })
                 .catch(err => console.log(err))
         }
@@ -125,12 +124,8 @@ class OrderDetails extends Component {
 
             return this.props.data
         } else {
-            console.log(this.props.data)
-            const data = this.props.data ? this.props.data.measurments : []
-            console.log(data)
-            // for (let x of data) {
 
-            // }
+            const data = this.props.data ? this.props.data.measurments : []
             this.setState({ rows: data })
         }
     }
@@ -173,7 +168,6 @@ class OrderDetails extends Component {
         })
             .then(data => data.json())
             .then(order => {
-                console.log(order)
                 // clearInterval(this.state.details)
                 this.props.drawerView('ordersList')
                 this.setState({ open: false })

@@ -88,7 +88,6 @@ class App extends Component {
                 
             })
             .catch((err) => {
-                console.log(err)
                 this.setState({load: false})
             })
     }
@@ -102,7 +101,6 @@ class App extends Component {
                 this.setState({load: false})
             })
             .catch((err) => {
-                console.log(err)
                 this.setState({load: false})
             })
     }
@@ -112,12 +110,10 @@ class App extends Component {
         fetch(`http://localhost:5000/findscales`)
             .then(data => data.json())
             .then(data => {
-                console.log(data)
                 this.setState({findedScales: data});
                 this.setState({load: false})
             })
             .catch(err => {
-                console.log(err);
                 setTimeout(() => {
                     this.setState({load: false})
 

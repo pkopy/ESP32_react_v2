@@ -8,6 +8,7 @@ import TestElement from './TestElement';
 import Button from '@material-ui/core/Button';
 
 
+
 let data = {
     load: function (loadOptions) {
         if (loadOptions.parentIds) {
@@ -85,7 +86,6 @@ export default (props) => {
     const classes = useStyles();
     const [tree, setTree] = useState(false)
     const [openAddItem, setOpenAddItem] = useState(false)
-    console.log('Groups: ', props.openItem)
     return (
         <div className={classes.container}>
             <div className="imgContainer" style={{width:"70%", marginRight:"auto", marginLeft:"auto"}}>
@@ -151,7 +151,7 @@ export default (props) => {
                             <Typography variant="h5" align='left'>
                                 {props.lang.group}: {currentGroup.name}
                             </Typography>
-                            {!openAddItem && <Button color="primary" variant="outlined" onClick={openAddItemForm}>
+                            {!openAddItem && props.user.right>2&&<Button color="primary" variant="outlined" onClick={openAddItemForm}>
                                 {props.lang.addItem}
                             </Button>}
                             {openAddItem &&
@@ -163,6 +163,7 @@ export default (props) => {
                                         groupId={currentGroup.id}
                                         setTree={setTree}
                                         openItem={props.openItem}
+                                        user={props.user}
                                     ></TestElement>
 
                                 </div>
@@ -186,6 +187,8 @@ export default (props) => {
                             group={currentGroup}
                             openItem={props.openItem}
                             lang={props.lang}
+                            user={props.user}
+                            setTree={setTree}
                         />}
                     {currentGroup && currentGroup.parentId && index === 0 && props.addItem &&
                         <Button color="primary" variant="outlined" onClick={() => addItemToOrder(currentGroup)}>{props.lang.addToOrder}</Button>}

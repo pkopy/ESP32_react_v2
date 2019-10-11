@@ -92,7 +92,6 @@ export default function TextFields(props) {
     }
 
     order.manualWeighing = false
-    console.log(order)
     const [values, setValues] = React.useState(order);
     const [errors, setError] = React.useState({
         name: false,
@@ -117,11 +116,10 @@ export default function TextFields(props) {
     const addItem = (item) => {
         // setItem(item)
         setValues({ ...values, 'item':item.name, 'base':item.base, 'max':item.max, 'min':item.min, 'treshold':item.treshold });
-        console.log(item)
+
     }
 
     const handleChange = name => event => {
-        console.log(event.target.value)
         setValues({ ...values, [name]: event.target.value });
         if (name === 'scale') {
             setCurrentScale(event.target.value)
@@ -157,7 +155,7 @@ export default function TextFields(props) {
 
         for (let value of valuesKeys) {
             if (value === 'interval' && values.interval === 'interval' && (values.intervalValue === '' || values.intervalValue <= 0 || !values.intervalValue)) {
-                console.log('OK')
+
                 err.intervalValue = true
                 err.errors = true
             } else if ((value === 'intervalValue' && values.interval === 'stab') || value === 'manualWeighing' || value === 'range' || value === 'item') {
@@ -170,7 +168,7 @@ export default function TextFields(props) {
             }
         }
 
-        console.log(err)
+
 
         if (err.errors) {
             setError(err)
@@ -178,7 +176,6 @@ export default function TextFields(props) {
         } else {
             setLoader(true)
             const connection = SocketLib.connectToSocket(values.scale)
-            console.log(connection)
             connection.onopen = () => {
                 setConnection(connection)
                 setOpen(true)
@@ -218,7 +215,6 @@ export default function TextFields(props) {
             .then(data => data.json())
             .then(data => {
                 values.guid = data
-                console.log(values)
                 SocketLib.sendToSocket(
                     values, connection)
                 props.setCurrentOrder(values)
@@ -238,7 +234,6 @@ export default function TextFields(props) {
             setCurrentScale(order.scale)
         }
     })
-    console.log('NORDER: ', openItem)
     return (
         <div>
             {loader&&<Loader/>}
@@ -263,6 +258,7 @@ export default function TextFields(props) {
                             openItem={openItem}
                             lang={props.lang}
                             buttonDisable={true}
+                            user={props.user}
                         />
                     
                 </DialogContent>
@@ -312,7 +308,7 @@ export default function TextFields(props) {
                     variant="outlined"
                 >
                     {operators.map(option => (
-                        <MenuItem key={option.id} value={option.firstName + ' ' + option.lastName}>
+                        <MenuItem key={option.id} value={option.userName}>
                             {option.firstName + ' ' + option.lastName}
                         </MenuItem>
                     ))}
@@ -553,28 +549,28 @@ export default function TextFields(props) {
                 <DialogContent>
                     {!errors.errors && <DialogContentText id="alert-dialog-description">
                         Zamierzasz wysłać następujące zlecenie do wagi: <b>{scale.name}</b> <br /> <br />
-                        <li>Twoja nazwa: {values.name}</li>
-                        <li>Operator: {values.operator}</li>
-                        <li>Waga: {scale.name}/{values.scale}</li>
-                        {values.item&&<li>Produkt: {values.item}</li>}
-                        <li>Podstawa: {values.base}</li>
-                        <li>Max: {values.max}</li>
-                        <li>Min: {values.min}</li>
-                        <li>Próg LO: {values.treshold}</li>
-                        <li>Ilość ważeń: {values.quantity}</li>
+                        <li>{props.lang.orderName}: {values.name}</li>
+                        <li>{props.lang.operator}: {values.operator}</li>
+                        <li>{props.lang.scaleName}: {scale.name}/{values.scale}</li>
+                        {values.item&&<li>{props.lang.item}: {values.item}</li>}
+                        <li>{props.lang.base}: {values.base}</li>
+                        <li>{props.lang.max}: {values.max}</li>
+                        <li>{props.lang.min}: {values.min}</li>
+                        <li>{props.lang.treshold}: {values.treshold}</li>
+                        <li>{props.lang.quantity}: {values.quantity}</li>
                         {values.interval === 'interval' && <li>Interwał: {values.intervalValue}</li>}
 
                     </DialogContentText>}
                     {errors.errors && <DialogContentText id="alert-dialog-description">
                         Znaleziono błędy w formularzu: <br /> <br />
-                        {errors.name && <li>Twoja nazwa</li>}
-                        {errors.operator && <li>Operator</li>}
-                        {errors.scale && <li>Waga</li>}
-                        {errors.base && <li>Podstawa</li>}
-                        {errors.max && <li>Max</li>}
-                        {errors.min && <li>Min</li>}
-                        {errors.treshold && <li>Próg LO</li>}
-                        {errors.quantity && <li>Ilość ważeń</li>}
+                        {errors.name && <li>{props.lang.orderName}</li>}
+                        {errors.operator && <li>{props.lang.operator}</li>}
+                        {errors.scale && <li>{props.lang.scaleName}</li>}
+                        {errors.base && <li>{props.lang.base}</li>}
+                        {errors.max && <li>{props.lang.max}</li>}
+                        {errors.min && <li>{props.lang.min}</li>}
+                        {errors.treshold && <li>{props.lang.treshold}</li>}
+                        {errors.quantity && <li>{props.lang.quantity}</li>}
                         {errors.intervalValue && <li>Interwał</li>}
                     </DialogContentText>}
                 </DialogContent>

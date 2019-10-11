@@ -23,6 +23,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import NewOrder from './Details/NewOrder'
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import Scales from './Scales/Scales'
 import OrdersList from './Details/OrdersList'
 import Detail from './Details/Detail'
@@ -32,12 +33,14 @@ import Operators from './Operators/Operators'
 import AllMeasurements from './Details/AllMeasurments'
 import Settings from './Settings/Settings'
 import Contaractors from './Contractors/Contractors'
+import Avatar from '@material-ui/core/Avatar';
 import Login from './Login/Login1'
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import purple from '@material-ui/core/colors/purple';
 import green from '@material-ui/core/colors/green';
 import { ThemeProvider } from '@material-ui/styles';
+import { indigo, deepOrange } from '@material-ui/core/colors';
 
 
 
@@ -46,7 +49,7 @@ const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
-        
+
     },
     appBar: {
         transition: theme.transitions.create(['margin', 'width'], {
@@ -98,6 +101,11 @@ const useStyles = makeStyles(theme => ({
         }),
         marginLeft: 0,
     },
+    avatar: {
+        position: "absolute",
+        right: theme.spacing(2),
+        backgroundColor: deepOrange[500]
+    }
 }));
 
 
@@ -109,11 +117,9 @@ export default function PersistentDrawerLeft(props) {
     const [user, setUser] = React.useState({})
     const theme = createMuiTheme({
         palette: {
-          primary: color,
-          
+            primary: color,
         },
-        
-      });
+    });
     const [open, setOpen] = React.useState(false);
     const [order, setOrder] = React.useState()
     const [curentScale, setCurrentScale] = React.useState({})
@@ -123,12 +129,12 @@ export default function PersistentDrawerLeft(props) {
         order: false,
         details: false,
         scales: false,
-        ordersList:false,
-        freeWeighing:false,
+        ordersList: false,
+        freeWeighing: false,
         orderDetails: false,
         items: false,
-        name:props.lang.login,
-        allMeasurements:false,
+        name: props.lang.login,
+        allMeasurements: false,
         operators: false,
         settings: false
     })
@@ -148,33 +154,33 @@ export default function PersistentDrawerLeft(props) {
         // handleDrawerClose()
     }
 
-    function myScales () {
+    function myScales() {
         props.yourScales()
         drawerView('scales')
     }
 
-    function myOrders () {
+    function myOrders() {
         props.orders()
         drawerView('ordersList')
     }
-    function myMeasurements () {
+    function myMeasurements() {
         // props.orders()
         drawerView('allMeasurements')
     }
-    function myOperators () {
+    function myOperators() {
         // props.orders()
         drawerView('operators')
     }
-    
-    function viewOrder (order) {
+
+    function viewOrder(order) {
         drawerView('order')
         setOrder(order)
     }
     // useEffect(() => {
 
     // }, [user])
-    console.log()
-    
+
+
     function drawerView(name) {
         // console.log(props.newOrder)
         const valuesKeys = Object.keys(view)
@@ -215,7 +221,7 @@ export default function PersistentDrawerLeft(props) {
             default:
                 helpView.name = props.lang.login;
         }
-        
+
 
         setOrder({})
         setView(helpView)
@@ -223,194 +229,206 @@ export default function PersistentDrawerLeft(props) {
 
     }
 
-   
-    
 
-    
-    
+
+
+
+
     // console.log(x)
     // x.palette.primary.main = '#1d9e21'
     return (
-        
-        
+
+
         <ThemeProvider theme={theme}>
-        <div className={classes.root}>
-            <CssBaseline />
-            <AppBar
-                position="fixed"
-                className={clsx(classes.appBar, {
-                    [classes.appBarShift]: open,
-                })}
-            >
-                <Toolbar>
-                    {user.right>0&&<IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        className={clsx(classes.menuButton, open && classes.hide)}
-                    >
-                        <MenuIcon />
-                    </IconButton>}
-                    <Typography variant="h6" noWrap>
-                        E2R LITE - 
+            <div className={classes.root}>
+                <CssBaseline />
+                <AppBar
+                    position="fixed"
+                    className={clsx(classes.appBar, {
+                        [classes.appBarShift]: open,
+                    })}
+                >
+                    <Toolbar>
+                        {user.right > 0 && <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={handleDrawerOpen}
+                            edge="start"
+                            className={clsx(classes.menuButton, open && classes.hide)}
+                        >
+                            <MenuIcon />
+                        </IconButton>}
+                        <Typography variant="h6" noWrap>
+                            E2R LITE -
                     </Typography>
-                    <Typography variant="h6" noWrap>
-                    &nbsp;{view.name.toUpperCase()}
-                    </Typography>
-                    {/* <IconButton>
+                        <Typography variant="h6" noWrap>
+                            &nbsp;{view.name.toUpperCase()}
+                        </Typography>
+                        {user.firstName && <Avatar aria-label="recipe" className={classes.avatar}>
+                            {user.firstName[0].toUpperCase()}
+                        </Avatar>}
+                        {/* <IconButton>
                         E2R LITE
                     </IconButton> */}
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                
-                className={classes.drawer}
-                variant="persistent"
-                anchor="left"
-                open={open}
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
-            >
-                <div className={classes.drawerHeader}>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-                    </IconButton>
-                </div>
-                <Divider />
+                    </Toolbar>
+                </AppBar>
+                <Drawer
+
+                    className={classes.drawer}
+                    variant="persistent"
+                    anchor="left"
+                    open={open}
+                    classes={{
+                        paper: classes.drawerPaper,
+                    }}
+                >
+                    <div className={classes.drawerHeader}>
+                        <IconButton onClick={handleDrawerClose}>
+                            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                        </IconButton>
+                    </div>
+                    <Divider />
 
 
-                <List>
-                    <ListItem button onClick={search}>
+                    <List>
+                        {/* <ListItem button onClick={search}>
                         <ListItemIcon><SearchIcon color="primary"/></ListItemIcon>
                         <ListItemText primary='Szukaj' />
-                    </ListItem>
-                    <ListItem button onClick={() => drawerView('items')}>
-                        <ListItemIcon><AddCircleOutlineIcon color="primary"/></ListItemIcon>
-                        <ListItemText primary={props.lang.items} />
-                    </ListItem>
-                    {user.right>2&&<ListItem button onClick={myOperators}>
-                        <ListItemIcon><SupervisorAccountIcon color="primary"/></ListItemIcon>
-                        <ListItemText primary={props.lang.operators} />
-                    </ListItem>}
-                </List>
-                <Divider />
-                <List>
-                    <ListItem button onClick={myOrders}>
-                        <ListItemIcon><FormatListBulletedIcon color="primary"/></ListItemIcon>
-                        <ListItemText primary={props.lang.orders} />
-                    </ListItem>
-                    {/* <ListItem button onClick={() => drawerView('order')}>
+                    </ListItem> */}
+                        <ListItem button onClick={() => drawerView('items')}>
+                            <ListItemIcon><AddCircleOutlineIcon color="primary" /></ListItemIcon>
+                            <ListItemText primary={props.lang.items} />
+                        </ListItem>
+                        {user.right > 2 && <ListItem button onClick={myOperators}>
+                            <ListItemIcon><SupervisorAccountIcon color="primary" /></ListItemIcon>
+                            <ListItemText primary={props.lang.operators} />
+                        </ListItem>}
+                    </List>
+                    <Divider />
+                    <List>
+                        {user.right > 1 && <ListItem button onClick={myOrders}>
+                            <ListItemIcon><FormatListBulletedIcon color="primary" /></ListItemIcon>
+                            <ListItemText primary={props.lang.orders} />
+                        </ListItem>}
+                        {/* <ListItem button onClick={() => drawerView('order')}>
                         <ListItemIcon><AddCircleOutlineIcon color="primary"/></ListItemIcon>
                         <ListItemText primary='Nowe zlecenie' />
                     </ListItem> */}
-                    <ListItem button onClick={myMeasurements}>
-                        <ListItemIcon><SupervisorAccountIcon color="primary"/></ListItemIcon>
-                        <ListItemText primary={props.lang.allMeasurement} />
-                    </ListItem>
-                </List>
-                <Divider />
-                <List>
-                    <ListItem button onClick={myScales}>
-                        <ListItemIcon><InboxIcon color="primary"/></ListItemIcon>
-                        <ListItemText primary={props.lang.scales} />
-                    </ListItem>
-                    <ListItem button onClick={() => drawerView('settings')}>
-                        <ListItemIcon><SettingsIcon color="primary"/></ListItemIcon>
-                        <ListItemText primary={props.lang.settings} />
-                    </ListItem>
-                    
-                </List>
-            </Drawer>
-            <main
-                className={clsx(classes.content, {
-                    [classes.contentShift]: open,
-                })}
-            >
-                <div className={classes.drawerHeader} />
+                        {user.right > 1 && <ListItem button onClick={myMeasurements}>
+                            <ListItemIcon><SupervisorAccountIcon color="primary" /></ListItemIcon>
+                            <ListItemText primary={props.lang.allMeasurement} />
+                        </ListItem>}
+                    </List>
+                    {user.right > 1 && <Divider />}
+                    <List>
+                        <ListItem button onClick={myScales}>
+                            <ListItemIcon><InboxIcon color="primary" /></ListItemIcon>
+                            <ListItemText primary={props.lang.scales} />
+                        </ListItem>
+                        <ListItem button onClick={() => drawerView('settings')}>
+                            <ListItemIcon><SettingsIcon color="primary" /></ListItemIcon>
+                            <ListItemText primary={props.lang.settings} />
+                        </ListItem>
+                        <ListItem button onClick={() => { setUser({}); drawerView('login') }}>
+                            <ListItemIcon><PowerSettingsNewIcon color="primary" /></ListItemIcon>
+                            <ListItemText primary={props.lang.logout} />
+                        </ListItem>
 
-                {view.scales&&<Scales
-                    lang={props.lang}
-                    scales={props.scales}
-                    drawerView={drawerView}
-                    setCurrentScale={setCurrentScale}
-                />}
-
-                {view.ordersList&&<OrdersList 
-                    yourOrders={props.yourOrders}
-                    viewOrder={viewOrder}
-                    setCurrentOrder={setCurrentOrder}
-                    drawerView={drawerView}
-                    orders={props.orders}
-                    lang={props.lang}
-                />}
-
-                
-
-                {view.order && <NewOrder
-                    address={props.address}
-                    scales={props.scales}
-                    order={order}
-                    setCurrentOrder={setCurrentOrder}
-                    operators={props.operators}
-                    drawerView={drawerView}
-                    lang={props.lang}
-                />}
-
-                {view.freeWeighing&&<Detail
-                    curentScale={curentScale}
-                    drawerView={drawerView}
-                    measure={props.measure}
-                    setMeasure={props.setMeasure}
-                    lang={props.lang}
-                />}
-                {view.orderDetails&&<OrderDetails
-                    data={currentOrder}
-                    drawerView={drawerView}
-                    viewOrder={viewOrder}
-                    order={order}
-                    lang={props.lang}
-                />}
-                {view.allMeasurements&&<AllMeasurements
-                    drawerView={drawerView}
-                    lang={props.lang}
-                />}
-                {view.operators&&<Operators
-                drawerView={drawerView}
-                updateOperators={props.updateOperators}
-                lang={props.lang}
-                ></Operators>}
-
-                {view.items&&<Groups 
-                    lang={props.lang}
-                    drawerView={drawerView}
-                />}
-                <Typography paragraph>
-
-                </Typography>
-
-                {view.settings&&<Settings
-                    setColor={setColor}
-                    drawerView={drawerView}
-                    lang={props.lang}
-                    changeLang={props.changeLang}
-                />}
-
-                {view.login&&<Login
-                    lang={props.lang}
-                    user={user}
-                    setUser={setUser}
+                    </List>
+                </Drawer>
+                <main
+                    className={clsx(classes.content, {
+                        [classes.contentShift]: open,
+                    })}
                 >
-                    
-                </Login>}
+                    <div className={classes.drawerHeader} />
 
-                {/* <Contaractors/> */}
-                {/* <TextF
+                    {view.scales && <Scales
+                        lang={props.lang}
+                        scales={props.scales}
+                        drawerView={drawerView}
+                        setCurrentScale={setCurrentScale}
+                    />}
+
+                    {view.ordersList && user.right > 1 && <OrdersList
+                        yourOrders={props.yourOrders}
+                        viewOrder={viewOrder}
+                        setCurrentOrder={setCurrentOrder}
+                        drawerView={drawerView}
+                        orders={props.orders}
+                        lang={props.lang}
+                        user={user}
+                    />}
+
+
+
+                    {view.order && <NewOrder
+                        address={props.address}
+                        scales={props.scales}
+                        order={order}
+                        setCurrentOrder={setCurrentOrder}
+                        operators={props.operators}
+                        drawerView={drawerView}
+                        lang={props.lang}
+                        user={user}
+                    />}
+
+                    {view.freeWeighing && <Detail
+                        curentScale={curentScale}
+                        drawerView={drawerView}
+                        measure={props.measure}
+                        setMeasure={props.setMeasure}
+                        lang={props.lang}
+                    />}
+                    {view.orderDetails && <OrderDetails
+                        data={currentOrder}
+                        drawerView={drawerView}
+                        viewOrder={viewOrder}
+                        order={order}
+                        lang={props.lang}
+                    />}
+                    {view.allMeasurements && <AllMeasurements
+                        drawerView={drawerView}
+                        lang={props.lang}
+                        user={user}
+                    />}
+                    {view.operators && <Operators
+                        drawerView={drawerView}
+                        updateOperators={props.updateOperators}
+                        lang={props.lang}
+                    ></Operators>}
+
+                    {view.items && <Groups
+                        lang={props.lang}
+                        drawerView={drawerView}
+                        user={user}
+                    />}
+                    <Typography paragraph>
+
+                    </Typography>
+
+                    {view.settings && <Settings
+                        setColor={setColor}
+                        drawerView={drawerView}
+                        lang={props.lang}
+                        changeLang={props.changeLang}
+                    />}
+
+                    {view.login && <Login
+                        lang={props.lang}
+                        user={user}
+                        setUser={setUser}
+                        drawerView={drawerView}
+                    >
+
+                    </Login>}
+
+                    {/* <Contaractors/> */}
+                    {/* <TextF
                     title={'okokoko'}
                 /> */}
-            </main>
-        </div>
+                </main>
+            </div>
         </ThemeProvider>
     );
 }

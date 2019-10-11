@@ -15,7 +15,7 @@ const reactServer = {}
 
 const dotenv = require('dotenv');
 dotenv.config();
-console.log(`Your port is ${process.env.PORT}`)
+// console.log(`Your port is ${process.env.PORT}`)
 
 app.use(express.static(path.join(__dirname, './build')));
 

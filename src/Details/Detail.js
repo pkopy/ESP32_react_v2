@@ -37,10 +37,10 @@ export default function PaperSheet(props) {
         
         if (SocketLib.connection) {
 
-            console.log(SocketLib.connection)
+            // console.log(SocketLib.connection)
         }
         
-        const x = SocketLib.connectToSocket(props.curentScale.address)
+        const x = SocketLib.connectToSocket(props.curentScale.address, props.curentScale.port)
         x.onerror = () => {
             alert('soket niedostępnty')
             

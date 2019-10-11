@@ -1,6 +1,5 @@
  export default  function createPdf (data) {
     // console.log(JSON.stringify(this.state.rows))
-    console.log(data)
     const dataObj = data
     fetch('http://localhost:5000/pdf', {
         method: 'POST',

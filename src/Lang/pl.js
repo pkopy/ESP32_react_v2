@@ -37,6 +37,10 @@ const data = {
     firstName: 'Imię',
     lastName: 'Nazwisko',
     addOperator: 'Dodaj operatora',
+    rePassword: 'Powtórz hasło',
+    rights: 'Uprawnienia',
+    admin: 'Administrator',
+    guest: 'Gość',
 
     //-----------ORDERS-----------
     newOrder: 'Nowe zlecenie',
@@ -61,6 +65,10 @@ const data = {
     weight: 'Masa',
     qty: 'szt',
     rowsOnPage: 'Wierszy na stronę',
+    inProgress: 'W trakcie',
+    done: 'Zakończone',
+    unknown: 'Nieznany',
+    interrupted: 'Przerwany',
 
 
     //---------CALENDAR-PICKER------------
@@ -77,7 +85,8 @@ const data = {
     login: 'Wpisz się',
     user: 'Użytkownik',
     password: 'Hasło',
-    loginAsGuest: 'Wpisz się jako gość'
+    loginAsGuest: 'Wpisz się jako gość',
+    logout: 'Wyloguj'
 
 
 }
