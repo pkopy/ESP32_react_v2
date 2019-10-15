@@ -6,6 +6,8 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Avatar from '@material-ui/core/Avatar';
+
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -13,12 +15,15 @@ import esp32 from '../img/esp32.jpg'
 import c315 from '../img/C315.png'
 import DeleteIcon from '@material-ui/icons/Delete';
 import DetailsIcon from '@material-ui/icons/Details';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const useStyles = makeStyles(theme => ({
     card: {
-        maxWidth: 300,
-        minWidth:250,
-        margin: 10
+        maxWidth: 250,
+        minWidth: 200,
+        margin: 10,
+
     },
     media: {
         height: 0,
@@ -26,6 +31,9 @@ const useStyles = makeStyles(theme => ({
         marginLeft: 'auto',
         marginRight: 'auto',
         paddingTop: '56.25%', // 16:9
+        '&:hover': {
+            cursor: 'pointer'
+        }
     },
     expand: {
         transform: 'rotate(0deg)',
@@ -44,15 +52,27 @@ const useStyles = makeStyles(theme => ({
 
 export default function RecipeReviewCard(props) {
     const classes = useStyles();
+    const [img, setImg] = React.useState()
 
     function startWeighing(scale) {
         props.drawerView('freeWeighing')
+        scale.img = img
         props.setCurrentScale(scale)
     }
 
-    const [img, setImg] = React.useState()
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleClick = event => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
 
     useEffect(() => {
+        console.log(props.scale)
         if (props.scale.name.startsWith('C315')) {
             setImg(c315)
         } else {
@@ -68,19 +88,31 @@ export default function RecipeReviewCard(props) {
                 //        {props.scale.name.slice(0,4)}
                 //     </Avatar>
                 // }
-                action={
-                    <IconButton aria-label="settings">
-                        <MoreVertIcon />
-                    </IconButton>
-                }
+                // action={
+                //     <IconButton aria-label="settings">
+                //         <MoreVertIcon onClick={handleClick}/>
+                //     </IconButton>
+                // }
                 title={props.scale.name}
                 subheader={props.scale.address}
             />
             <CardMedia
                 className={classes.media}
                 image={img}
-                title="Scale"
+                title={props.scale.name}
+                onClick={() => startWeighing(props.scale)}
             />
+            <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+            >
+                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                <MenuItem onClick={handleClose}>My account</MenuItem>
+                <MenuItem onClick={handleClose}>Logout</MenuItem>
+            </Menu>
             <CardContent>
                 <Typography variant="body2" color="textSecondary" component="p">
                     {props.lang.scale}: {props.scale.name}
@@ -91,12 +123,16 @@ export default function RecipeReviewCard(props) {
 
                     {props.lang.port}: {props.scale.port}
                 </Typography>
+                <Typography  color="textSecondary" component="h6">
+
+                     {props.scale.status==='Offline'?<b style={{color:'red'}}>{props.scale.status}</b>:<b style={{color:'green'}}>{props.scale.status}</b>}
+                </Typography>
             </CardContent>
             <CardActions disableSpacing>
                 <IconButton aria-label="add to favorites" onClick={() => startWeighing(props.scale)}>
-                    <DetailsIcon />
+                    <InfoOutlinedIcon />
                 </IconButton>
-                <IconButton aria-label="share">
+                <IconButton aria-label="share" disabled={true}>
                     <DeleteIcon />
                 </IconButton>
             </CardActions>

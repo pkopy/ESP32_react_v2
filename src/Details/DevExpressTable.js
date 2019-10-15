@@ -82,9 +82,15 @@ class DevexpressTable extends Component {
 
                 }
                 if (Array.isArray(yourOrders)) {
-                    const test = yourOrders.filter(order => {
-                        return order.operator === this.state.user.userName
-                    })
+                    let test 
+                    if (this.state.user.userName !== 'admin') {
+                        test = yourOrders.filter(order => {
+                            return order.operator === this.state.user.userName
+                        })
+
+                    } else {
+                        test = yourOrders
+                    }
 
                     this.setState({ rows: test })
                 } else {

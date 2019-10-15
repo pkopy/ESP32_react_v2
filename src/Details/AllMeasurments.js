@@ -84,9 +84,16 @@ class AllMeasurments extends React.Component {
             .then(data => data.json())
             .then(measurments => {
                 this.generateRows()
-                const test = measurments.filter(order => {
-                    return order.operator === `${this.props.user.firstName} ${this.props.user.lastName}`
-                })
+                let test 
+                    if (this.props.user.userName !== 'admin') {
+                        test = measurments.filter(order => {
+                            return order.operator === this.props.user.userName
+                        })
+
+                    } else {
+                        test = measurments
+                    }
+        
                 this.setState({ rows: test })
             })
             .catch(err => console.log(err))

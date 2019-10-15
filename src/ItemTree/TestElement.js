@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
 
 export default (props) => {
     const classes = useStyles();
-    React.useEffect(()=>{
+    React.useEffect(() => {
         if (!props.new) {
 
             const group = props.group ? props.group : {
@@ -65,7 +65,7 @@ export default (props) => {
         }
     }, [props.new, props.group])
 
-    
+
     const group = props.group ? props.group : {
         name: '',
         base: 0,
@@ -74,18 +74,20 @@ export default (props) => {
         treshold: 0
     }
 
-    
-    
+
+
     const [disabled, setDisabled] = React.useState(true)
 
-    // React.useEffect(() => {
-    //     props.setTree(true)
-    // },[disabled])
+    React.useEffect(() => {
+        if (props.new) {
+            setDisabled(false)
+        }
+    })
     const [values, setValues] = React.useState(group);
     const handleChange = name => event => {
         // console.log(values)
         setValues({ ...values, [name]: event.target.value });
-       
+
 
     }
     const updateItem = () => {
@@ -94,19 +96,20 @@ export default (props) => {
             method: 'PUT',
             body: JSON.stringify(values)
         })
-        .then(data => data.json())
-            .then(data=>{
+            .then(data => data.json())
+            .then(data => {
 
-                
+
                 props.setTree(false)
-            
+                props.setCurrentGroup()
+
             })
             .catch(err => console.log(err))
     }
 
 
     const sendItem = () => {
-        
+
         values.parentId = props.groupId.toUpperCase()
         values.name = values.name.toUpperCase()
         values.id = `${values.parentId}--${values.name}`
@@ -122,11 +125,11 @@ export default (props) => {
             body: JSON.stringify(values)
         })
             .then(data => data.json())
-            .then(data=>{
+            .then(data => {
 
-                props.setOpenAddItem(false); 
+                props.setOpenAddItem(false);
                 props.setTree(false)
-            
+
             })
             .catch(err => console.log(err))
     }
@@ -141,11 +144,11 @@ export default (props) => {
 
             }
         })
-        .then(data => data.json())
-        .then(data => props.setTree(false))
-        .catch(err => console.log(err))
+            .then(data => data.json())
+            .then(data => {props.setTree(false); props.setCurrentGroup()})
+            .catch(err => console.log(err))
     }
- 
+
     return (
         <div className={classes.container}>
             <div className={classes.hr} />
@@ -233,25 +236,28 @@ export default (props) => {
                 variant="outlined"
             />
             <div className={classes.hr} />
-            {props.new&&<div>
+            {props.new && <div>
                 <Button className={classes.button} color="primary" variant="outlined" onClick={sendItem}>
                     {props.lang.add}
                 </Button>
-                <Button className={classes.button} color="primary" variant="outlined" onClick={() => {props.setOpenAddItem(false); props.setTree(false)}}>
+                <Button className={classes.button} color="primary" variant="outlined" onClick={() => { props.setOpenAddItem(false); props.setTree(false) }}>
                     {props.lang.cancel}
                 </Button>
 
             </div>}
-            {!props.new&&!props.openItem&&props.user.right>2&&<div>
-                {disabled&&<Button className={classes.button} onClick={() => {props.setTree(true);setDisabled(false)}} color="primary" variant="outlined" >
+            {!props.new && !props.openItem && props.user.right > 2 && <div>
+                {disabled && <Button className={classes.button} onClick={() => { props.setTree(true); setDisabled(false) }} color="primary" variant="outlined" >
                     {props.lang.edit}
                 </Button>}
-                {!disabled&&<Button className={classes.button} onClick={() => {updateItem(); setDisabled(true)}} color="primary" variant="outlined" >
-                    SEND
-                </Button>}
-                <Button className={classes.button} onClick={()=>deleteItem()}color="secondary" variant="outlined" >
+                {disabled && <Button className={classes.button} onClick={() => deleteItem()} color="secondary" variant="outlined" >
                     {props.lang.delete}
-                </Button>
+                </Button>}
+                {!disabled && <Button className={classes.button} onClick={() => { updateItem(); setDisabled(true) }} color="primary" variant="outlined" >
+                    {props.lang.send}
+                </Button>}
+                {!disabled && <Button className={classes.button} onClick={() => { props.setTree(false); setDisabled(true) }} color="primary" variant="outlined" >
+                    {props.lang.cancel}
+                </Button>}
 
             </div>}
         </div>

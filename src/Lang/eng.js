@@ -31,6 +31,9 @@ const data = {
     item: 'Article',
     edit: 'Edit',
     addToOrder: 'Add to order',
+    send: 'Send',
+    addGroup: 'Add group',
+    groupName: 'Group name',
 
     //--------OPERATORS----------
     firstName: 'First name',
