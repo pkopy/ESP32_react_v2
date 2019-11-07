@@ -2,11 +2,14 @@ import React from 'react';
 
 import Chart, {
   ArgumentAxis,
+  CommonSeriesSettings,
   Label,
-  Size,
+  Tooltip,
   Legend,
   Series,
 } from 'devextreme-react/chart';
+import DataGrid, {Paging, Column} from 'devextreme-react/data-grid';
+
 
 
 
@@ -22,6 +25,14 @@ export default (props) => {
     const [data, setData] = React.useState([])
 
     React.useEffect(() => {
+        const timer = setInterval(getMeasurements, 1000);
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, [])
+
+    const getMeasurements = () => {
         fetch('http://localhost:5000/addDevice', {
             method: 'GET',
             headers: {
@@ -32,29 +43,75 @@ export default (props) => {
         .then(data => data.json())
         .then(data => {
             console.log(data);
-            setData(data)
+            let arr = []
+            // let rows = []
+            let x = 0;
+            let i = 0
+            if (data.length > 50) {
+                x = data.length - 50
+                console.log(x)
+            }
+            for (x; x < data.length - 1; x++) {
+                    data[x].helpId = i++
+                arr.push(data[x])
+            }
+            setData(arr)
         })
         .catch(err => console.log(err))
-    }, data)
+    }
 
     return(
-        <Chart
-            dataSource={data}
-            style={{height: '90%', width: '90%', marginLeft: 'auto', marginRight: 'auto', marginTop: '20px'}}
+        <div style={{height: '100%'}}>
+
+            {props.chart&&<Chart
+    
+                dataSource={data}
+                style={{height: '90%', width: '90%', marginLeft: 'auto', marginRight: 'auto', marginTop: '20px'}}
+                // selectionStyle={{symbol:'cross'}}
+                id={'chart'}
+                >
+    
+    
+                <ArgumentAxis tickInterval={10}>
+                    <Label format={'decimal'} />
+                    <Label overlappingBehavior={'stagger'} />
+                </ArgumentAxis>
+                <Series
+                    name={'mass'}
+                    valueField={'measure'}
+                    argumentField={'helpId'}
+                    
+                    type={'line'}
+                />
+                <Legend
+                    visible={false}
+                />
+                <Tooltip
+                enabled={true}
+                shared={true}
+                // customizeTooltip={this.customizeTooltip}
+              />
+                        {/* <CommonSeriesSettings argumentField={'id'} /> */}
+    
+            </Chart>}
+            {!props.chart&&<DataGrid
+                dataSource={data}
+                // columns={['helpId', 'measure']}
+                showBorders={true}
+                style={{height: '90%', width: '90%', marginLeft: 'auto', marginRight: 'auto', marginTop: '20px'}}
             >
+                <Column
+                    dataField={'time'}
+                    defaultSortOrder={'desc'}
+                />
+                <Column
+                    dataField={'measure'}
+                />
+                <Paging defaultPageSize={7} />
 
+            </DataGrid>}
+        </div>
 
-            <ArgumentAxis tickInterval={10}>
-                <Label format={'decimal'} />
-            </ArgumentAxis>
-            <Series
-                type={'line'}
-                valueField={'measure'}
-            />
-            <Legend
-                visible={false}
-            />
-
-        </Chart>
+        
     )
 }

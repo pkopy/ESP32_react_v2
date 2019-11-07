@@ -176,6 +176,9 @@ export default function PaperSheet(props) {
                 </Paper>
                 <Paper className={classes.img}>
                     <div style={{padding:'2em', display:'flex'}}>
+                        <div style={{marginRight:'2em'}}>
+                            <img src={props.curentScale.img} width={200}></img>
+                        </div>
                         <div style={{textAlign:'left'}}>
                             <h1 style={{margin:0, marginLeft: 10}}>{props.lang.connType}:</h1>
                             <h1 style={{margin:0, marginLeft: 10}}>{props.lang.addressIp}:</h1>
@@ -193,7 +196,7 @@ export default function PaperSheet(props) {
                         
 
                     </div>
-                    {/* <img src={props.curentScale.img} width={250}></img> */}
+                    
                 </Paper>
                 
 
@@ -202,13 +205,14 @@ export default function PaperSheet(props) {
                 <Paper className={classes.img}>
                     <LastMeasurementChart
                         scaleId={props.curentScale.id}
+                        chart={true}
                     ></LastMeasurementChart>
-                    {/* <h1 style={{margin:0, marginLeft: 10}}>{props.curentScale.name}</h1> */}
-                    {/* <img src={props.curentScale.img} width={150}></img> */}
                 </Paper>
                 <Paper className={classes.img}>
-                    <h1 style={{margin:0, marginLeft: 10}}>{props.curentScale.status}</h1>
-                    {/* <img src={props.curentScale.img} width={250}></img> */}
+                <LastMeasurementChart
+                        scaleId={props.curentScale.id}
+                        chart={false}
+                    ></LastMeasurementChart>
                 </Paper>
                 </div>
         </div>

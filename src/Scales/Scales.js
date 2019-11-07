@@ -161,7 +161,7 @@ export default function Scales(props) {
                     />
                 )}
             </div>
-            <Button variant="outlined" color='primary' onClick={searchScales}>
+            <Button variant="outlined" color='primary' onClick={searchScales} disabled={!props.socketStatus}>
                 {props.lang.search}
             </Button>
             <Dialog

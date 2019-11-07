@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     },
     media: {
         height: 0,
-        width: '70%',
+        width: '90%',
         marginLeft: 'auto',
         marginRight: 'auto',
         image:'',

@@ -373,6 +373,7 @@ export default function PersistentDrawerLeft(props) {
                         drawerView={drawerView}
                         setCurrentScale={setCurrentScale}
                         socket={props.socket}
+                        socketStatus={props.socketStatus}
                     />}
 
                     {view.ordersList && user.right > 1 && <OrdersList
