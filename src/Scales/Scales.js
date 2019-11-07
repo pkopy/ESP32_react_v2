@@ -44,6 +44,7 @@ export default function Scales(props) {
             </Typography>
             <div className={classes.container}>
                 {props.scales.map(elem => 
+                    elem.status !== 'Hidden'&&
                     <Scale key={elem.address}
                         scale={elem}
                         lang={props.lang}

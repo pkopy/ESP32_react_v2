@@ -12,23 +12,30 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 
-const PORT = process.env.REACT_APP_PORT || 5000;
-const URL = process.env.REACT_APP_URL || 'localhost'
+
 
 class Operators extends Component {
     state = {
         columns: [
             { name: 'firstName', title: this.props.lang.firstName },
             { name: 'lastName', title: this.props.lang.lastName },
+            { name: 'userName', title: this.props.lang.user },
+            { name: 'right', title: this.props.lang.rights}
         ],
         rows: [],
         values: {
             firstName:'',
-            lastName:''
+            lastName:'',
+            userName:'',
+            password:'',
+            rePassword:''
         },
         errors: {
             firstName:false,
-            lastName:false
+            lastName:false,
+            userName:false,
+            password:false,
+            rePassword:false
         },
         openAddOperator: false
     }
@@ -43,7 +50,7 @@ class Operators extends Component {
         // this.generateRows(this.state.rows)
     }
 
-    operators = () => {fetch(`http://${URL}:${PORT}/operators`, {
+    operators = () => {fetch('http://localhost:5000/operators', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -61,6 +68,16 @@ class Operators extends Component {
         if (rows && rows.length > 0) {
             rows.map(row => {
                 row.id = count++;
+                switch (row.right) {
+                    case 2:
+                        row.right = this.props.lang.operator
+                        break
+                    case 4:
+                        row.right = this.props.lang.admin
+                        break
+                    case 0:
+                        row.right = this.props.lang.guest
+                }
             })
             this.setState({rows})   
         } else {
@@ -69,18 +86,25 @@ class Operators extends Component {
     }
 
     addOperator = (values) => {
-        this.setState({errors:{}})
-        if (values.firstName && values.lastName) {
+        if (values.firstName && values.lastName && values.userName && values.password && values.rePassword && (values.password === values.rePassword) ) {
+
             fetch('http://localhost:5000/operators', {
                 method: 'POST',
                 body: JSON.stringify(values)
             })
                 .then(data => data.json())
                 .then(data => {
-                    // console.log(data)
+
                     this.setState({openAddOperator:false})
                     this.operators()
                     this.props.updateOperators()
+                    this.setState({values: {
+                        firstName:'',
+                        lastName:'',
+                        userName:'',
+                        password:''
+                    }})
+                    this.setState({errors:{}})
                 })
                 .catch((err) => {
                     console.log(err)
@@ -97,11 +121,15 @@ class Operators extends Component {
                     err[value] = false
                 }
             }
+            if (this.state.values.password !== this.state.values.rePassword) {
+                err['password'] = true;
+                err['rePassword'] = true
+            }
             this.setState({errors:err})
         }
     }
     handleChange = name => event => {
-        const values = {...this.state.values, [name]: event.target.value}
+        const values = {...this.state.values, [name]: event.target.value.trim()}
         this.setState({values})
     };
 
@@ -115,7 +143,7 @@ class Operators extends Component {
                 open={this.state.openAddOperator}
                 maxWidth='lg'
                 // width='80%'
-                onClose={()=>this.setState({openAddOperator:false})}
+                onClose={()=>{this.setState({openAddOperator:false});  this.setState({errors:{}})}}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
@@ -134,7 +162,7 @@ class Operators extends Component {
                         shrink: true,
                     }}
                     margin="normal"
-                    variant="outlined"
+                    
                 />
                 <TextField
                     id="lastName"
@@ -149,7 +177,56 @@ class Operators extends Component {
                         shrink: true,
                     }}
                     margin="normal"
-                    variant="outlined"
+                    
+                />
+                <TextField
+                    id="userName"
+                    label={this.props.lang.user}
+                    style={{
+                        margin:10
+                    }}
+                    autoComplete="off"
+                    error={this.state.errors.userName}
+                    value={this.state.values.userName}
+                    onChange={this.handleChange('userName')}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    margin="normal"
+                    
+                />
+                <TextField
+                    id="password"
+                    label={this.props.lang.password}
+                    style={{
+                        margin:10
+                    }}
+                    type="password"
+                    autoComplete="off"
+                    error={this.state.errors.password}
+                    value={this.state.values.password}
+                    onChange={this.handleChange('password')}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    margin="normal"
+                    
+                />
+                <TextField
+                    id="rePassword"
+                    label={this.props.lang.rePassword}
+                    style={{
+                        margin:10
+                    }}
+                    type="password"
+                    error={this.state.errors.rePassword}
+                    value={this.state.values.rePassword}
+                    onChange={this.handleChange('rePassword')}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    margin="normal"
+                    
                 />
                     
                 </DialogContent>
@@ -157,7 +234,7 @@ class Operators extends Component {
                     <Button variant="outlined" color="primary" onClick={()=>this.addOperator(this.state.values)}>
                         {this.props.lang.add}
                     </Button>
-                    <Button variant="outlined" color="secondary" onClick={()=>this.setState({openAddOperator:false})}  autoFocus>
+                    <Button variant="outlined" color="secondary" onClick={()=>{this.setState({openAddOperator:false}); this.setState({errors:{}})}}  autoFocus>
                         {this.props.lang.cancel}
                     </Button>
                 </DialogActions>

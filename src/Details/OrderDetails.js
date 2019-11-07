@@ -34,8 +34,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-const PORT = process.env.REACT_APP_PORT || 5000;
-const URL = process.env.REACT_APP_URL || 'localhost'
+
 
 class OrderDetails extends Component {
 
@@ -53,7 +52,7 @@ class OrderDetails extends Component {
 
     componentDidMount = () => {
         const orders = () => {
-            fetch(`http://${URL}:${PORT}/addDevice`, {
+            fetch('http://localhost:5000/addDevice', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -65,7 +64,6 @@ class OrderDetails extends Component {
                 .then(measurments => {
                     // data.measurments = measurments; 
                     this.setState({ rows: measurments })
-                    // console.log(measurments)
                 })
                 .catch(err => console.log(err))
         }
@@ -126,12 +124,8 @@ class OrderDetails extends Component {
 
             return this.props.data
         } else {
-            // console.log(this.props.data)
-            const data = this.props.data ? this.props.data.measurments : []
-            // console.log(data)
-            // for (let x of data) {
 
-            // }
+            const data = this.props.data ? this.props.data.measurments : []
             this.setState({ rows: data })
         }
     }
@@ -144,7 +138,7 @@ class OrderDetails extends Component {
 
     orderDetails = (data) => {
 
-        fetch(`http://${URL}:${PORT}/addDevice`, {
+        fetch('http://localhost:5000/addDevice', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -164,7 +158,7 @@ class OrderDetails extends Component {
 
     deleteOrder = (data) => {
 
-        fetch(`http://${URL}:${PORT}/order`, {
+        fetch('http://localhost:5000/order', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -174,7 +168,6 @@ class OrderDetails extends Component {
         })
             .then(data => data.json())
             .then(order => {
-                // console.log(order)
                 // clearInterval(this.state.details)
                 this.props.drawerView('ordersList')
                 this.setState({ open: false })
@@ -302,7 +295,7 @@ class OrderDetails extends Component {
                             <PagingPanel
                                 pageSizes={this.pageSizes}
                                 messages={{
-                                    rowsPerPage: 'Wierszy na stronę',
+                                    rowsPerPage: this.props.lang.rowsOnPage,
                                     showAll: 'Wszystkie',
 
                                 }}

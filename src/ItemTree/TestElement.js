@@ -48,12 +48,10 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-const PORT = process.env.REACT_APP_PORT || 5000;
-const URL = process.env.REACT_APP_URL || 'localhost'
+
 export default (props) => {
     const classes = useStyles();
-    // console.log('Props: ', props )
-    React.useEffect(()=>{
+    React.useEffect(() => {
         if (!props.new) {
 
             const group = props.group ? props.group : {
@@ -66,6 +64,8 @@ export default (props) => {
             setValues(group)
         }
     }, [props.new, props.group])
+
+
     const group = props.group ? props.group : {
         name: '',
         base: 0,
@@ -73,15 +73,43 @@ export default (props) => {
         max: 0,
         treshold: 0
     }
+
+
+
+    const [disabled, setDisabled] = React.useState(true)
+
+    React.useEffect(() => {
+        if (props.new) {
+            setDisabled(false)
+        }
+    })
     const [values, setValues] = React.useState(group);
     const handleChange = name => event => {
         // console.log(values)
         setValues({ ...values, [name]: event.target.value });
-       
+
 
     }
+    const updateItem = () => {
+        props.setTree(true)
+        fetch('http://localhost:5000/item', {
+            method: 'PUT',
+            body: JSON.stringify(values)
+        })
+            .then(data => data.json())
+            .then(data => {
+
+
+                props.setTree(false)
+                props.setCurrentGroup()
+
+            })
+            .catch(err => console.log(err))
+    }
+
+
     const sendItem = () => {
-        
+
         values.parentId = props.groupId.toUpperCase()
         values.name = values.name.toUpperCase()
         values.id = `${values.parentId}--${values.name}`
@@ -92,20 +120,35 @@ export default (props) => {
         values.isDirectory = false
         values.hasItems = false
         // console.log(values)
-        fetch(`http://${URL}:${PORT}/item`, {
+        fetch('http://localhost:5000/item', {
             method: 'POST',
             body: JSON.stringify(values)
         })
             .then(data => data.json())
-            .then(data=>{
-                // console.log(data);
-                props.setOpenAddItem(false); 
+            .then(data => {
+
+                props.setOpenAddItem(false);
                 props.setTree(false)
-            
+
             })
             .catch(err => console.log(err))
     }
- 
+
+    const deleteItem = () => {
+        props.setTree(true)
+        fetch('http://localhost:5000/item', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'item': group.idItem
+
+            }
+        })
+            .then(data => data.json())
+            .then(data => {props.setTree(false); props.setCurrentGroup()})
+            .catch(err => console.log(err))
+    }
+
     return (
         <div className={classes.container}>
             <div className={classes.hr} />
@@ -116,6 +159,7 @@ export default (props) => {
                 // error={errors.name}
                 className={classes.dense}
                 value={values.name}
+                disabled={disabled}
                 onChange={handleChange('name')}
                 margin='dense'
                 InputLabelProps={{
@@ -129,6 +173,7 @@ export default (props) => {
                 label="Podstwa"
                 // error={errors.name}
                 type="number"
+                disabled={disabled}
                 className={classes.dense}
                 value={values.base}
                 onChange={handleChange('base')}
@@ -146,6 +191,7 @@ export default (props) => {
                 type="number"
                 className={classes.dense}
                 value={values.min}
+                disabled={disabled}
                 // value={values.name}
                 onChange={handleChange('min')}
                 margin='dense'
@@ -160,6 +206,7 @@ export default (props) => {
                 label="Max"
                 // error={errors.name}
                 type="number"
+                disabled={disabled}
                 className={classes.dense}
                 value={values.max}
                 // value={values.name}
@@ -178,6 +225,7 @@ export default (props) => {
                 type="number"
                 className={classes.dense}
                 value={values.treshold}
+                disabled={disabled}
                 // value={values.name}
                 onChange={handleChange('treshold')}
                 margin='dense'
@@ -188,22 +236,28 @@ export default (props) => {
                 variant="outlined"
             />
             <div className={classes.hr} />
-            {props.new&&<div>
+            {props.new && <div>
                 <Button className={classes.button} color="primary" variant="outlined" onClick={sendItem}>
                     {props.lang.add}
                 </Button>
-                <Button className={classes.button} color="primary" variant="outlined" onClick={() => {props.setOpenAddItem(false); props.setTree(false)}}>
+                <Button className={classes.button} color="primary" variant="outlined" onClick={() => { props.setOpenAddItem(false); props.setTree(false) }}>
                     {props.lang.cancel}
                 </Button>
 
             </div>}
-            {!props.new&&!props.openItem&&<div>
-                <Button className={classes.button} color="primary" variant="outlined" >
-                {props.lang.edit}
-                </Button>
-                <Button className={classes.button} color="secondary" variant="outlined" >
+            {!props.new && !props.openItem && props.user.right > 2 && <div>
+                {disabled && <Button className={classes.button} onClick={() => { props.setTree(true); setDisabled(false) }} color="primary" variant="outlined" >
+                    {props.lang.edit}
+                </Button>}
+                {disabled && <Button className={classes.button} onClick={() => deleteItem()} color="secondary" variant="outlined" >
                     {props.lang.delete}
-                </Button>
+                </Button>}
+                {!disabled && <Button className={classes.button} onClick={() => { updateItem(); setDisabled(true) }} color="primary" variant="outlined" >
+                    {props.lang.send}
+                </Button>}
+                {!disabled && <Button className={classes.button} onClick={() => { props.setTree(false); setDisabled(true) }} color="primary" variant="outlined" >
+                    {props.lang.cancel}
+                </Button>}
 
             </div>}
         </div>

@@ -1,10 +1,13 @@
 const data = {
     //-------GLOBAL-------------
+    language: 'ENGLISH',
+    chooseLanguage: 'Choose language:',
+    theme: 'Theme:',
     settings:'Settings',
     scales: 'Scales',
     scale: 'Scale',
     back: 'Back',
-    items: 'Items',
+    items: 'Articles',
     orders: 'Orders',
     order: 'Order',
     allMeasurement: 'All measurement',
@@ -22,16 +25,24 @@ const data = {
     stop: 'Stop',
 
     //------------ITEMS----------
-    chooseGroupAndItem: 'Choose group and item',
+    chooseGroupAndItem: 'Choose group and article',
     addItem: 'Add item',
     group: 'Group',
-    item: 'Item',
+    item: 'Article',
     edit: 'Edit',
+    addToOrder: 'Add to order',
+    send: 'Send',
+    addGroup: 'Add group',
+    groupName: 'Group name',
 
     //--------OPERATORS----------
     firstName: 'First name',
     lastName: 'Last name',
     addOperator: 'Add operator',
+    rePassword: 'Re-type password',
+    rights: 'Permissions',
+    admin: 'Admin',
+    guest: 'Guest',
 
     //-----------ORDERS-----------
     newOrder: 'New order',
@@ -55,6 +66,11 @@ const data = {
     measure: 'Measure value',
     weight: 'Weight',
     qty: 'qty',
+    rowsOnPage: 'Rows on page',
+    inProgress: 'In progress',
+    done: 'Done',
+    unknown: 'Unknown',
+    interrupted: 'Interrupted',
 
     //---------CALENDAR-PICKER------------
     orderRange: 'Orders range',
@@ -63,7 +79,14 @@ const data = {
     day: 'Day',
     any: 'Any',
     from: 'From',
-    to: 'To'
+    to: 'To',
+
+    //--------------LOGIN--------------
+    login: 'Sign in',
+    user: 'User',
+    password: 'Password',
+    loginAsGuest: 'Sign in as guest',
+    logout: 'Logout'
 }
 
 export default data

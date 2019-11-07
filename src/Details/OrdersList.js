@@ -24,10 +24,8 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-const PORT = process.env.REACT_APP_PORT || 5000;
-const URL = process.env.REACT_APP_URL || 'localhost'
 export default function MaterialTableDemo(props) {
-    const classes = useStyles();
+    
 
     const columns = [
         { title: 'Twoja nazwa', name: 'name' },
@@ -41,7 +39,7 @@ export default function MaterialTableDemo(props) {
 
     const orderDetails = (data) => {
 
-        fetch(`http://${URL}:${PORT}/addDevice`, {
+        fetch('http://localhost:5000/addDevice', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -53,9 +51,9 @@ export default function MaterialTableDemo(props) {
             .then(measurments => {
                 data.measurments = measurments;
 
-                if (SocketLib.connection) {
-                    SocketLib.connection.close()
-                }
+                // if (SocketLib.connection) {
+                //     SocketLib.connection.close()
+                // }
                 // console.log(data)
                 props.setCurrentOrder(data); props.drawerView('orderDetails')
             })
@@ -64,7 +62,7 @@ export default function MaterialTableDemo(props) {
 
 
     return (
-        <div className={classes.root}>
+        <div className="root">
             <div className="imgContainer">
                 <Button style={{ marginLeft: '15px' }} variant="outlined" color="primary" onClick={() => { props.drawerView('scales') }}>
                     {props.lang.back}
@@ -74,15 +72,16 @@ export default function MaterialTableDemo(props) {
                 </Button>
 
             </div>
-            <div className={classes.tab}>
+            <div >
 
                 <DevExpressTable
-                    data={props.yourOrders}
+                    // data={props.yourOrders}
                     columns={columns}
                     viewOrder={props.viewOrder}
                     orderDetails={orderDetails}
                     orders={props.orders}
                     lang={props.lang}
+                    user={props.user}
                 />
 
 

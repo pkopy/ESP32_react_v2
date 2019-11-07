@@ -17,8 +17,7 @@ import CalendarPicker from './CalendarPicker'
 
 
 
-const PORT = process.env.REACT_APP_PORT || 5000;
-const URL = process.env.REACT_APP_URL || 'localhost'
+
 
 class DevexpressTable extends Component {
 
@@ -32,7 +31,8 @@ class DevexpressTable extends Component {
         pageSizes: [5, 10, 15, 0],
         columns: this.props.columns,
         totalSummaryItems: { columnName: 'measure', type: 'sum' },
-        tableColumnExtensions: { columnName: 'measure', align: 'right' }
+        tableColumnExtensions: { columnName: 'measure', align: 'right' },
+        user: this.props.user
     }
 
     componentDidMount = () => {
@@ -53,7 +53,7 @@ class DevexpressTable extends Component {
             end = new Date((this.setDate() + (86400000 * 1)))
         }
         
-        fetch(`http://${URL}:${PORT}/order`, {
+        fetch('http://localhost:5000/order', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -67,24 +67,32 @@ class DevexpressTable extends Component {
                     for (let order of yourOrders) {
                         switch (order.status) {
                             case 0:
-                                order.status = 'Trwa'
+                                order.status = this.props.lang.inProgress
                                 break
                             case 1:
-                                order.status = 'Zakończone'
+                                order.status = this.props.lang.done
                                 break
                             case 2:
-                                order.status = 'Przerwane'
+                                order.status = this.props.lang.interrupted
                                 break
                             default:
-                                order.status = 'Nieznany'
+                                order.status = this.props.lang.unknown
                         }
                     }
 
                 }
                 if (Array.isArray(yourOrders)) {
-                    // console.log(yourOrders)
-                    // setRows(yourOrders)
-                    this.setState({ rows: yourOrders })
+                    let test 
+                    if (this.state.user.userName !== 'admin') {
+                        test = yourOrders.filter(order => {
+                            return order.operator === this.state.user.userName
+                        })
+
+                    } else {
+                        test = yourOrders
+                    }
+
+                    this.setState({ rows: test })
                 } else {
                     this.setState({ rows: yourOrders ? yourOrders.measurments : [] })
                 }
@@ -143,7 +151,7 @@ class DevexpressTable extends Component {
     }
 
     deleteOrder = (row) => {
-        fetch(`http://${URL}:${PORT}/order`, {
+        fetch('http://localhost:5000/order', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

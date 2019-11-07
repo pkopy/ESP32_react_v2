@@ -12,7 +12,6 @@ export default function exportToXLS (data) {
     sheet['!ref'] = `A1:${cellR}`
     sheet[XLSX.utils.encode_cell({ c: 0, r: 0 })] = { v: 'Numer Ważenia' }
     sheet[XLSX.utils.encode_cell({ c: 1, r: 0 })] = { v: 'Wartość ważenia' }
-    // console.log(sheet['!cols'])
     var wscols = [
         { wch: 6 },
         { wch: 7 },
@@ -34,7 +33,7 @@ export default function exportToXLS (data) {
     }
     const newDate = new Date()
     const fileName = data.name ? `${data.name}.xlsx` : `${newDate.getDate()}-${newDate.getMonth() + 1}-${newDate.getFullYear()}  ${newDate.getHours()}:${newDate.getMinutes()}:${newDate.getSeconds()}.xlsx`
-    // console.log(workbook)
+    console.log(workbook)
     XLSX.writeFile(workbook, fileName);
 
     // saveAs(new Blob([wbout],{type:"application/octet-stream"}), "test.xlsx")

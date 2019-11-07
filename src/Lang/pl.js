@@ -1,5 +1,8 @@
 const data = {
     //-------GLOBAL-------------
+    language: 'POLSKI',
+    chooseLanguage: 'Wybierz język:',
+    theme: 'Schemat kolorów:',
     settings:'Ustawienia',
     scales: 'Twoje wagi',
     scale: 'Waga',
@@ -28,11 +31,19 @@ const data = {
     group: 'Grupa',
     item: 'Produkt',
     edit: 'Edytuj',
+    addToOrder: 'Dodaj do zlecenia',
+    send: 'Wyślij',
+    addGroup: 'Dodaj grupę',
+    groupName: 'Nazwa grupy',
     
     //--------OPERATORS----------
     firstName: 'Imię',
     lastName: 'Nazwisko',
     addOperator: 'Dodaj operatora',
+    rePassword: 'Powtórz hasło',
+    rights: 'Uprawnienia',
+    admin: 'Administrator',
+    guest: 'Gość',
 
     //-----------ORDERS-----------
     newOrder: 'Nowe zlecenie',
@@ -56,6 +67,11 @@ const data = {
     measure: 'Wartość ważenia',
     weight: 'Masa',
     qty: 'szt',
+    rowsOnPage: 'Wierszy na stronę',
+    inProgress: 'W trakcie',
+    done: 'Zakończone',
+    unknown: 'Nieznany',
+    interrupted: 'Przerwany',
 
 
     //---------CALENDAR-PICKER------------
@@ -65,7 +81,15 @@ const data = {
     day: 'Dzień',
     any: 'Dowolny',
     from: 'Od',
-    to: 'Do'
+    to: 'Do',
+
+
+    //--------------LOGIN--------------
+    login: 'Wpisz się',
+    user: 'Użytkownik',
+    password: 'Hasło',
+    loginAsGuest: 'Wpisz się jako gość',
+    logout: 'Wyloguj'
 
 
 }

@@ -18,8 +18,7 @@ import refreshIcon from '../img/Refresh_icon.svg';
 import CreatePdf from '../helpers/CreatePDF';
 import CreateXLSX from '../helpers/ExportToXLS';
 
-const PORT = process.env.REACT_APP_PORT || 5000;
-const URL = process.env.REACT_APP_URL || 'localhost'
+
 class AllMeasurments extends React.Component {
     constructor(props) {
         super(props);
@@ -73,7 +72,7 @@ class AllMeasurments extends React.Component {
             start = new Date(newDate - (86400000 * 30))
             end = new Date((newDate + (86400000 * 1)))
         }
-        fetch(`http://${URL}:${PORT}/addDevice`, {
+        fetch('http://localhost:5000/addDevice', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -85,8 +84,17 @@ class AllMeasurments extends React.Component {
             .then(data => data.json())
             .then(measurments => {
                 this.generateRows()
-                this.setState({ rows: measurments })
-                // console.log(measurments)
+                let test 
+                    if (this.props.user.userName !== 'admin') {
+                        test = measurments.filter(order => {
+                            return order.operator === this.props.user.userName
+                        })
+
+                    } else {
+                        test = measurments
+                    }
+        
+                this.setState({ rows: test })
             })
             .catch(err => console.log(err))
     }

@@ -12,20 +12,22 @@ class Settings extends Component {
         return (
             <div className="root">
                 <div className="imgContainer">
-                    <Button style={{ marginLeft: '15px' }} variant="outlined" color="primary" onClick={() => { this.props.drawerView('ordersList') }}>
+                    <Button style={{ marginLeft: '15px' }} variant="outlined" color="primary" onClick={() => { this.props.drawerView('scales') }}>
                         {this.props.lang.back}
                     </Button>
 
                 </div>
                 <Paper >
                     <Tabs dataSource={[
-                        { text: 'Użytkownik' },
                         { text: 'System' },
-                        { text: 'TAB' },
-                        { text: 'Raporty' },
+                        { text: 'Użytkownik', disabled: true },
+                        { text: 'TAB1', disabled: true },
+                        { text: 'TAB2', disabled: true },
 
                     ]} selectedIndex={this.state.index} repaintChangesOnly={true} onItemClick={(ev) => this.setState({index:ev.itemIndex})}/>
-                    {this.state.index === 1 &&<SystemTab
+                    {this.state.index === 0 &&<SystemTab
+                        lang={this.props.lang}
+                        setColor={this.props.setColor}
                         changeLang={this.props.changeLang}
                         drawerView={this.props.drawerView}
                     />}

@@ -5,16 +5,24 @@ import  './App.scss'
 import Drawer from './Drawer'
 import Loader from './helpers/Loader'
 import plLang from './Lang/pl'
+import Test from './helpers/Test';
+// import purple from '@material-ui/core/colors/purple';
+import { createMuiTheme } from '@material-ui/core/styles';
+import purple from '@material-ui/core/colors/purple';
 
+const theme = createMuiTheme({
+  palette: {
+    primary: purple,
+    secondary: {
+      main: '#f44336',
+    },
+  },
+});
 
 
 
 const dotenv = require('dotenv');
 dotenv.config();
-// console.log(process.env)
-
-const PORT = process.env.REACT_APP_PORT || 5000;
-const URL = process.env.REACT_APP_URL || 'localhost'
 
 class App extends Component {
     state ={
@@ -28,7 +36,7 @@ class App extends Component {
         yourOrders:[],
         measure:'',
         operators:[],
-        lang:localStorage.getItem('lang') ? JSON.parse(localStorage.getItem('lang')) : plLang
+        lang:localStorage.getItem('lang') ? JSON.parse(localStorage.getItem('lang')) : plLang,
     }
     componentDidMount = () => {
         this.yourScales()
@@ -36,7 +44,7 @@ class App extends Component {
         this.operators()
     }
 
-    operators = () => {fetch(`http://${URL}:${PORT}/operators`, {
+    operators = () => {fetch('http://localhost:5000/operators', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -51,7 +59,7 @@ class App extends Component {
 
     orders = () => {
         this.setState({load: true})
-        fetch(`http://${URL}:${PORT}/order`)
+        fetch('http://localhost:5000/order')
             .then(data => data.json())
             .then(yourOrders => {
                 if (yourOrders.length > 0 ) {
@@ -80,36 +88,32 @@ class App extends Component {
                 
             })
             .catch((err) => {
-                // console.log(err)
                 this.setState({load: false})
             })
     }
 
     yourScales = () => {
         this.setState({load: true})
-        fetch(`http://${URL}:${PORT}/scale`)
+        fetch('http://localhost:5000/scale')
             .then(data => data.json())
             .then(data => {
                 this.setState({scales: data});
                 this.setState({load: false})
             })
             .catch((err) => {
-                // console.log(err)
                 this.setState({load: false})
             })
     }
     findScales = () => {
         this.setState({load:true})
         this.setState({currentScale:{}})
-        fetch(`http://${URL}:${PORT}/findscales`)
+        fetch(`http://localhost:5000/findscales`)
             .then(data => data.json())
             .then(data => {
-                // console.log(data)
                 this.setState({findedScales: data});
                 this.setState({load: false})
             })
             .catch(err => {
-                // console.log(err);
                 setTimeout(() => {
                     this.setState({load: false})
 
@@ -120,6 +124,11 @@ class App extends Component {
     changeLang = (lang) => {
         this.setState({lang})
         localStorage.setItem('lang', JSON.stringify(lang))
+    }
+
+    changeTheme = (color) => {
+        this.setState({color})
+        localStorage.setItem('color', JSON.stringify(color))
     }
     
     setScale = (scale) => {   
@@ -154,10 +163,9 @@ class App extends Component {
                 updateOperators={this.operators}
                 lang={this.state.lang}
                 changeLang={this.changeLang}
-                PORT={PORT}
-                URL={URL}
+                
             />
-            
+            {/* <button onClick={() =>Test('xxx')}>XXXXX</button> */}
         </div>
       );
     }
