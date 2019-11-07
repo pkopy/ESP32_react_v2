@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 const useStyles = makeStyles(theme => ({
@@ -50,6 +55,8 @@ const useStyles = makeStyles(theme => ({
 
 
 export default (props) => {
+    const [openDialog, setOpenDialog] = useState(false)
+    const [info, setInfo] = useState({ context: props.lang.deleteItemText, title: props.lang.deleteItem })
     const classes = useStyles();
     React.useEffect(() => {
         if (!props.new) {
@@ -134,6 +141,14 @@ export default (props) => {
             .catch(err => console.log(err))
     }
 
+    const confirmDelete = () => {
+        deleteItem()
+    }
+
+    const handleClose = () => {
+        setOpenDialog(false)
+    }
+
     const deleteItem = () => {
         props.setTree(true)
         fetch('http://localhost:5000/item', {
@@ -151,6 +166,27 @@ export default (props) => {
 
     return (
         <div className={classes.container}>
+            <Dialog
+                open={openDialog}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{info.title}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        {info.context} {group.name}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={confirmDelete} color="secondary">
+                        {props.lang.delete}
+                    </Button>
+                    <Button onClick={handleClose} color="primary" autoFocus>
+                        {props.lang.cancel}
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <div className={classes.hr} />
             <TextField
                 id="name"
@@ -249,7 +285,7 @@ export default (props) => {
                 {disabled && <Button className={classes.button} onClick={() => { props.setTree(true); setDisabled(false) }} color="primary" variant="outlined" >
                     {props.lang.edit}
                 </Button>}
-                {disabled && <Button className={classes.button} onClick={() => deleteItem()} color="secondary" variant="outlined" >
+                {disabled && <Button className={classes.button} onClick={() => setOpenDialog(true)} color="secondary" variant="outlined" >
                     {props.lang.delete}
                 </Button>}
                 {!disabled && <Button className={classes.button} onClick={() => { updateItem(); setDisabled(true) }} color="primary" variant="outlined" >

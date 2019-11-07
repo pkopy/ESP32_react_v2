@@ -35,14 +35,16 @@ import Settings from './Settings/Settings'
 import Contaractors from './Contractors/Contractors'
 import Avatar from '@material-ui/core/Avatar';
 import Login from './Login/Login1'
-
+import SocketLib from './Socket'
 import { createMuiTheme } from '@material-ui/core/styles';
 import purple from '@material-ui/core/colors/purple';
 import green from '@material-ui/core/colors/green';
 import { ThemeProvider } from '@material-ui/styles';
 import { indigo, deepOrange } from '@material-ui/core/colors';
-
-
+import PowerIcon from '@material-ui/icons/Power';
+import LinkIcon from '@material-ui/icons/Link';
+import LinkOffIcon from '@material-ui/icons/LinkOff';
+import { Tooltip } from '@material-ui/core';
 
 const drawerWidth = 240;
 
@@ -102,9 +104,14 @@ const useStyles = makeStyles(theme => ({
         marginLeft: 0,
     },
     avatar: {
-        position: "absolute",
-        right: theme.spacing(2),
+        
+        // right: theme.spacing(2),
         backgroundColor: deepOrange[500]
+    },
+    socketStaus: {
+        display: 'flex',
+        position: "absolute",
+        right: theme.spacing(4),
     }
 }));
 
@@ -115,6 +122,7 @@ export default function PersistentDrawerLeft(props) {
     // const theme = useTheme();
     const [color, setColor] = React.useState()
     const [user, setUser] = React.useState({})
+    const [connection, setConnection] = React.useState()
     const theme = createMuiTheme({
         palette: {
             primary: color,
@@ -155,7 +163,7 @@ export default function PersistentDrawerLeft(props) {
     }
 
     function myScales() {
-        props.yourScales()
+        // props.yourScales()
         drawerView('scales')
     }
 
@@ -222,7 +230,6 @@ export default function PersistentDrawerLeft(props) {
                 helpView.name = props.lang.login;
         }
 
-
         setOrder({})
         setView(helpView)
         handleDrawerClose()
@@ -260,13 +267,30 @@ export default function PersistentDrawerLeft(props) {
                         </IconButton>}
                         <Typography variant="h6" noWrap>
                             E2R LITE -
-                    </Typography>
-                        <Typography variant="h6" noWrap>
-                            &nbsp;{view.name.toUpperCase()}
                         </Typography>
-                        {user.firstName && <Avatar aria-label="recipe" className={classes.avatar}>
-                            {user.firstName[0].toUpperCase()}
-                        </Avatar>}
+                        {view.name&&<Typography variant="h6" noWrap>
+                            &nbsp;{view.name.toUpperCase()}
+                        </Typography>}
+                        {/* <PowerIcon fontSize="large" style={{color:'green'}}></PowerIcon> */}
+                        <div className={classes.socketStaus}>
+                            <div style={{marginRight:16}}>
+                                {<Tooltip  title={props.socketStatus?'Socket connected':'Socket disconnected'}>
+                                    
+                                        {props.socketStatus?<LinkIcon onClick={()=>console.log('hhh')}fontSize='large' color='inherit'></LinkIcon>:<LinkOffIcon onClick={()=>props.resetSocket()} fontSize='large' color='inherit'></LinkOffIcon>}
+
+                                    
+                                </Tooltip>}
+
+                            </div>
+                            <div>
+                                {user.firstName && <Avatar aria-label="recipe" className={classes.avatar}>
+                                    {user.firstName[0].toUpperCase()}
+                                </Avatar>}
+
+                            </div>
+
+                        </div>
+                        
                         {/* <IconButton>
                         E2R LITE
                     </IconButton> */}
@@ -348,6 +372,7 @@ export default function PersistentDrawerLeft(props) {
                         scales={props.scales}
                         drawerView={drawerView}
                         setCurrentScale={setCurrentScale}
+                        socket={props.socket}
                     />}
 
                     {view.ordersList && user.right > 1 && <OrdersList
@@ -379,6 +404,7 @@ export default function PersistentDrawerLeft(props) {
                         measure={props.measure}
                         setMeasure={props.setMeasure}
                         lang={props.lang}
+                        socket={props.socket}
                     />}
                     {view.orderDetails && <OrderDetails
                         data={currentOrder}

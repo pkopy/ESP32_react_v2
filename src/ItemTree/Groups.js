@@ -7,6 +7,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import TestElement from './TestElement';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 
@@ -51,8 +56,14 @@ const useStyles = makeStyles(theme => ({
         maxHeight: '600px'
     },
     dense: {
-        marginTop:100
-    }
+        marginTop: 100
+    },
+    hr: {
+        borderTop: '1px solid rgb(0,0,0,0.25)',
+        width: '95%',
+        marginTop: 30,
+        marginBottom: 30
+    },
 
 }));
 
@@ -60,9 +71,11 @@ const useStyles = makeStyles(theme => ({
 export default (props) => {
     const [newGroup, setNewGroup] = useState(false)
     const [currentGroup, setCurrentGroup] = useState()
+    const [childrenOfGroup, setChildrenOfGroup] = useState([])
     const [index, setIndex] = useState(0)
     const [groupName, setGroupName] = useState('')
     const [groupNameError, setGroupNameError] = useState(false)
+    const [info, setInfo] = useState({ context: '', title: '' })
     const classes = useStyles();
     const [tree, setTree] = useState(false)
     const [openAddItem, setOpenAddItem] = useState(false)
@@ -83,31 +96,86 @@ export default (props) => {
             }
         }
     })
+
+    const deleteGroup = () => {
+        console.log(currentGroup)
+        fetch(`http://localhost:5000/item?parentId=${currentGroup.name}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                setChildrenOfGroup(data)
+                setGroupNameError(true)
+                const text = data.length>0?props.lang.deleteGroupText:props.lang.deleteGroupText1
+                setInfo({ context: text, title: `${props.lang.deleteGroup}` })
+            })
+            .catch(err => console.log(err))
+    }
+
+    const confirmDelete = () => {
+        for (let i = 0; i < childrenOfGroup.length; i++) {
+            deleteItem(childrenOfGroup[i].idItem)
+        }
+        deleteItem(currentGroup.idItem)
+        handleClose()
+        // clear()
+    }
+    const deleteItem = (idItem) => {
+
+        fetch('http://localhost:5000/item', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'item': idItem
+            }
+        })
+            .then(data => data.json())
+            .then(() => clear())
+            .catch(err => console.log(err))
+    }
+
     const addGroup = (groupName) => {
         console.log()
         if (groupName === '') {
             setGroupNameError(true)
+            setInfo({ context: props.lang.emptyGroupText, title: props.lang.emptyGroupName })
         } else {
-            fetch(`http://localhost:5000/item?parentId=`)
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log(data)
-                            for (let elem of data) {
-                                console.log(elem)
-                                if (elem.id === groupName.toUpperCase()) {
-                                    
-                                    setGroupNameError(true)
-                                    break
-                                }
-                            }
+            fetch(`http://localhost:5000/item?id=${groupName.toUpperCase()}`)
+                .then(response => response.json())
+                .then(data => {
+
+                    console.log(data)
+
+                    if (data[0] && data[0].id === groupName.toUpperCase()) {
+                        setGroupNameError(true)
+                        setInfo({ context: 'Ta nazwa już istnieje', title: 'Nazwa grupy powtórzona' })
+                    } else {
+                        fetch(`http://localhost:5000/item`, {
+                            method: 'POST',
+                            body: JSON.stringify({ id: groupName.toUpperCase(), isDirectory: true, hasItems: true, name: groupName.toUpperCase() })
                         })
-                        .catch((err) => console.log(err));
+                            .then(data => data.json())
+                            .then(data => {
+
+                                clear()
+
+                            })
+                            .catch(err => console.log(err))
+                    }
+
+                })
+                .catch((err) => console.log(err));
             setGroupNameError(false)
         }
     }
+    const clear = () => {
+        setGroupName('')
+        setTree(false)
+        setNewGroup(false)
+        setCurrentGroup()
+    }
 
     const handleChange = (e) => {
-        
+
         setGroupName(e.target.value.trim())
     }
     const addItemToOrder = (item) => {
@@ -124,18 +192,50 @@ export default (props) => {
         setNewGroup(true)
         setTree(true)
     }
-    
+
+    const handleClose = () => {
+        setGroupNameError(false);
+    };
+
     return (
         <div className={classes.container}>
+            <Dialog
+                open={groupNameError}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{info.title}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        {info.context}
+                    </DialogContentText>
+                    <ul>
+                        {childrenOfGroup.map(elem => 
+                            <li key={elem.idItem}>{elem.name}</li>
+                        )}
+
+                    </ul>
+                </DialogContent>
+                <DialogActions>
+                    {currentGroup&&<Button onClick={confirmDelete} color="secondary">
+                        {props.lang.delete}
+                    </Button>}
+                    <Button onClick={handleClose} color="primary" autoFocus>
+                        {props.lang.cancel}
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <div className="imgContainer" style={{ width: "70%", marginRight: "auto", marginLeft: "auto" }}>
-                {!props.buttonDisable && <Button onClick={() => props.drawerView('scales')} variant="outlined" color="primary" style={{margin:5}}>
+                {!props.buttonDisable && <Button onClick={() => props.drawerView('scales')} variant="outlined" color="primary" autoFocus style={{ margin: 5 }}>
                     {props.lang.back}
                 </Button>}
 
 
-                {!props.buttonDisable && props.user.right > 2 && <Button onClick={openAddGroupForm} variant="outlined" color="primary" autoFocus style={{margin:5}}>
+                {!props.buttonDisable && props.user.right > 2 && <Button onClick={openAddGroupForm} variant="outlined" color="primary"  style={{ margin: 5 }}>
                     {props.lang.addGroup}
                 </Button>}
+
 
             </div>
             <Paper className={classes.root1}
@@ -195,13 +295,13 @@ export default (props) => {
 
                             variant="outlined"
                         />
-                        <div className="imgContainer" style={{justifyContent:'center', margin:20}}>
-                            {!props.buttonDisable && <Button onClick={() => props.drawerView('scales')} variant="outlined" color="primary" autoFocus style={{margin:5}}>
+                        <div className="imgContainer" style={{ justifyContent: 'center', margin: 20 }}>
+                            {!props.buttonDisable && <Button onClick={clear} variant="outlined" color="primary"  style={{ margin: 5 }}>
                                 {props.lang.cancel}
                             </Button>}
 
 
-                            {!props.buttonDisable && props.user.right > 2 && <Button onClick={() => addGroup(groupName)} variant="outlined" color="primary" style={{margin:5}}>
+                            {!props.buttonDisable && props.user.right > 2 && <Button onClick={() => addGroup(groupName)} autoFocus variant="outlined" color="primary" style={{ margin: 5 }}>
                                 {props.lang.addGroup}
                             </Button>}
 
@@ -218,12 +318,18 @@ export default (props) => {
                                 {props.lang.item}: {currentGroup.name}
 
                             </Typography>
+
                         </div>}
+
                     {currentGroup && !currentGroup.parentId &&
                         <div>
                             <Typography variant="h5" align='left'>
                                 {props.lang.group}: {currentGroup.name}
                             </Typography>
+                            {!openAddItem &&<div className={classes.hr} />}
+                            {!props.buttonDisable && props.user.right > 2 && currentGroup && !openAddItem && <Button onClick={deleteGroup} variant="outlined" color="secondary" style={{ margin: 5 }}>
+                                {props.lang.delete}
+                            </Button>}
                             {!openAddItem && props.user.right > 2 && <Button color="primary" variant="outlined" onClick={openAddItemForm}>
                                 {props.lang.addItem}
                             </Button>}

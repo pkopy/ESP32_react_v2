@@ -23,6 +23,8 @@ const data = {
     port: 'Port',
     start: 'Start',
     stop: 'Stop',
+    ok: 'OK',
+    apply: 'Zatwierdź',
 
 
     //------------ITEMS----------
@@ -35,6 +37,13 @@ const data = {
     send: 'Wyślij',
     addGroup: 'Dodaj grupę',
     groupName: 'Nazwa grupy',
+    deleteGroupText: 'Grupa zostanie usunięta z następujacymi elementami:',
+    deleteGroupText1: 'Grupa zostanie usunięta',
+    deleteGroup: 'Usuwanie grupy',
+    emptyGroupName: 'Pusta nazwa grupy',
+    emptyGroupText: 'Nazwa grupy nie może być pusta',
+    deleteItem:'Usuwanie produktu',
+    deleteItemText: 'Usuwasz artykuł',
     
     //--------OPERATORS----------
     firstName: 'Imię',
@@ -89,7 +98,12 @@ const data = {
     user: 'Użytkownik',
     password: 'Hasło',
     loginAsGuest: 'Wpisz się jako gość',
-    logout: 'Wyloguj'
+    logout: 'Wyloguj',
+
+    //-------------SCALE------------
+    connType: 'Typ połączenia',
+    serial: 'Numer seryjny',
+    type: 'Typ wagi',
 
 
 }

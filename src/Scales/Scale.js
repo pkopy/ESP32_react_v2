@@ -30,6 +30,7 @@ const useStyles = makeStyles(theme => ({
         width: '70%',
         marginLeft: 'auto',
         marginRight: 'auto',
+        image:'',
         paddingTop: '56.25%', // 16:9
         '&:hover': {
             cursor: 'pointer'
@@ -55,9 +56,13 @@ export default function RecipeReviewCard(props) {
     const [img, setImg] = React.useState()
 
     function startWeighing(scale) {
-        props.drawerView('freeWeighing')
-        scale.img = img
-        props.setCurrentScale(scale)
+        if (props.socket.readyState === 1) {
+
+            props.drawerView('freeWeighing')
+            scale.img = img
+            props.setCurrentScale(scale)
+            console.log(scale)
+        }
     }
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -72,13 +77,12 @@ export default function RecipeReviewCard(props) {
 
 
     useEffect(() => {
-        console.log(props.scale)
         if (props.scale.name.startsWith('C315')) {
             setImg(c315)
         } else {
             setImg(esp32)
         }
-    })
+    },[props.scale])
 
     return (
         <Card className={classes.card}>
@@ -98,6 +102,7 @@ export default function RecipeReviewCard(props) {
             />
             <CardMedia
                 className={classes.media}
+                src={''}
                 image={img}
                 title={props.scale.name}
                 onClick={() => startWeighing(props.scale)}

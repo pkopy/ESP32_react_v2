@@ -24,6 +24,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1",
+    "react-to-print": "^2.4.0",
     "typeface-roboto": "0.0.75",
     "uuid": "^3.3.3",
     "xlsx": "^0.15.1"

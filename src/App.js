@@ -5,10 +5,13 @@ import  './App.scss'
 import Drawer from './Drawer'
 import Loader from './helpers/Loader'
 import plLang from './Lang/pl'
+// eslint-disable-next-line
 import Test from './helpers/Test';
 // import purple from '@material-ui/core/colors/purple';
 import { createMuiTheme } from '@material-ui/core/styles';
 import purple from '@material-ui/core/colors/purple';
+// eslint-disable-next-line
+import PDF from './helpers/pdfPrint'
 
 const theme = createMuiTheme({
   palette: {
@@ -26,6 +29,7 @@ dotenv.config();
 
 class App extends Component {
     state ={
+        raport: false,
         load: false,
         newOrder: false,
         details:false,
@@ -37,11 +41,51 @@ class App extends Component {
         measure:'',
         operators:[],
         lang:localStorage.getItem('lang') ? JSON.parse(localStorage.getItem('lang')) : plLang,
+        socket: {},
+        socketStatus:false,
+        count:0
+
     }
     componentDidMount = () => {
         this.yourScales()
         this.orders()
         this.operators()
+        this.socket()
+    }
+
+    reset() {
+        setTimeout(() => this.socket(), 2000) 
+        console.log('ostatni')
+        return
+
+    }
+
+    
+    
+    socket = () => {
+        const socket = new WebSocket('ws://10.10.3.141:4000')
+        socket.onopen = () => {
+            // this.gen.next().done= true
+            this.setState({count:0})
+            this.setState({socketStatus:true})
+            console.log('connect')
+        }
+        socket.onclose = () => {
+            if (this.state.count < 3) {
+                this.reset()
+                this.setState({count:this.state.count+1})
+            } else {
+
+                // alert('Socket rozłączony')
+            }
+            // this.socket()
+            
+        }
+        socket.onerror = () => {
+            // alert('błąd socket')
+            this.setState({socketStatus:false})
+        }
+        this.setState({socket})
     }
 
     operators = () => {fetch('http://localhost:5000/operators', {
@@ -104,6 +148,7 @@ class App extends Component {
                 this.setState({load: false})
             })
     }
+
     findScales = () => {
         this.setState({load:true})
         this.setState({currentScale:{}})
@@ -143,12 +188,12 @@ class App extends Component {
     changeNewOrderStatus = () => {
         this.setState({newOrder:!this.state.newOrder})
     }
-
+    
     render () {
         return (
         <div className="App">
             {this.state.load&&<Loader />}
-            <Drawer
+            {!this.state.raport&&<Drawer
                 address={this.state.currentScale.address}
                 findScales={this.findScales}
                 yourScales={this.yourScales}
@@ -163,8 +208,12 @@ class App extends Component {
                 updateOperators={this.operators}
                 lang={this.state.lang}
                 changeLang={this.changeLang}
+                socket={this.state.socket}
+                socketStatus={this.state.socketStatus}
+                resetSocket={this.socket}
                 
-            />
+            />}
+            {/* <PDF/> */}
             {/* <button onClick={() =>Test('xxx')}>XXXXX</button> */}
         </div>
       );

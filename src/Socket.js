@@ -5,29 +5,30 @@ const lib = {}
 // lib.connectToSocket = ''
 lib.connectToSocket = (address, port) => {
     let connection ={}
-    if (port) {
-        connection = new WebSocket(`ws://${address}:${port}`)
-    } else {
+    // if (port) {
+    //     connection = new WebSocket(`ws://${address}:${port}`)
+    // } else {
 
-        connection = new WebSocket(`ws://${address}:7000`)
-    }
+    //     connection = new WebSocket(`ws://${address}:7000`)
+    connection = new WebSocket('ws://10.10.3.141:4000')
+    // }
     // const measure = ''
-    connection.onopen = () => {
-        
-        // let msg = {command: ""};
-        // connection.send(JSON.stringify(msg));
-    }
+    // connection.onopen = () => {
+    //     console.log('xxxxx')
+    //     // let msg = {command: ""};
+    //     // connection.send(JSON.stringify(msg));
+    // }
 
-    connection.onmessage = (e) => {
-        let data = e.data;
-        const  measure = JSON.parse(data);
+    // connection.onmessage = (e) => {
+    //     let data = e.data;
+    //     const  measure = JSON.parse(data);
         
-    }
+    // }
 
-    connection.onerror = (e) => {
-        // this.changeStateButton()
-        console.log('ERROR')
-    }
+    // connection.onerror = (e) => {
+    //     // this.changeStateButton()
+    //     console.log('ERROR')
+    // }
     return connection
 }
 

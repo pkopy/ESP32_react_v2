@@ -50,24 +50,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-// const operators = [
-//     {
-//         value: 'JK1',
-//         label: 'Jan Kowalski',
-//     },
-//     {
-//         value: 'JN',
-//         label: 'Jan Nowak',
-//     },
-//     {
-//         value: 'ZH',
-//         label: 'Zbigniew Habadzibadło',
-//     },
-//     {
-//         value: 'OK',
-//         label: 'Okiro Kurosawa',
-//     },
-// ];
+
 
 
 export default function TextFields(props) {

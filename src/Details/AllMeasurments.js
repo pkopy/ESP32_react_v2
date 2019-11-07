@@ -192,7 +192,7 @@ class AllMeasurments extends React.Component {
                         <Column dataField={'time'} dataType={'date'} caption={this.props.lang.date} format={"yyyy/MM/dd"} />
                         {/* <Column dataField={'time'} dataType={'date'} format={"yyyy/MM/dd"} width={100}/> */}
                         <Column dataField={'operator'} caption={this.props.lang.operator}/>
-                        <Column dataField={'name'} caption={this.props.lang.orderName} />
+                        {/* <Column dataField={'name'} caption={this.props.lang.orderName} /> */}
                         <Column dataField={'scaleName'} caption={this.props.lang.scaleName} />
 
                     </DataGrid>

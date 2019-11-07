@@ -23,10 +23,12 @@ const data = {
     port: 'Port',
     start: 'Start',
     stop: 'Stop',
+    ok: 'OK',
+    apply: 'Apply',
 
     //------------ITEMS----------
     chooseGroupAndItem: 'Choose group and article',
-    addItem: 'Add item',
+    addItem: 'Add article',
     group: 'Group',
     item: 'Article',
     edit: 'Edit',
@@ -34,6 +36,13 @@ const data = {
     send: 'Send',
     addGroup: 'Add group',
     groupName: 'Group name',
+    deleteGroupText: 'The group will be deleted with the following items:',
+    deleteGroupText1: 'The group will be deleted',
+    deleteGroup: 'Deleting the group',
+    emptyGroupName: 'Empty group name',
+    emptyGroupText: 'Group name cannot be empty',
+    deleteItem:'Deleting article',
+    deleteItemText: 'Delete article',
 
     //--------OPERATORS----------
     firstName: 'First name',
@@ -86,7 +95,12 @@ const data = {
     user: 'User',
     password: 'Password',
     loginAsGuest: 'Sign in as guest',
-    logout: 'Logout'
+    logout: 'Logout',
+
+    //-------------SCALE------------
+    connType: 'Connection type',
+    serial: 'Serial number',
+    type: 'Scale type',
 }
 
 export default data

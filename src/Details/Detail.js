@@ -5,6 +5,8 @@ import ProgressBar from '../helpers/ProgressBar'
 import SocketLib from '../Socket'
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
+import { height } from '@material-ui/system';
+import LastMeasurementChart from '../Scales/LastMeasurementChart'
 
 
 
@@ -20,10 +22,14 @@ const useStyles = makeStyles(theme => ({
     },
     details: {
         display: 'flex',
-        justifyContent: 'center'
+        justifyContent: 'center',
+
+        height: '40vh'
     },
     img: {
-        width: 400,
+        display: 'flex',
+        flexDirection: 'column',
+        width: '45%',
         marginLeft: theme.spacing(1),
         marginTop: theme.spacing(2),
     }
@@ -32,97 +38,179 @@ const useStyles = makeStyles(theme => ({
 
 export default function PaperSheet(props) {
     const classes = useStyles();
-    const [connection, setConnection] = React.useState()
-    const [button, setButton] = React.useState(true)
+    const [connection, setConnection] = useState(props.socket)
+    const [button, setButton] = useState(true)
+    const [measure, setMeasure] = useState()
+    const [unit, setUnit] = useState()
+    const [maxMass, setMaxMass] = useState()
+    console.log(props)
+    // React.useEffect(() => {
+        
+    //     freeMeasurements()
+    // },[])
+    
+    // React.useEffect(() => {
+    //     function x() {
+    //         connection.send(JSON.stringify({ command: 'SCALE_STATUS', "scaleId": props.curentScale.id }))
+    //         // console.log('xxxxxx')
 
-    React.useEffect(() => {
+    //     }
+    //     const interval =  setInterval(x,300)
 
-    })
+    //     return () => {
+    //         clearInterval(interval)
+    //     }
+    // },[])
 
     function freeMeasurements() {
 
-        if (SocketLib.connection) {
+        // if (SocketLib.connection) {
 
-            // console.log(SocketLib.connection)
-        }
+        //     console.log(SocketLib.connection)
+        // }
 
-        const x = SocketLib.connectToSocket(props.curentScale.address, props.curentScale.port)
-        x.onerror = () => {
-            alert('soket niedostępnty')
+        // const x = SocketLib.connectToSocket(props.curentScale.address, props.curentScale.port)
+        // connection.onclose = () => {
 
-        }
+        //     alert('soket niedostępnty')
 
-        x.onopen = () => {
-            setConnection(x)
-            x.send(JSON.stringify({ command: 'C' }), x)
-            setButton(false)
-        }
+        // }
 
-        setTimeout(() => {
+        // x.onopen = () => {
+        //     console.log('Gruuuauauua')
+        //     SocketLib.connection = x
+        //     setConnection(x)
+        //     x.send(JSON.stringify({ command: 'SCALE_STATUS', "scaleId": 20 }), x)
+        //     setButton(false)
+        // }
+        // connection.onopen = () =>{
+        //     // console.log('Gruuuauauua')
+            
+            
+        //     setButton(false)
+        // }
+        
+
+        // setTimeout(() => {
 
 
-        }, 500)
+        // }, 500)
 
-        x.onmessage = (e) => {
-            let data = e.data;
-            const measure = JSON.parse(data);
-            props.setMeasure(measure.measure)
-        }
+    //    connection.onmessage = (e) => {
+    //         let data = e.data;
+    //         const measure = JSON.parse(data);
+    //         console.log(measure)
+    //         setMeasure(measure.mass)
+    //         setUnit(measure.unit)
+    //         setMaxMass(parseFloat(measure.maxMass))
+
+    //     }
     }
 
     function stopConnection() {
-        if (connection) {
+        // if (connection) {
 
-            connection.send(JSON.stringify({ command: 'STOP' }));
-            connection.close();
-            setButton(true);
-            props.setMeasure('0.0');
-        }
+        //     connection.send(JSON.stringify({ command: 'STOP' }));
+        //     connection.close();
+        //     setButton(true);
+        //     props.setMeasure('0.0');
+        // }
     }
 
     function showScales() {
-        if (connection) {
-            stopConnection();
-        }
+        // if (connection) {
+        //     stopConnection();
+        // }
         props.drawerView('scales');
     }
+
+    // React.useEffect(() => {
+    //     if (connection) {
+
+    //         connection.close();
+    //     }
+    // })
 
     return (
         <div>
             
-            <Paper className={classes.root}>
+            {/*<Paper className={classes.root}>
                 <ProgressBar
-                    value={props.measure}
+                    value={measure}
+                    unit={unit}
+                    maxMass={maxMass}
+                    setMaxMass={setMaxMass}
                 />
-                {/* <div className={classes.details}>
-                    <Avatar aria-label="recipe" className={classes.avatar}>
-                            R
-                    </Avatar>
-                    <h1 style={{margin:0, marginLeft: 10}}>{props.curentScale.name}</h1>
-                </div> */}
             </Paper>
-            <Button className={classes.button} variant="outlined" color="primary" onClick={button ? freeMeasurements : stopConnection}>
-                {/* {errors.errors ? <span>Popraw</span> : <span>Zamknij</span>} */}
+             <Button className={classes.button} variant="outlined" color="primary" onClick={button ? freeMeasurements : stopConnection}>
                 {button ? props.lang.start : props.lang.stop}
-            </Button>
+            </Button> 
             <Button className={classes.button} variant="outlined" color="primary" onClick={showScales}>
                 {props.lang.back}
-            </Button>
+            </Button>*/}
             <div className={classes.details}>
                 <Paper className={classes.img}>
                     {/* <h1 style={{margin:0, marginLeft: 10}}>{props.curentScale.name}</h1> */}
-                    <img src={props.curentScale.img} width={250}></img>
+                    <div style={{display:'flex'}}>
+                        <div style={{padding:'2em'}}>
+
+                            <h1 style={{margin:0, marginLeft: 10}}>{props.curentScale.status==='Offline'?<b style={{color:'red'}}>{props.curentScale.status}</b>:<b style={{color:'green'}}>{props.curentScale.status}</b>}</h1>
+                        </div>
+                        {/* <div>
+                            <img src={props.curentScale.img} width={150}></img>
+
+                        </div> */}
+
+                    </div>
+                    <div style={{marginTop:'auto', marginBottom:'4em'}}>
+                        
+                        <ProgressBar
+                            socket={props.socket}
+                            value={measure}
+                            unit={unit}
+                            maxMass={maxMass}
+                            setMaxMass={setMaxMass}
+                            curentScale={props.curentScale}
+                        />
+                    </div>
+                </Paper>
+                <Paper className={classes.img}>
+                    <div style={{padding:'2em', display:'flex'}}>
+                        <div style={{textAlign:'left'}}>
+                            <h1 style={{margin:0, marginLeft: 10}}>{props.lang.connType}:</h1>
+                            <h1 style={{margin:0, marginLeft: 10}}>{props.lang.addressIp}:</h1>
+                            <h1 style={{margin:0, marginLeft: 10}}>{props.lang.connType}:</h1>
+                            <h1 style={{margin:0, marginLeft: 10}}>{props.lang.serial}:</h1>
+                            <h1 style={{margin:0, marginLeft: 10}}>{props.lang.type}:</h1>
+                        </div>
+                        <div style={{textAlign:'left', marginLeft:'2em', color: '#3f51b5'}}>
+                            <h1 style={{margin:0, marginLeft: 10}}>{props.curentScale.connType}</h1>
+                            <h1 style={{margin:0, marginLeft: 10}}>{props.curentScale.address}</h1>
+                            <h1 style={{margin:0, marginLeft: 10}}>{props.curentScale.connType}</h1>
+                            <h1 style={{margin:0, marginLeft: 10}}>{props.curentScale.serial}</h1>
+                            <h1 style={{margin:0, marginLeft: 10}}>{props.curentScale.type}</h1>
+                        </div>
+                        
+
+                    </div>
+                    {/* <img src={props.curentScale.img} width={250}></img> */}
+                </Paper>
+                
+
+            </div>
+            <div className={classes.details}>
+                <Paper className={classes.img}>
+                    <LastMeasurementChart
+                        scaleId={props.curentScale.id}
+                    ></LastMeasurementChart>
+                    {/* <h1 style={{margin:0, marginLeft: 10}}>{props.curentScale.name}</h1> */}
+                    {/* <img src={props.curentScale.img} width={150}></img> */}
                 </Paper>
                 <Paper className={classes.img}>
                     <h1 style={{margin:0, marginLeft: 10}}>{props.curentScale.status}</h1>
                     {/* <img src={props.curentScale.img} width={250}></img> */}
                 </Paper>
-                <Paper className={classes.img}>
-                    {/* <h1 style={{margin:0, marginLeft: 10}}>{props.curentScale.name}</h1> */}
-                    <img src={props.curentScale.img} width={250}></img>
-                </Paper>
-
-            </div>
+                </div>
         </div>
     );
 }

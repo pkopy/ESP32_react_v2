@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import RadwagIcon from '../img/radwag_bl.svg'
-import data from '../Lang/pl';
+
 function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
@@ -65,11 +65,10 @@ export default function SignIn(props) {
     }
 
     useEffect(() => {
+        // document.title = 'Login'
         const login = (e) => {
             if (e.keyCode === 13) {
-                console.log(e)
                 getUser()
-
             }
         }
 
@@ -147,7 +146,7 @@ export default function SignIn(props) {
                         />
 
                     </div>}
-                    {guest&&<img src={RadwagIcon} width="70%"></img>}
+                    {guest&&<img src={RadwagIcon} alt='Radwag logo' width="70%"></img>}
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
                         label={props.lang.loginAsGuest}

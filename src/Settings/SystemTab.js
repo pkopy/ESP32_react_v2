@@ -1,5 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
-import Button from '@material-ui/core/Button';
+import React, { useState, useEffect } from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
@@ -225,12 +224,11 @@ export default (props) => {
 
 
                 </TextField> */}
-                <Box style={{ textAlign: "left", width: "90%", marginLeft: "auto", marginLeft: 44,  display: "flex" }}>
-            <Box onClick={() => handleOnChangeColor('GREEN')} style={{backgroundColor: '#fff', width:44, height:44}}><Box className={classes.cr} style={{backgroundColor: '#4caf50', }}>{color==="GREEN"&&<img className={classes.select} src={select} alt="select_icon"/>}</Box></Box>
+                <Box style={{ textAlign: "left", width: "90%", marginLeft: 44,  display: "flex" }}>
+                    <Box onClick={() => handleOnChangeColor('GREEN')} style={{backgroundColor: '#fff', width:44, height:44}}><Box className={classes.cr} style={{backgroundColor: '#4caf50', }}>{color==="GREEN"&&<img className={classes.select} src={select} alt="select_icon"/>}</Box></Box>
                     <Box onClick={() => handleOnChangeColor('PURPLE')} style={{backgroundColor: '#fff', width:44, height:44}}><Box className={classes.cr} style={{backgroundColor: '#9c27b0', }}>{color==="PURPLE"&&<img className={classes.select} src={select} alt="select_icon"/>}</Box></Box>
                     <Box onClick={() => handleOnChangeColor('INDIGO')} style={{backgroundColor: '#fff', width:44, height:44}}><Box className={classes.cr} style={{backgroundColor: '#3f51b5'}}>{color==="INDIGO"&&<img className={classes.select} src={select} alt="select_icon"/>}</Box></Box>
                     <Box onClick={() => handleOnChangeColor('BLUE')} style={{backgroundColor: '#fff', width:44, height:44}}><Box  className={classes.cr} style={{backgroundColor: '#2196f3'}}>{color==="BLUE"&&<img className={classes.select} src={select} alt="select_icon"/>}</Box></Box>
-
                 </Box>
             </Box>
 
