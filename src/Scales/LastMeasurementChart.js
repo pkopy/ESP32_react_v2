@@ -21,7 +21,7 @@ export default (props) => {
     //     {arg:4, value:40},
     // ]
 
-    console.log(props)
+    // console.log(props)
     const [data, setData] = React.useState([])
 
     React.useEffect(() => {
@@ -37,23 +37,21 @@ export default (props) => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'scaleid':props.scaleId
+                'scaleid':props.scaleId,
+                'orderbyfield':'internalId'
             }
         })
         .then(data => data.json())
         .then(data => {
-            console.log(data);
+            // console.log(data);
             let arr = []
             // let rows = []
             let x = 0;
-            let i = 0
-            if (data.length > 50) {
-                x = data.length - 50
-                console.log(x)
-            }
-            for (x; x < data.length - 1; x++) {
-                    data[x].helpId = i++
-                arr.push(data[x])
+            
+            
+            for (let i = 0; i < data.length; i++) {
+                    data[i].helpId = i
+                arr.push(data[i])
             }
             setData(arr)
         })

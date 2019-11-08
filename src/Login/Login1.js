@@ -99,7 +99,7 @@ export default function SignIn(props) {
                     setError(true)
                 }
             })
-            .catch(err => console.log(err))
+            .catch(err => console.log(err, 'problem'))
 
         } else {
             props.setUser({right:1, firstName: 'guest'})

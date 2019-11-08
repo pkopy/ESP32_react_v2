@@ -45,6 +45,9 @@ import PowerIcon from '@material-ui/icons/Power';
 import LinkIcon from '@material-ui/icons/Link';
 import LinkOffIcon from '@material-ui/icons/LinkOff';
 import { Tooltip } from '@material-ui/core';
+import reds from './img/3xred.gif'
+import UndoIcon from '@material-ui/icons/Undo';
+
 
 const drawerWidth = 240;
 
@@ -112,6 +115,12 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         position: "absolute",
         right: theme.spacing(4),
+    },
+    undo:{
+        marginRight:  theme.spacing(1),
+        '&:hover': {
+            cursor: 'pointer'
+        }
     }
 }));
 
@@ -123,15 +132,12 @@ export default function PersistentDrawerLeft(props) {
     const [color, setColor] = React.useState()
     const [user, setUser] = React.useState({})
     const [connection, setConnection] = React.useState()
-    const theme = createMuiTheme({
-        palette: {
-            primary: color,
-        },
-    });
+    
     const [open, setOpen] = React.useState(false);
     const [order, setOrder] = React.useState()
     const [curentScale, setCurrentScale] = React.useState({})
     const [currentOrder, setCurrentOrder] = React.useState({})
+    const [home, setHome] = React.useState()
     const [view, setView] = React.useState({
         login: true,
         order: false,
@@ -146,6 +152,12 @@ export default function PersistentDrawerLeft(props) {
         operators: false,
         settings: false
     })
+
+    const theme = createMuiTheme({
+        palette: {
+            primary: color,
+        },
+    });
 
     function handleDrawerOpen() {
         setOpen(true);
@@ -200,7 +212,8 @@ export default function PersistentDrawerLeft(props) {
                 helpView[value] = true
             }
         }
-
+        
+        setHome(name)
         switch (name) {
             case 'items':
                 helpView.name = props.lang.items;
@@ -216,6 +229,7 @@ export default function PersistentDrawerLeft(props) {
                 break;
             case 'scales':
                 helpView.name = props.lang.scales;
+                
                 break;
             case 'settings':
                 helpView.name = props.lang.settings;
@@ -226,8 +240,12 @@ export default function PersistentDrawerLeft(props) {
             case 'orderDetails':
                 helpView.name = props.lang.orderDetails;
                 break;
+            case 'freeWeighing':
+                helpView.name = props.lang.details;
+                break;
             default:
                 helpView.name = props.lang.login;
+                
         }
 
         setOrder({})
@@ -274,11 +292,18 @@ export default function PersistentDrawerLeft(props) {
                         {/* <PowerIcon fontSize="large" style={{color:'green'}}></PowerIcon> */}
                         <div className={classes.socketStaus}>
                             <div style={{marginRight:16}}>
-                                {<Tooltip  title={props.socketStatus?'Socket connected':'Socket disconnected'}>
-                                    
-                                        {props.socketStatus?<LinkIcon onClick={()=>console.log('hhh')}fontSize='large' color='inherit'></LinkIcon>:<LinkOffIcon onClick={()=>props.resetSocket()} fontSize='large' color='inherit'></LinkOffIcon>}
+                                {home === 'scales'&&<Tooltip title={props.lang.search}>
+                                    <SearchIcon fontSize='large' className={classes.undo} onClick={()=>drawerView('scales')}></SearchIcon>
+                                </Tooltip>} 
 
-                                    
+                                {(home && home !== 'scales')&&<Tooltip title={props.lang.back}>
+                                    <UndoIcon fontSize='large' className={classes.undo} onClick={()=>drawerView('scales')}></UndoIcon>
+                                </Tooltip>}
+
+                                {props.connection&&<img src={reds} width={34}></img>}
+
+                                {!props.connection&&<Tooltip  title={props.socketStatus?'Socket connected':'Socket disconnected'}>
+                                        {props.socketStatus?<LinkIcon onClick={()=>console.log('hhh')}fontSize='large' color='inherit'></LinkIcon>:<LinkOffIcon onClick={()=>props.resetSocket()} fontSize='large' color='inherit'></LinkOffIcon>}
                                 </Tooltip>}
 
                             </div>
@@ -353,7 +378,7 @@ export default function PersistentDrawerLeft(props) {
                             <ListItemIcon><SettingsIcon color="primary" /></ListItemIcon>
                             <ListItemText primary={props.lang.settings} />
                         </ListItem>
-                        <ListItem button onClick={() => { setUser({}); drawerView('login') }}>
+                        <ListItem button onClick={() => { setUser({}); setHome(); drawerView('login') }}>
                             <ListItemIcon><PowerSettingsNewIcon color="primary" /></ListItemIcon>
                             <ListItemText primary={props.lang.logout} />
                         </ListItem>

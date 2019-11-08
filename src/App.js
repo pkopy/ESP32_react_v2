@@ -43,7 +43,8 @@ class App extends Component {
         lang:localStorage.getItem('lang') ? JSON.parse(localStorage.getItem('lang')) : plLang,
         socket: {},
         socketStatus:false,
-        count:0
+        count:0,
+        connection:true
 
     }
     componentDidMount = () => {
@@ -64,16 +65,19 @@ class App extends Component {
     
     socket = () => {
         const socket = new WebSocket('ws://10.10.3.141:4000')
+        this.setState({connection: true})
         socket.onopen = () => {
             // this.gen.next().done= true
             this.setState({count:0})
             this.setState({socketStatus:true})
+            this.setState({connection: false})
             console.log('connect')
         }
         socket.onclose = () => {
             if (this.state.count < 3) {
                 this.reset()
                 this.setState({count:this.state.count+1})
+                this.setState({connection: false})
             } else {
 
                 // alert('Socket rozłączony')
@@ -84,6 +88,7 @@ class App extends Component {
         socket.onerror = () => {
             // alert('błąd socket')
             this.setState({socketStatus:false})
+            this.setState({connection: false})
         }
         this.setState({socket})
     }
@@ -211,6 +216,7 @@ class App extends Component {
                 socket={this.state.socket}
                 socketStatus={this.state.socketStatus}
                 resetSocket={this.socket}
+                connection={this.state.connection}
                 
             />}
             {/* <PDF/> */}
