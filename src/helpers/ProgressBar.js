@@ -48,32 +48,39 @@ export default function LinearDeterminate(props) {
         // } else {
         //     setMaxMass(parseFloat(props.maxMass))
         // }
-        if (props.socket.readyState === 1) {
-            props.socket.send(JSON.stringify({ command: 'SCALE_STATUS', "scaleId": props.curentScale.id }))
-            props.socket.onmessage = (e) => {
-    
-                let data = e.data;
-                const response = JSON.parse(data);
-                // console.log(response)
-                // props.setRefresh(response)
-                if (response.info) {
-                    setMax(response.info.Max * 1)
-                    setValue(response.info.NetAct.Value)
-                    setUnit(response.info.NetAct.Unit)
-                    setValueCal(response.info.NetCal.Value)
-                    setIsStab(response.info.isStab)
-                    setIsTare(response.info.isTare)
-                    setIsZero(response.info.isZero)
-                    setPrecision(response.info.NetAct.Precision)
-    
+        function send() {
+            if (props.socket.readyState === 1) {
+                props.socket.send(JSON.stringify({ command: 'SCALE_STATUS', "scaleId": props.curentScale.id }))
+                props.socket.onmessage = (e) => {
+                    // console.log('ffffffffffffffffffffffffff')
+                    let data = e.data;
+                    const response = JSON.parse(data);
+                    // console.log(response)
+                    // props.setRefresh(response)
+                    if (response.info && response.info.NetAct) {
+                        setMax(response.info.Max * 1)
+                        setValue(response.info.NetAct.Value)
+                        setUnit(response.info.NetAct.Unit)
+                        setValueCal(response.info.NetCal.Value)
+                        setIsStab(response.info.isStab)
+                        setIsTare(response.info.isTare)
+                        setIsZero(response.info.isZero)
+                        setPrecision(response.info.NetAct.Precision)
+        
+                    }
                 }
+    
+            } else {
+                console.log('socket disconnected')
             }
 
-        } else {
-            console.log('socket disconnected')
+        }
+        const timer = setInterval(send, 250);
+        return () => {
+            clearInterval(timer);
         }
 
-    }, [completed])
+    }, [])
 
     React.useEffect(() => {
 
@@ -91,12 +98,12 @@ export default function LinearDeterminate(props) {
 
 
         }
-
-        const timer = setInterval(progress, 250);
-        return () => {
-            clearInterval(timer);
-        };
-    }, []);
+        progress()
+        // const timer = setInterval(progress, 250);
+        // return () => {
+        //     clearInterval(timer);
+        // };
+    }, [Value]);
 
 
 

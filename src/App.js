@@ -13,6 +13,9 @@ import purple from '@material-ui/core/colors/purple';
 // eslint-disable-next-line
 import PDF from './helpers/pdfPrint'
 
+
+
+
 const theme = createMuiTheme({
   palette: {
     primary: purple,
@@ -44,7 +47,8 @@ class App extends Component {
         socket: {},
         socketStatus:false,
         count:0,
-        connection:true
+        connection:true,
+        host: process.env.NODE_ENV !== 'production'? '10.10.3.57' : window.location.hostname
 
     }
     componentDidMount = () => {
@@ -52,6 +56,7 @@ class App extends Component {
         this.orders()
         this.operators()
         this.socket()
+        console.log(this.state.host)
     }
 
     reset() {
@@ -64,7 +69,9 @@ class App extends Component {
     
     
     socket = () => {
-        const socket = new WebSocket('ws://10.10.3.141:4000')
+        
+        
+        const socket = new WebSocket(`ws://${this.state.host}:4000`)
         this.setState({connection: true})
         socket.onopen = () => {
             // this.gen.next().done= true
@@ -93,7 +100,8 @@ class App extends Component {
         this.setState({socket})
     }
 
-    operators = () => {fetch('http://localhost:5000/operators', {
+    operators = () => {
+        fetch(`http://${this.state.host}:5000/operators`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -108,7 +116,7 @@ class App extends Component {
 
     orders = () => {
         this.setState({load: true})
-        fetch('http://localhost:5000/order')
+        fetch(`http://${this.state.host}:5000/order`)
             .then(data => data.json())
             .then(yourOrders => {
                 if (yourOrders.length > 0 ) {
@@ -137,13 +145,14 @@ class App extends Component {
                 
             })
             .catch((err) => {
+                console.log(err)
                 this.setState({load: false})
             })
     }
 
     yourScales = () => {
         this.setState({load: true})
-        fetch('http://localhost:5000/scale')
+        fetch(`http://${this.state.host}:5000/scale`)
             .then(data => data.json())
             .then(data => {
                 this.setState({scales: data});
@@ -157,7 +166,7 @@ class App extends Component {
     findScales = () => {
         this.setState({load:true})
         this.setState({currentScale:{}})
-        fetch(`http://localhost:5000/findscales`)
+        fetch(`http:/${this.state.host}:5000/findscales`)
             .then(data => data.json())
             .then(data => {
                 this.setState({findedScales: data});
@@ -197,7 +206,7 @@ class App extends Component {
     render () {
         return (
         <div className="App">
-            {this.state.load&&<Loader />}
+            {/* {this.state.load&&<Loader />} */}
             {!this.state.raport&&<Drawer
                 address={this.state.currentScale.address}
                 findScales={this.findScales}
@@ -217,6 +226,7 @@ class App extends Component {
                 socketStatus={this.state.socketStatus}
                 resetSocket={this.socket}
                 connection={this.state.connection}
+                host={this.state.host}
                 
             />}
             {/* <PDF/> */}

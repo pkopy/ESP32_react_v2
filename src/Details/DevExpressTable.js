@@ -51,9 +51,20 @@ class DevexpressTable extends Component {
         if (!start || !end) {
             start = new Date(this.setDate() - (86400000 * 30))
             end = new Date((this.setDate() + (86400000 * 1)))
+
         }
-        
-        fetch('http://localhost:5000/order', {
+
+        console.log(this.props)
+        // this.props.socket.send(JSON.stringify({command:"GET_DATA", table:'orders'}))
+        // this.props.socket.onmessage = (e) => {
+        //     let data = e.data;
+        //     const response = JSON.parse(data);
+        //     console.log('orders: ', response)
+
+        // }
+
+        fetch(`http://${this.props.host}:5000/order`, {
+            // fetch(`http://localhost:5000/order`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -63,39 +74,52 @@ class DevexpressTable extends Component {
         })
             .then(data => data.json())
             .then(yourOrders => {
-                if (yourOrders.length > 0) {
-                    for (let order of yourOrders) {
-                        switch (order.status) {
-                            case 0:
-                                order.status = this.props.lang.inProgress
-                                break
-                            case 1:
-                                order.status = this.props.lang.done
-                                break
-                            case 2:
-                                order.status = this.props.lang.interrupted
-                                break
-                            default:
-                                order.status = this.props.lang.unknown
-                        }
+                console.log(yourOrders)
+                // if (yourOrders.lenght > 0) {
+                for (let order of yourOrders) {
+                    // console.log(order.status)
+                    switch (order.status) {
+                        case 'InProgress':
+                            order.status = this.props.lang.inProgress
+                            break
+                        case 'Finished':
+                            order.status = this.props.lang.done
+                            break
+                        case 'InQueue':
+                            order.status = this.props.lang.inQueue
+                            break
+                        case 'Error':
+                            order.status = this.props.lang.error
+                            break
+                        case 'NotStarted':
+                            order.status = this.props.lang.notStarted
+                            break
+                        case 'Interrupted':
+                            order.status = this.props.lang.interrupted
+                            break
+                        default:
+                            order.status = this.props.lang.notStarted
                     }
-
                 }
+
+                // }
                 if (Array.isArray(yourOrders)) {
-                    let test 
+                    let rows
                     if (this.state.user.userName !== 'admin') {
-                        test = yourOrders.filter(order => {
+                        rows = yourOrders.filter(order => {
                             return order.operator === this.state.user.userName
                         })
 
                     } else {
-                        test = yourOrders
+                        rows = yourOrders
                     }
 
-                    this.setState({ rows: test })
+                    this.setState({ rows })
                 } else {
                     this.setState({ rows: yourOrders ? yourOrders.measurments : [] })
                 }
+
+
 
             })
     }
@@ -127,8 +151,8 @@ class DevexpressTable extends Component {
         }, 300)
     }
 
-    
-    setDate = (array) => { 
+
+    setDate = (array) => {
         if (array) {
             return new Date(`${array[2]}-${array[1]}-${array[0]}`)
 
@@ -151,7 +175,7 @@ class DevexpressTable extends Component {
     }
 
     deleteOrder = (row) => {
-        fetch('http://localhost:5000/order', {
+        fetch(`http://${this.props.host}:5000/order`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -161,6 +185,7 @@ class DevexpressTable extends Component {
         })
             .then(data => data.json())
             .then(order => {
+                console.log(order)
                 this.orders()
                 this.setState({ open: false })
             })
@@ -185,12 +210,12 @@ class DevexpressTable extends Component {
         return (
             <Paper>
                 <div className="rangeContainer">
-                    
+
                     <CalendarPicker
-                        cb = {this.orders}
+                        cb={this.orders}
                         lang={this.props.lang}
                     />
-                    
+
                 </div>
 
                 <React.Fragment>
@@ -206,28 +231,28 @@ class DevexpressTable extends Component {
                         onRowDblClick={(e) => this.props.orderDetails(e.data)}
                     >
                         <GroupPanel visible={true} emptyPanelText={
-                             this.props.lang.dragColumn
-                        }/>
-                        <Grouping autoExpandAll={false}  />
-                        <SearchPanel visible={true} placeholder={this.props.lang.search}/>
+                            this.props.lang.dragColumn
+                        } />
+                        <Grouping autoExpandAll={false} />
+                        <SearchPanel visible={true} placeholder={this.props.lang.search} />
                         <HeaderFilter visible={true} />
-                        <Paging defaultPageSize={10} />
+                        <Paging defaultPageSize={15} />
                         <Pager
                             showPageSizeSelector={true}
-                            allowedPageSizes={[5, 10, 20]}
-                            showInfo={true} 
+                            allowedPageSizes={[10, 15, 20]}
+                            showInfo={true}
                             infoText={`${this.props.lang.page} {0} ${this.props.lang.of}  {1}`}
                         />
-                        <Column dataField={'name'} caption={this.props.lang.orderName}  />
-                        <Column dataField={'operator'} caption={this.props.lang.operator}  />
+                        <Column dataField={'name'} caption={this.props.lang.orderName} />
+                        <Column dataField={'operator'} caption={this.props.lang.operator} />
                         <Column dataField={'scaleName'} caption={this.props.lang.scaleName} width={150} />
-                        <Column dataField={'base'} caption={this.props.lang.base} alignment={'center'}/>
-                        <Column dataField={'quantity'} caption={this.props.lang.quantity} dataType={'numeric'} alignment={'center'}/>
-                        <Column dataField={'time'} caption={this.props.lang.date} dataType={'date'} format={"yyyy/MM/dd"} width={100}/>
-                        <Column dataField={'status'} caption={this.props.lang.status} width={100}/>
+                        <Column dataField={'base'} caption={this.props.lang.base} alignment={'center'} />
+                        <Column dataField={'quantity'} caption={this.props.lang.quantity} dataType={'numeric'} alignment={'center'} />
+                        <Column dataField={'time'} caption={this.props.lang.date} dataType={'date'} format={"yyyy/MM/dd"} width={100} />
+                        <Column dataField={'status'} caption={this.props.lang.status} width={100} />
 
                     </DataGrid>
-                    
+
                 </React.Fragment>
             </Paper>
         );

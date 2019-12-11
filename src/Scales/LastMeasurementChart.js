@@ -14,26 +14,23 @@ import DataGrid, {Paging, Column} from 'devextreme-react/data-grid';
 
 
 export default (props) => {
-    // const data = [
-    //     {arg:1, value:10},
-    //     {arg:2, value:20},
-    //     {arg:3, value:30},
-    //     {arg:4, value:40},
-    // ]
-
-    // console.log(props)
+    
     const [data, setData] = React.useState([])
+    const [chartData, setChartData] = React.useState([])
 
     React.useEffect(() => {
-        const timer = setInterval(getMeasurements, 1000);
+        const timer = setInterval(getMeasurements, 10000);
 
         return () => {
             clearInterval(timer);
         };
     }, [])
+    React.useEffect(() => {
+        getMeasurements()
+    }, [])
 
     const getMeasurements = () => {
-        fetch('http://localhost:5000/addDevice', {
+        fetch(`http://${props.host}:5000/addMeasurement`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -50,10 +47,19 @@ export default (props) => {
             
             
             for (let i = 0; i < data.length; i++) {
-                    data[i].helpId = i
+                    let date = data[i].time.split('T')
+                    data[i].date = date[0]
+                    data[i].timeNew = date[1].slice(0,-5)
+                    data[i].helpIndex =  50-i
                 arr.push(data[i])
             }
-            setData(arr)
+            console.log(arr)
+            const chartData = arr.reverse()
+            console.log('chart',chartData)
+            setData(chartData)
+            // console.log('chart;',arr)
+            setChartData(arr)
+
         })
         .catch(err => console.log(err))
     }
@@ -63,7 +69,7 @@ export default (props) => {
 
             {props.chart&&<Chart
     
-                dataSource={data}
+                dataSource={chartData}
                 style={{height: '90%', width: '90%', marginLeft: 'auto', marginRight: 'auto', marginTop: '20px'}}
                 // selectionStyle={{symbol:'cross'}}
                 id={'chart'}
@@ -77,7 +83,7 @@ export default (props) => {
                 <Series
                     name={'mass'}
                     valueField={'measure'}
-                    argumentField={'helpId'}
+                    argumentField={'helpIndex'}
                     
                     type={'line'}
                 />
@@ -98,12 +104,47 @@ export default (props) => {
                 showBorders={true}
                 style={{height: '90%', width: '90%', marginLeft: 'auto', marginRight: 'auto', marginTop: '20px'}}
             >
+                {/* <Column
+                    caption={'Id'}
+                    dataField={'internalId'}
+                    defaultSortOrder={'desc'}
+                    width={50}
+                /> */}
                 <Column
                     dataField={'time'}
                     defaultSortOrder={'desc'}
+                    visible={false}
+                />
+                <Column
+                    dataField={'date'}
+                    
+                    width={90}
+                />
+                <Column
+                    dataField={'timeNew'}
+                    caption={'Time'}
+                    // defaultSortOrder={'desc'}
+                    width={90}
+                    // defaultSortOrder={'desc'}
+                />
+                <Column 
+                    dataField={'item'}
+                    caption={'Product'}
+                />
+                <Column
+                    dataField={'tare'}
+                />
+                <Column 
+                    dataField={'isStable'}
+                    caption={'Stab'}
                 />
                 <Column
                     dataField={'measure'}
+                    width={150}
+                />
+                <Column
+                    dataField={'unit'}
+                    width={50}
                 />
                 <Paging defaultPageSize={7} />
 

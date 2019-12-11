@@ -7,17 +7,13 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Loader from '../helpers/Loader'
-
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Checkbox from '@material-ui/core/Checkbox';
-import Avatar from '@material-ui/core/Avatar';
 import ListSubheader from '@material-ui/core/ListSubheader';
 
 
@@ -34,7 +30,6 @@ const useStyles = makeStyles(theme => ({
     },
 
     itemText: {
-        // fontSize:50
         borderBottom: '1px solid rgb(0,0,0,0.25)',
         textAlign: 'center',
         transition: '0.5s',
@@ -90,9 +85,6 @@ export default function Scales(props) {
         getScales()
     }, [])
 
-    // React.useEffect(() => {
-    //     console.log('ooo')
-    // })
 
     React.useEffect(() => {
         
@@ -103,15 +95,14 @@ export default function Scales(props) {
     }, [])
 
     const getScales = () => {
-        fetch('http://localhost:5000/scale')
+        fetch(`http://${props.host}:5000/scale`)
             .then(data => data.json())
             .then(data => {
                 setScales(data);
-                console.log(data)
-                // this.setState({load: false})
+                // console.log(data)
             })
             .catch((err) => {
-                // this.setState({load: false})
+
             })
     }
 
@@ -128,7 +119,6 @@ export default function Scales(props) {
                 handleClickOpen(true)
                 setFoundScales(response.scales)
                 setLoader(false)
-                // getScales()
                 
             } else if (response.respond === "SCALE_NOT_FOUND"){
                 setLoader(false)
@@ -138,11 +128,8 @@ export default function Scales(props) {
 
     const addScales = () => {
         props.socket.send(JSON.stringify({ command: 'ADD_SCALES', scales: checked }))
-        // getScales()
-        // props.drawerView('scales')
         setOpen(false)
     }
-    // console.log(props)
     return (
         <div>
             {loader && <Loader />}
@@ -153,6 +140,7 @@ export default function Scales(props) {
                 {scales.map((elem,i) =>
                     elem.status !== 'Hidden' &&
                     <Scale key={i}
+                        setLoader={setLoader}
                         scale={elem}
                         socket={props.socket}
                         lang={props.lang}
@@ -161,9 +149,9 @@ export default function Scales(props) {
                     />
                 )}
             </div>
-            <Button variant="outlined" color='primary' onClick={searchScales} disabled={!props.socketStatus}>
+            {scales.length === 0&&<Button variant="outlined" color='primary' onClick={searchScales} disabled={!props.socketStatus}>
                 {props.lang.search}
-            </Button>
+            </Button>}
             <Dialog
                 open={open}
                 onClose={handleClose}
@@ -177,22 +165,13 @@ export default function Scales(props) {
                     <List dense className={classes.listOfscales}>
                         <ListSubheader>{`Nowe wagi`}</ListSubheader>
                         {foundScales.map((value, i) => {
-
-                            // const labelId = `checkbox-list-secondary-label-${value}`;
                             return (
                                 <ListItem key={i} button>
-                                    {/* <ListItemAvatar>
-                                <Avatar
-                                    alt={`Avatar n°${value + 1}`}
-                                    src={`/static/images/avatar/${value + 1}.jpg`}
-                                />
-                                </ListItemAvatar> */}
                                     <ListItemText id={i} primary={`${props.lang.scale}: ${value.address}`} />
                                     <ListItemSecondaryAction>
                                         <Checkbox
                                             edge="end"
                                             onChange={handleToggle(value)}
-                                            // checked={checked.indexOf(value) !== -1}
                                             inputProps={{ 'aria-labelledby': i }}
                                         />
                                     </ListItemSecondaryAction>
@@ -202,21 +181,12 @@ export default function Scales(props) {
                         <ListSubheader>{`Zaktualizowane wagi`}</ListSubheader>
                         {updatedScales.map((value, i) => {
 
-                            // const labelId = `checkbox-list-secondary-label-${value}`;
                             return (
                                 <ListItem key={i} button>
-                                    {/* <ListItemAvatar>
-                            <Avatar
-                                alt={`Avatar n°${value + 1}`}
-                                src={`/static/images/avatar/${value + 1}.jpg`}
-                            />
-                            </ListItemAvatar> */}
                                     <ListItemText id={i} primary={`${props.lang.scale}: ${value.address}`} />
                                     <ListItemSecondaryAction>
                                         <Checkbox
                                             edge="end"
-                                            // onChange={handleToggle(value)}
-                                            // checked={checked.indexOf(value) !== -1}
                                             inputProps={{ 'aria-labelledby': i }}
                                         />
                                     </ListItemSecondaryAction>
@@ -229,10 +199,10 @@ export default function Scales(props) {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
-                        Disagree
+                        {props.lang.cancel}
                     </Button>
                     <Button onClick={addScales} color="primary" autoFocus>
-                        Add
+                        {props.lang.add}
                     </Button>
                 </DialogActions>
             </Dialog>

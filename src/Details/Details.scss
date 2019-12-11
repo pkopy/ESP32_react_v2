@@ -1,0 +1,32 @@
+.details {
+    display: flex;
+    justify-content: center;
+
+    height: 40vh
+}
+
+.img {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin-left: 8px;
+    margin-top: 16px;
+    // height: 350px;
+}
+
+@media only screen and (max-width: 1200px) {
+    .details {
+        flex-direction: column;
+        height:  100%;
+    
+    }
+    .img {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-height: 850px) {
+    h3 {
+        font-size: small;
+    }
+}

@@ -10,7 +10,7 @@ lib.connectToSocket = (address, port) => {
     // } else {
 
     //     connection = new WebSocket(`ws://${address}:7000`)
-    connection = new WebSocket('ws://10.10.3.141:4000')
+    // connection = new WebSocket(`ws://${props.host}:4000`)
     // }
     // const measure = ''
     // connection.onopen = () => {

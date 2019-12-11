@@ -14,18 +14,18 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 
-
+const host =process.env.NODE_ENV !== 'production'? '10.10.3.57' : window.location.hostname
 
 let data = {
     load: function (loadOptions) {
         if (loadOptions.parentIds) {
             let parentIdsParam = loadOptions.parentIds.join(',');
-            return fetch(`http://localhost:5000/item?parentId=${parentIdsParam}`)
+            return fetch(`http://${host}:5000/item?parentId=${parentIdsParam}`)
                 .then(response => response.json())
                 .catch((err) => console.log(err));
 
         } else {
-            return fetch(`http://localhost:5000/item?parentId=`)
+            return fetch(`http://${host}:5000/item?parentId=`)
                 .then(response => response.json())
                 .catch((err) => console.log(err));
         }
@@ -84,12 +84,12 @@ export default (props) => {
             load: function (loadOptions) {
                 if (loadOptions.parentIds) {
                     let parentIdsParam = loadOptions.parentIds.join(',');
-                    return fetch(`http://localhost:5000/item?parentId=${parentIdsParam}`)
+                    return fetch(`http://${host}:5000/item?parentId=${parentIdsParam}`)
                         .then(response => response.json())
                         .catch((err) => console.log(err));
 
                 } else {
-                    return fetch(`http://localhost:5000/item?parentId=`)
+                    return fetch(`http://${host}:5000/item?parentId=`)
                         .then(response => response.json())
                         .catch((err) => console.log(err));
                 }
@@ -99,7 +99,7 @@ export default (props) => {
 
     const deleteGroup = () => {
         console.log(currentGroup)
-        fetch(`http://localhost:5000/item?parentId=${currentGroup.name}`)
+        fetch(`http://${props.host}:5000/item?parentId=${currentGroup.name}`)
             .then(response => response.json())
             .then(data => {
                 console.log(data);
@@ -121,7 +121,7 @@ export default (props) => {
     }
     const deleteItem = (idItem) => {
 
-        fetch('http://localhost:5000/item', {
+        fetch(`http://${props.host}:5000/item`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ export default (props) => {
             setGroupNameError(true)
             setInfo({ context: props.lang.emptyGroupText, title: props.lang.emptyGroupName })
         } else {
-            fetch(`http://localhost:5000/item?id=${groupName.toUpperCase()}`)
+            fetch(`http://${props.host}:5000/item?id=${groupName.toUpperCase()}`)
                 .then(response => response.json())
                 .then(data => {
 
@@ -149,7 +149,7 @@ export default (props) => {
                         setGroupNameError(true)
                         setInfo({ context: 'Ta nazwa już istnieje', title: 'Nazwa grupy powtórzona' })
                     } else {
-                        fetch(`http://localhost:5000/item`, {
+                        fetch(`http://${props.host}:5000/item`, {
                             method: 'POST',
                             body: JSON.stringify({ id: groupName.toUpperCase(), isDirectory: true, hasItems: true, name: groupName.toUpperCase() })
                         })
@@ -344,6 +344,7 @@ export default (props) => {
                                         setTree={setTree}
                                         openItem={props.openItem}
                                         user={props.user}
+                                        host={props.host}
                                     ></TestElement>
 
                                 </div>
@@ -370,6 +371,7 @@ export default (props) => {
                             lang={props.lang}
                             user={props.user}
                             setTree={setTree}
+                            host={props.host}
                         />}
                     {currentGroup && currentGroup.parentId && index === 0 && props.addItem &&
                         <Button color="primary" variant="outlined" onClick={() => addItemToOrder(currentGroup)}>{props.lang.addToOrder}</Button>}

@@ -20,7 +20,7 @@ item.post = (req, res) => {
     req.on('data', (data) => {
         let payload = Buffer.from(data).toString();
         let payloadObj = JSON.parse(payload)
-        // console.log(payloadObj)
+
         if (payloadObj.id&&
             payloadObj.name 
             // payloadObj.isDirectory &&
@@ -36,7 +36,7 @@ item.post = (req, res) => {
                 base:payloadObj.base,
                 max:payloadObj.max,
                 min:payloadObj.min,
-                threshold:payloadObj.threshold
+                treshold:payloadObj.treshold
 
 
             }

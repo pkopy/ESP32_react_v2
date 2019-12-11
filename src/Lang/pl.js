@@ -66,7 +66,7 @@ const data = {
     status: 'Status',
     max: 'Max',
     min: 'Min',
-    treshold: 'Próg LO',
+    threshold: 'Próg LO',
     manualWeighing: 'Ważenie ręczne',
     sendOrder: 'Wyślij zlecenie',
     orderDetails: 'Szczegóły zlecenia',
@@ -81,6 +81,9 @@ const data = {
     done: 'Zakończone',
     unknown: 'Nieznany',
     interrupted: 'Przerwany',
+    error: 'Błąd',
+    notStarted: 'Nieuruchomiony',
+    inQueue: 'W kolejce',
 
 
     //---------CALENDAR-PICKER------------
@@ -94,10 +97,10 @@ const data = {
 
 
     //--------------LOGIN--------------
-    login: 'Wpisz się',
+    login: 'Zaloguj się',
     user: 'Użytkownik',
     password: 'Hasło',
-    loginAsGuest: 'Wpisz się jako gość',
+    loginAsGuest: 'Zaloguj się jako gość',
     logout: 'Wyloguj',
 
     //-------------SCALE------------

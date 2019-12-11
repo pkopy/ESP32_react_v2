@@ -1,7 +1,8 @@
  export default  function createPdf (data) {
     // console.log(JSON.stringify(this.state.rows))
+    const host =process.env.NODE_ENV !== 'production'? '10.10.3.57' : window.location.hostname
     const dataObj = data
-    fetch('http://localhost:5000/pdf', {
+    fetch(`http://${host}:5000/pdf`, {
         method: 'POST',
         body: JSON.stringify(data)
     })

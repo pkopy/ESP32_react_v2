@@ -39,18 +39,18 @@ export default function MaterialTableDemo(props) {
 
     const orderDetails = (data) => {
 
-        fetch('http://localhost:5000/addDevice', {
+        fetch(`http://${props.host}:5000/addMeasurement`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'orderguid': data.guid,
+                'guid': data.guid,
 
             },
         })
             .then(data => data.json())
             .then(measurments => {
                 data.measurments = measurments;
-
+                console.log(measurments)
                 // if (SocketLib.connection) {
                 //     SocketLib.connection.close()
                 // }
@@ -82,6 +82,8 @@ export default function MaterialTableDemo(props) {
                     orders={props.orders}
                     lang={props.lang}
                     user={props.user}
+                    socket={props.socket}
+                    host={props.host}
                 />
 
 

@@ -65,7 +65,7 @@ const data = {
     status: 'Status',
     max: 'Max',
     min: 'Min',
-    treshold: 'LO treshold',
+    threshold: 'LO treshold',
     manualWeighing: 'Manual weighing',
     sendOrder: 'Send order',
     orderDetails: 'Order details',
@@ -80,6 +80,10 @@ const data = {
     done: 'Done',
     unknown: 'Unknown',
     interrupted: 'Interrupted',
+    error: 'Error',
+    notStarted: 'Not started',
+    inQueue: 'In queue',
+    
 
     //---------CALENDAR-PICKER------------
     orderRange: 'Orders range',

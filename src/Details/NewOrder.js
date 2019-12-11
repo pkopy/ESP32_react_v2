@@ -18,7 +18,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Groups from '../ItemTree/Groups'
 import Loader from '../helpers/Loader'
-
+import { uuid } from 'uuidv4';
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -63,18 +63,18 @@ export default function TextFields(props) {
         min: '',
         max: '',
         operator: '',
-        treshold: '',
+        threshold: '',
         quantity: '',
         scale: '',
-        interval: 'stab',
+        interval: 'interval',
         type: 'quantity',
-        intervalValue: '',
-        range: false,
-        manualWeighing: false,
-        item:''
+        intervalValue: null,
+        // range: false,
+        manualWeighing: true,
+        item: ''
     }
 
-    order.manualWeighing = false
+    
     const [values, setValues] = React.useState(order);
     const [errors, setError] = React.useState({
         name: false,
@@ -82,7 +82,7 @@ export default function TextFields(props) {
         min: false,
         max: false,
         operator: false,
-        treshold: false,
+        threshold: false,
         quantity: false,
         scale: false,
         errors: false,
@@ -94,12 +94,14 @@ export default function TextFields(props) {
     const [connection, setConnection] = React.useState()
     const [scale, setScale] = React.useState({})
     const [loader, setLoader] = React.useState(false)
+    const [item, setItem] = React.useState({})
     // const [item, setItem] = React.useState({})
 
     const addItem = (item) => {
         // setItem(item)
-        setValues({ ...values, 'item':item.name, 'base':item.base, 'max':item.max, 'min':item.min, 'treshold':item.treshold });
-
+        setValues({ ...values, 'item': item.name, 'base': item.base, 'max': item.max, 'min': item.min, 'threshold': item.threshold });
+        setItem(item)
+        console.log(item)
     }
 
     const handleChange = name => event => {
@@ -113,7 +115,8 @@ export default function TextFields(props) {
 
     const changeCheckboxValue = name => event => {
         if (name === 'manualWeighing' && event.target.checked) {
-            setValues({ ...values, [name]: event.target.checked, interval: 'stab' });
+            console.log(event.target.checked)
+            setValues({ ...values, [name]: event.target.checked, interval: 'interval', intervalValue: 0});
         }
         else {
             setValues({ ...values, [name]: event.target.checked });
@@ -125,6 +128,7 @@ export default function TextFields(props) {
         for (let scale of scales) {
             if (scale.address === addressScale) {
                 setScale(scale)
+                console.log('xxxx', scale)
             }
         }
     }
@@ -137,11 +141,12 @@ export default function TextFields(props) {
         setError(err)
 
         for (let value of valuesKeys) {
-            if (value === 'interval' && values.interval === 'interval' && (values.intervalValue === '' || values.intervalValue <= 0 || !values.intervalValue)) {
+            // if (value === 'interval' && values.interval === 'interval' && (values.intervalValue === '' || values.intervalValue <= 0 || !values.intervalValue)) {
 
-                err.intervalValue = true
-                err.errors = true
-            } else if ((value === 'intervalValue' && values.interval === 'stab') || value === 'manualWeighing' || value === 'range' || value === 'item') {
+            //     err.intervalValue = true
+            //     err.errors = true
+            // } else 
+            if (value === 'intervalValue' && values.intervalValue >= 0 && values.manualWeighing)  {
                 err[value] = false
             } else if ((values[value] === '' || values[value] <= 0 || !values[value])) {
                 err[value] = true
@@ -150,6 +155,8 @@ export default function TextFields(props) {
                 err[value] = false
             }
         }
+        
+        console.log('err:', err)
 
 
 
@@ -157,53 +164,59 @@ export default function TextFields(props) {
             setError(err)
             setOpen(true)
         } else {
+            setOpen(true)
+            // sendOrder()
             setLoader(true)
-            const connection = SocketLib.connectToSocket(values.scale)
-            connection.onopen = () => {
-                setConnection(connection)
-                setOpen(true)
-                setLoader(false)
-            }
+            // const connection = props.socket
+            // connection.onopen = () => {
+            //     setConnection(connection)
+            //     setOpen(true)
+            //     setLoader(false)
+            // }
 
-            connection.onerror = () => {
-                alert('soket niedostępnty')
-                setLoader(false)
-            }
+            // connection.onerror = () => {
+            //     alert('soket niedostępnty')
+            //     setLoader(false)
+            // }
 
-            setTimeout((connection) => {
-
-            }, 5000)
         }
     }
-
+   
     const sendOrder = () => {
-        if (values.interval === 'interval') {
-            values.command = "I"
-        } else if (values.manualWeighing) {
-            values.command = "M"
-        } else {
-            values.command = "SI"
+        // setLoader(true)
+        console.log(props.host)
+        const valueToSend = {
+            guid: uuid(),
+            name: values.name,
+            operator: values.operator,
+            scaleId: scale.id,
+            scaleName: scale.name,
+            item: item.id,
+            tare: 0,
+            unit: 'g',
+            base: values.base,
+            min: values.min,
+            max: values.max,
+            quantity: values.quantity,
+            type: values.type,
+            intervalValue: values.intervalValue,
+            manualWeighing: false,
+            threshold: values.threshold,
+            status:'NotStarted'
+
+
         }
-        values.scaleName = scale.name
-        values.base = parseInt(values.base)
-        values.intervalValue = parseInt(values.intervalValue)
-        values.min = parseInt(values.min)
-        values.max = parseInt(values.max)
-        values.treshold = parseInt(values.treshold)
-        values.quantity = parseInt(values.quantity)
-        fetch('http://localhost:5000/order', {
+
+        fetch(`http://${props.host}:5000/order`, {
+        // fetch(`http://localhost:5000/order`, {
             method: 'POST',
-            body: JSON.stringify(values)
+            body: JSON.stringify(valueToSend)
         })
             .then(data => data.json())
-            .then(data => {
-                values.guid = data
-                SocketLib.sendToSocket(
-                    values, connection)
-                props.setCurrentOrder(values)
-                props.drawerView('orderDetails')
-            })
+            .then(data => {setLoader(false); setOpen(false)})
             .catch((err) => {
+                setLoader(false)
+                setOpen(false)
                 console.log(err)
             })
     }
@@ -213,43 +226,44 @@ export default function TextFields(props) {
     }
 
     React.useEffect(() => {
+        console.log(props.order)
         if (order.scaleName) {
             setCurrentScale(order.scale)
         }
     })
     return (
         <div>
-            {loader&&<Loader/>}
+            {loader && <Loader />}
             <Dialog
                 open={openItem}
                 maxWidth='lg'
                 // width='80%'
                 fullWidth={true}
-                onClose={()=>setOpenItem(false)}
+                onClose={() => setOpenItem(false)}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">{props.lang.items}</DialogTitle>
                 <DialogContent
-                
+
                 >
-                    
-                        <Groups 
-                            width={'100%'}
-                            addItem={addItem}
-                            setOpenItem={setOpenItem}
-                            openItem={openItem}
-                            lang={props.lang}
-                            buttonDisable={true}
-                            user={props.user}
-                        />
-                    
+
+                    <Groups
+                        width={'100%'}
+                        addItem={addItem}
+                        setOpenItem={setOpenItem}
+                        openItem={openItem}
+                        lang={props.lang}
+                        buttonDisable={true}
+                        user={props.user}
+                    />
+
                 </DialogContent>
                 <DialogActions>
                     {/* <Button onClick={()=>setOpenItem(false)} color="primary">
                         Wybierz
                     </Button> */}
-                    <Button onClick={()=>setOpenItem(false)} color="primary" autoFocus>
+                    <Button onClick={() => setOpenItem(false)} color="primary" autoFocus>
                         {props.lang.back}
                     </Button>
                 </DialogActions>
@@ -290,8 +304,8 @@ export default function TextFields(props) {
                     margin="normal"
                     variant="outlined"
                 >
-                    {operators.map(option => (
-                        <MenuItem key={option.id} value={option.userName}>
+                    {operators.map((option, i) => (
+                        <MenuItem key={i} value={option.userName}>
                             {option.firstName + ' ' + option.lastName}
                         </MenuItem>
                     ))}
@@ -395,11 +409,11 @@ export default function TextFields(props) {
                 />
 
                 <TextField
-                    id="treshold"
-                    label={props.lang.treshold}
-                    error={errors.treshold}
-                    value={values.treshold}
-                    onChange={handleChange('treshold')}
+                    id="threshold"
+                    label={props.lang.threshold}
+                    error={errors.threshold}
+                    value={values.threshold}
+                    onChange={handleChange('threshold')}
                     type="number"
                     className={classes.textField}
                     InputLabelProps={{
@@ -416,13 +430,14 @@ export default function TextFields(props) {
             </div>
             <div className={classes.container} noValidate autoComplete="off">
                 <FormControlLabel
+                    
                     control={
-                        <Checkbox color="primary" id="test" value={values.manualWeighing} onChange={changeCheckboxValue('manualWeighing')} />
+                        <Checkbox color="primary" id="test" checked={values.manualWeighing} value={values.manualWeighing} onChange={changeCheckboxValue('manualWeighing')} />
                     }
                     label={props.lang.manualWeighing}
                 />
                 <FormControlLabel
-                disabled={true}
+                    disabled={true}
                     control={
                         <Checkbox color="primary" value={values.range} onChange={changeCheckboxValue('range')} />
                     }
@@ -473,16 +488,17 @@ export default function TextFields(props) {
 
 
             </div>
-            <div className={classes.container} noValidate autoComplete="off">
+            { !values.manualWeighing &&<div className={classes.container} noValidate autoComplete="off">
 
-                <FormControl component="fieldset">
+               <FormControl component="fieldset">
                     {/* <FormLabel component="legend">labelPlacement</FormLabel> */}
-                    {!values.manualWeighing && <RadioGroup aria-label="position" name="position" value={values.interval} style={{ marginTop: '20px', width: '250px' }} onChange={handleChange('interval')} row>
+                     <RadioGroup aria-label="position" name="position" value={values.interval} style={{ marginTop: '20px', width: '250px' }} onChange={handleChange('interval')} row>
                         <FormControlLabel
                             value="stab"
                             control={<Radio color="primary" />}
                             label="Stabilny"
                             labelPlacement="start"
+                            disabled={true}
                         />
                         <FormControlLabel
                             value="interval"
@@ -491,13 +507,13 @@ export default function TextFields(props) {
                             labelPlacement="start"
                         />
 
-                    </RadioGroup>}
+                    </RadioGroup>
                 </FormControl>
-                {values.interval === 'interval' && <TextField
+                <TextField
                     id="intervalValue"
                     label="Interwał"
                     error={errors.intervalValue}
-                    value={values.intervalValue}
+                    value={values.intervalValue || 0}
                     onChange={handleChange('intervalValue')}
                     type="number"
                     min="0"
@@ -514,8 +530,8 @@ export default function TextFields(props) {
                     }}
                     margin="normal"
                     variant="outlined"
-                />}
-            </div>
+                />
+            </div>}
 
 
             <div className={classes.hr} />
@@ -535,11 +551,11 @@ export default function TextFields(props) {
                         <li>{props.lang.orderName}: {values.name}</li>
                         <li>{props.lang.operator}: {values.operator}</li>
                         <li>{props.lang.scaleName}: {scale.name}/{values.scale}</li>
-                        {values.item&&<li>{props.lang.item}: {values.item}</li>}
+                        {values.item && <li>{props.lang.item}: {values.item}</li>}
                         <li>{props.lang.base}: {values.base}</li>
                         <li>{props.lang.max}: {values.max}</li>
                         <li>{props.lang.min}: {values.min}</li>
-                        <li>{props.lang.treshold}: {values.treshold}</li>
+                        <li>{props.lang.threshold}: {values.threshold}</li>
                         <li>{props.lang.quantity}: {values.quantity}</li>
                         {values.interval === 'interval' && <li>Interwał: {values.intervalValue}</li>}
 
@@ -552,7 +568,7 @@ export default function TextFields(props) {
                         {errors.base && <li>{props.lang.base}</li>}
                         {errors.max && <li>{props.lang.max}</li>}
                         {errors.min && <li>{props.lang.min}</li>}
-                        {errors.treshold && <li>{props.lang.treshold}</li>}
+                        {errors.threshold && <li>{props.lang.threshold}</li>}
                         {errors.quantity && <li>{props.lang.quantity}</li>}
                         {errors.intervalValue && <li>Interwał</li>}
                     </DialogContentText>}

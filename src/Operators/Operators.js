@@ -69,7 +69,7 @@ class Operators extends Component {
     // }
 
     operators = () => {
-        fetch('http://localhost:5000/operators', {
+        fetch(`http://${this.props.host}:5000/operators`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ class Operators extends Component {
     addOperator = (values) => {
         if (values.firstName && values.lastName && values.userName && values.password && values.rePassword && (values.password === values.rePassword)) {
 
-            fetch('http://localhost:5000/operators', {
+            fetch(`http://${this.props.host}:5000/operators`, {
                 method: 'POST',
                 body: JSON.stringify(values)
             })

@@ -72,7 +72,7 @@ class AllMeasurments extends React.Component {
             start = new Date(newDate - (86400000 * 30))
             end = new Date((newDate + (86400000 * 1)))
         }
-        fetch('http://localhost:5000/addDevice', {
+        fetch(`http://${this.props.host}:5000/addMeasurement`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -83,6 +83,7 @@ class AllMeasurments extends React.Component {
         })
             .then(data => data.json())
             .then(measurments => {
+                console.log(measurments)
                 this.generateRows()
                 let test 
                     if (this.props.user.userName !== 'admin') {
@@ -175,14 +176,14 @@ class AllMeasurments extends React.Component {
                         <Grouping autoExpandAll={false} />
                         {/* <Scrolling mode={'virtual'} /> */}
                         <SearchPanel visible={false} />
-                        <Paging defaultPageSize={10} />
+                        <Paging defaultPageSize={15} />
                         <HeaderFilter visible={true} />
                         {/* <Sorting mode={'none'} /> */}
                         {/* <Scrolling mode={'infinite'}  /> */}
                         <LoadPanel enabled={true} />
                         <Pager
                             showPageSizeSelector={true}
-                            allowedPageSizes={[5, 10, 20]}
+                            allowedPageSizes={[10, 15, 20]}
                             showInfo={true}
                             infoText={`${this.props.lang.page} {0} ${this.props.lang.of}  {1}`}
                         />

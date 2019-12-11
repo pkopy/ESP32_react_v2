@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DataGrid, { Column } from 'devextreme-react/data-grid';
 
-export default () => {
+export default (props) => {
     const [showEmployeeInfo, setShowEmployeeInfo] = useState(false)
     const [selectedRowNotes, setSelectedRowNotes] = useState('')
     const [measurments, setMeasurments] = useState([])
@@ -51,7 +51,7 @@ export default () => {
             start = new Date(newDate - (86400000 * 30))
             end = new Date((newDate + (86400000 * 1)))
         }
-        fetch('http://localhost:5000/addDevice', {
+        fetch(`http://${props.host}:5000/addMeasurement`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

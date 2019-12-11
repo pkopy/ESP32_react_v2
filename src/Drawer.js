@@ -47,7 +47,7 @@ import LinkOffIcon from '@material-ui/icons/LinkOff';
 import { Tooltip } from '@material-ui/core';
 import reds from './img/3xred.gif'
 import UndoIcon from '@material-ui/icons/Undo';
-
+import SearchAndAddScales from './Scales/SearchAndAddScales'
 
 const drawerWidth = 240;
 
@@ -132,12 +132,13 @@ export default function PersistentDrawerLeft(props) {
     const [color, setColor] = React.useState()
     const [user, setUser] = React.useState({})
     const [connection, setConnection] = React.useState()
-    
+    const [openSearch, setOpenSearch] = React.useState(false)
     const [open, setOpen] = React.useState(false);
     const [order, setOrder] = React.useState()
     const [curentScale, setCurrentScale] = React.useState({})
     const [currentOrder, setCurrentOrder] = React.useState({})
     const [home, setHome] = React.useState()
+    // const [alert,setAlert] = React.useState({visible:true, title:'Alert', context:'To jest test'})
     const [view, setView] = React.useState({
         login: true,
         order: false,
@@ -199,7 +200,7 @@ export default function PersistentDrawerLeft(props) {
     // useEffect(() => {
 
     // }, [user])
-
+    
 
     function drawerView(name) {
         // console.log(props.newOrder)
@@ -273,12 +274,13 @@ export default function PersistentDrawerLeft(props) {
                         [classes.appBarShift]: open,
                     })}
                 >
-                    <Toolbar>
+                    <Toolbar >
                         {user.right > 0 && <IconButton
                             color="inherit"
                             aria-label="open drawer"
                             onClick={handleDrawerOpen}
                             edge="start"
+                            id="menu_drawer"
                             className={clsx(classes.menuButton, open && classes.hide)}
                         >
                             <MenuIcon />
@@ -292,8 +294,8 @@ export default function PersistentDrawerLeft(props) {
                         {/* <PowerIcon fontSize="large" style={{color:'green'}}></PowerIcon> */}
                         <div className={classes.socketStaus}>
                             <div style={{marginRight:16}}>
-                                {home === 'scales'&&<Tooltip title={props.lang.search}>
-                                    <SearchIcon fontSize='large' className={classes.undo} onClick={()=>drawerView('scales')}></SearchIcon>
+                                {props.socketStatus && home  === 'scales'&&<Tooltip title={props.lang.search}>
+                                    <SearchIcon fontSize='large' className={classes.undo} onClick={()=>setOpenSearch(!openSearch)}></SearchIcon>
                                 </Tooltip>} 
 
                                 {(home && home !== 'scales')&&<Tooltip title={props.lang.back}>
@@ -307,12 +309,12 @@ export default function PersistentDrawerLeft(props) {
                                 </Tooltip>}
 
                             </div>
-                            <div>
+                            {/* <div>
                                 {user.firstName && <Avatar aria-label="recipe" className={classes.avatar}>
                                     {user.firstName[0].toUpperCase()}
                                 </Avatar>}
 
-                            </div>
+                            </div> */}
 
                         </div>
                         
@@ -350,7 +352,7 @@ export default function PersistentDrawerLeft(props) {
                         </ListItem>
                         {user.right > 2 && <ListItem button onClick={myOperators}>
                             <ListItemIcon><SupervisorAccountIcon color="primary" /></ListItemIcon>
-                            <ListItemText primary={props.lang.operators} />
+                            <ListItemText primary={props.lang.operators} id="operators"/>
                         </ListItem>}
                     </List>
                     <Divider />
@@ -399,7 +401,17 @@ export default function PersistentDrawerLeft(props) {
                         setCurrentScale={setCurrentScale}
                         socket={props.socket}
                         socketStatus={props.socketStatus}
+                        host={props.host}
                     />}
+
+                    {openSearch&&<SearchAndAddScales
+                        setOpenSearch={setOpenSearch}
+                        socket={props.socket}
+                        lang={props.lang}
+                        host={props.host}
+                    />}
+
+                
 
                     {view.ordersList && user.right > 1 && <OrdersList
                         yourOrders={props.yourOrders}
@@ -409,6 +421,8 @@ export default function PersistentDrawerLeft(props) {
                         orders={props.orders}
                         lang={props.lang}
                         user={user}
+                        socket={props.socket}
+                        host={props.host}
                     />}
 
 
@@ -422,6 +436,8 @@ export default function PersistentDrawerLeft(props) {
                         drawerView={drawerView}
                         lang={props.lang}
                         user={user}
+                        socket={props.socket}
+                        host={props.host}
                     />}
 
                     {view.freeWeighing && <Detail
@@ -431,6 +447,7 @@ export default function PersistentDrawerLeft(props) {
                         setMeasure={props.setMeasure}
                         lang={props.lang}
                         socket={props.socket}
+                        host={props.host}
                     />}
                     {view.orderDetails && <OrderDetails
                         data={currentOrder}
@@ -438,22 +455,28 @@ export default function PersistentDrawerLeft(props) {
                         viewOrder={viewOrder}
                         order={order}
                         lang={props.lang}
+                        host={props.host}
+                        socket={props.socket}
+                        orderDetails={currentOrder}
                     />}
                     {view.allMeasurements && <AllMeasurements
                         drawerView={drawerView}
                         lang={props.lang}
                         user={user}
+                        host={props.host}
                     />}
                     {view.operators && <Operators
                         drawerView={drawerView}
                         updateOperators={props.updateOperators}
                         lang={props.lang}
+                        host={props.host}
                     ></Operators>}
 
                     {view.items && <Groups
                         lang={props.lang}
                         drawerView={drawerView}
                         user={user}
+                        host={props.host}
                     />}
                     <Typography paragraph>
 
@@ -464,6 +487,7 @@ export default function PersistentDrawerLeft(props) {
                         drawerView={drawerView}
                         lang={props.lang}
                         changeLang={props.changeLang}
+                        host={props.host}
                     />}
 
                     {view.login && <Login
@@ -471,6 +495,7 @@ export default function PersistentDrawerLeft(props) {
                         user={user}
                         setUser={setUser}
                         drawerView={drawerView}
+                        host={props.host}
                     >
 
                     </Login>}

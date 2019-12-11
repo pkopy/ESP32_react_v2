@@ -59,6 +59,7 @@ export default function SignIn(props) {
     const [guest, setGuest] = React.useState(false)
     const [login, setLogin] = React.useState({})
     const [error, setError] = React.useState(false)
+    const host = process.env.NODE_ENV !== 'production'? '10.10.3.57' : window.location.hostname
     const showIcon = () => {
         let check = !guest
         setGuest(check)
@@ -83,7 +84,8 @@ export default function SignIn(props) {
     }
     const getUser = () => {
         if (!guest) {
-            fetch('http://localhost:5000/login', {
+            // fetch(`http://${host}:5000/login`, {
+            fetch(`http://${host}:5000/login`, {
                 method: 'POST',
                 body: JSON.stringify(login)
             })
@@ -158,6 +160,7 @@ export default function SignIn(props) {
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        id="login_button"
                     >
                         {props.lang.login}
                     </Button>

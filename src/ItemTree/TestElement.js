@@ -66,7 +66,7 @@ export default (props) => {
                 base: 0,
                 min: 0,
                 max: 0,
-                treshold: 0
+                threshold: 0
             }
             setValues(group)
         }
@@ -78,7 +78,7 @@ export default (props) => {
         base: 0,
         min: 0,
         max: 0,
-        treshold: 0
+        threshold: 0
     }
 
 
@@ -99,7 +99,7 @@ export default (props) => {
     }
     const updateItem = () => {
         props.setTree(true)
-        fetch('http://localhost:5000/item', {
+        fetch(`http://${props.host}:5000/item`, {
             method: 'PUT',
             body: JSON.stringify(values)
         })
@@ -123,11 +123,11 @@ export default (props) => {
         values.base = parseInt(values.base)
         values.min = parseInt(values.min)
         values.max = parseInt(values.max)
-        values.treshold = parseInt(values.treshold)
+        values.threshold = parseInt(values.threshold)
         values.isDirectory = false
         values.hasItems = false
         // console.log(values)
-        fetch('http://localhost:5000/item', {
+        fetch(`http://${props.host}:5000/item`, {
             method: 'POST',
             body: JSON.stringify(values)
         })
@@ -151,7 +151,7 @@ export default (props) => {
 
     const deleteItem = () => {
         props.setTree(true)
-        fetch('http://localhost:5000/item', {
+        fetch(`http://${window.location.hostname}:5000/item`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -255,15 +255,15 @@ export default (props) => {
                 variant="outlined"
             />
             <TextField
-                id="treshold"
+                id="threshold"
                 label="Próg LO"
                 // error={errors.name}
                 type="number"
                 className={classes.dense}
-                value={values.treshold}
+                value={values.threshold}
                 disabled={disabled}
                 // value={values.name}
-                onChange={handleChange('treshold')}
+                onChange={handleChange('threshold')}
                 margin='dense'
                 InputLabelProps={{
                     shrink: true,

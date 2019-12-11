@@ -52,7 +52,7 @@ class OrderDetails extends Component {
 
     componentDidMount = () => {
         const orders = () => {
-            fetch('http://localhost:5000/addDevice', {
+            fetch(`http://${this.props.host}:5000/addMeasurement`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -138,7 +138,7 @@ class OrderDetails extends Component {
 
     orderDetails = (data) => {
 
-        fetch('http://localhost:5000/addDevice', {
+        fetch(`http://${this.props.host}:5000/addMeasurement`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ class OrderDetails extends Component {
 
     deleteOrder = (data) => {
 
-        fetch('http://localhost:5000/order', {
+        fetch(`http://${this.props.host}:5000/order`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -175,6 +175,57 @@ class OrderDetails extends Component {
             .catch(err => console.log(err))
     }
 
+    startOrder = () => {
+        console.log('props', this.props)
+        if (this.props.socket.readyState === 1) {
+            this.props.socket.send(JSON.stringify({command:"START_ORDER", order:this.props.orderDetails.guid}))
+
+            this.props.socket.onmessage = (e) => {
+                let data = e.data;
+                const response = JSON.parse(data);
+                console.log('start ', response)
+                // if (response.respond === 'ORDER_ADDED_SUCCESSFULLY') {
+                //     setTimeout(() => {
+                //         setLoader(false)
+                //         setOpen(false)
+                //         props.drawerView('ordersList')
+                //     }, 1000)
+                // } else {
+                //     setLoader(false)
+                // }
+                // clearInterval(timer)
+            }
+
+
+
+        }
+    }
+
+    stopOrder = () => {
+        console.log('props', this.props)
+        if (this.props.socket.readyState === 1) {
+            this.props.socket.send(JSON.stringify({command:"CANCEL_OPERATION", scaleId:this.props.orderDetails.scaleId}))
+
+            this.props.socket.onmessage = (e) => {
+                let data = e.data;
+                const response = JSON.parse(data);
+                console.log('start ', response)
+                // if (response.respond === 'ORDER_ADDED_SUCCESSFULLY') {
+                //     setTimeout(() => {
+                //         setLoader(false)
+                //         setOpen(false)
+                //         props.drawerView('ordersList')
+                //     }, 1000)
+                // } else {
+                //     setLoader(false)
+                // }
+                // clearInterval(timer)
+            }
+
+
+
+        }
+    }
 
     render() {
         return (
@@ -211,6 +262,13 @@ class OrderDetails extends Component {
                     <Button style={{ marginLeft: '15px' }} variant="outlined" color="secondary" onClick={() => { this.handleClickOpen() }}>
                         {this.props.lang.delete}
                     </Button>
+                    <Button style={{ marginLeft: '15px' }} variant="outlined" color="secondary" onClick={this.startOrder}>
+                        START
+                    </Button>
+                    <Button style={{ marginLeft: '15px' }} variant="outlined" color="secondary" onClick={this.stopOrder}>
+                        STOP
+                    </Button>
+                    {/* Reports 
                     <div onClick={() => CreateXLSX({ rows: this.state.rows, name: this.state.data.name })} className="imgDiv">
                         <img className="img" alt="export-to-xlsx" src={excelLogo} />
                     </div>
@@ -219,7 +277,7 @@ class OrderDetails extends Component {
                     </div>
                     <div className="imgDiv" onClick={this.toggleChart} >
                         <img className="img" alt="chart-toggle-icon" src={!this.state.chart ? chartIcon : listIcon} />
-                    </div>
+                    </div> */}
                 </div>
 
 

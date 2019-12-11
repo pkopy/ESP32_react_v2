@@ -10,6 +10,7 @@
 
 # production
 /build
+/build-ap
 
 # misc
 .DS_Store
@@ -24,3 +25,8 @@ yarn-error.log*
 
 .env
 src/Orders/OrdersList copy.js
+src/Details/DevExpressTable copy.js
+lib/output.pdf
+lib/output.pdf
+src/helpers/pdfPrint.js
+
