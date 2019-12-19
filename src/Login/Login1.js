@@ -57,9 +57,9 @@ const useStyles = makeStyles(theme => ({
 export default function SignIn(props) {
     const classes = useStyles();
     const [guest, setGuest] = React.useState(false)
-    const [login, setLogin] = React.useState({})
+    const [login, setLogin] = React.useState({userName: "admin", password: "admin"})
     const [error, setError] = React.useState(false)
-    const host = process.env.NODE_ENV !== 'production'? '10.10.3.57' : window.location.hostname
+    const host = process.env.NODE_ENV !== 'production'? 'localhost' : window.location.hostname
     const showIcon = () => {
         let check = !guest
         setGuest(check)
@@ -92,6 +92,7 @@ export default function SignIn(props) {
             .then(user => user.json())
             
             .then(user => {
+                console.log(user)
                 if (Array.isArray(user) && user.length > 0) {
                     
                     setError(false)
@@ -149,11 +150,11 @@ export default function SignIn(props) {
 
                     </div>}
                     {guest&&<img src={RadwagIcon} alt='Radwag logo' width="70%"></img>}
-                    <FormControlLabel
+                    {/* <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
                         label={props.lang.loginAsGuest}
                         onChange={showIcon}
-                    />
+                    /> */}
                     <Button
                         onClick={getUser}
                         fullWidth

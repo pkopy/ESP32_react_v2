@@ -21,8 +21,8 @@ import { Hidden } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
     card: {
-        maxWidth: 250,
-        minWidth: 200,
+        // maxWidth: 300,
+        minWidth: 250,
         margin: 10,
 
     },
@@ -57,13 +57,13 @@ export default function RecipeReviewCard(props) {
     const [img, setImg] = React.useState()
 
     function startWeighing(scale) {
-        // if (props.socket.readyState === 1) {
+        if (props.socket.readyState === 1) {
 
             props.drawerView('freeWeighing')
             scale.img = img
             props.setCurrentScale(scale)
             console.log(scale)
-         // }
+        }
     }
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -78,10 +78,18 @@ export default function RecipeReviewCard(props) {
     const hidden = (scale) => {
         console.log(scale)
         props.setLoader(true)
-        props.socket.send(JSON.stringify({command:"HIDE_SCALE", scaleId: scale.id}))
-        setTimeout(() => {
-            props.setLoader(false)
-        },3000)
+        props.socket.send(JSON.stringify({command:"HIDE_SCALE", scaleGuid: scale.guid}))
+
+        props.socket.onmessage = (e) => {
+            let data = e.data;
+            const response = JSON.parse(data);
+            console.log(response)
+            if (response.command === 'HIDE_SCALE' && response.respond === 'OK') {
+                props.getScales()
+                props.setLoader(false)
+            }
+            
+        }
     }
 
 
@@ -92,7 +100,7 @@ export default function RecipeReviewCard(props) {
             setImg(hy10)
         } else if (props.scale.type.startsWith('WTC')) {
             setImg(wtc)
-        } else if (props.scale.type.startsWith('Pue 71')) {
+        } else if (props.scale.type.startsWith('Pue 71') || props.scale.type.startsWith('PUE 71')) {
             setImg(pue71)
         }
     },[props.scale])

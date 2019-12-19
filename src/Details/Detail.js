@@ -78,7 +78,7 @@ export default function PaperSheet(props) {
     const syncMeasurement = () => {
         if (socket.readyState === 1) {
 
-            socket.send(JSON.stringify({ command: 'DOWNLOAD_WEIGHINGS', "scaleId": props.curentScale.id }))
+            socket.send(JSON.stringify({ command: 'DOWNLOAD_WEIGHINGS', "scaleGuid": props.curentScale.guid }))
 
 
             console.log('start sync')
@@ -91,7 +91,7 @@ export default function PaperSheet(props) {
         console.log('stop sync')
 
         if (socket.readyState === 1) {
-            socket.send(JSON.stringify({ command: 'CANCEL_OPERATION', "scaleId": props.curentScale.id }))
+            socket.send(JSON.stringify({ command: 'CANCEL_OPERATION', "scaleGuid": props.curentScale.guid }))
 
             socket.onmessage = (e) => {
                 let data = e.data;
@@ -113,7 +113,7 @@ export default function PaperSheet(props) {
         if (socket.readyState === 1) {
             setSocket(socket)
             setConnection(true)
-            socket.send(JSON.stringify({ command: 'WEIGHINGS_STATUS', "scaleId": props.curentScale.id }))
+            socket.send(JSON.stringify({ command: 'WEIGHINGS_STATUS', "scaleGuid": props.curentScale.guid }))
             socket.onmessage = (e) => {
                 let data = e.data;
                 const response = JSON.parse(data);
@@ -142,7 +142,11 @@ export default function PaperSheet(props) {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-
+            
+                <Paper className={'small_sight'} style={{width:'100%', height: '75vh', minWidth: 300}}>
+                    <img src={props.curentScale.img} style={{ width: '100%' }} />
+                </Paper>
+            
             <div className={xx}>
                 <Paper className="img" >
                     {/* <h1 style={{margin:0, marginLeft: 10}}>{props.curentScale.name}</h1> */}
@@ -181,7 +185,7 @@ export default function PaperSheet(props) {
                         <div style={{ textAlign: 'left' }}>
                             <h3 style={{ margin: 0, marginLeft: 10 }}>{props.lang.connType}:</h3>
                             <h3 style={{ margin: 0, marginLeft: 10 }}>{props.lang.addressIp}:</h3>
-                            <h3 style={{ margin: 0, marginLeft: 10 }}>{props.lang.connType}:</h3>
+                            {/* <h3 style={{ margin: 0, marginLeft: 10 }}>{props.lang.connType}:</h3> */}
                             <h3 style={{ margin: 0, marginLeft: 10 }}>{props.lang.serial}:</h3>
                             <h3 style={{ margin: 0, marginLeft: 10 }}>{props.lang.type}:</h3>
 
@@ -196,9 +200,9 @@ export default function PaperSheet(props) {
                             </div>
                         </div>
                         <div style={{ textAlign: 'left', marginLeft: '2em', color: '#3f51b5' }}>
-                            <h3 style={{ margin: 0, marginLeft: 10 }}>{props.curentScale.connType}</h3>
+                            <h3 style={{ margin: 0, marginLeft: 10 }}>{props.curentScale.connection_type}</h3>
                             <h3 style={{ margin: 0, marginLeft: 10 }}>{props.curentScale.address}</h3>
-                            <h3 style={{ margin: 0, marginLeft: 10 }}>{props.curentScale.connType}</h3>
+                            {/* <h3 style={{ margin: 0, marginLeft: 10 }}>{props.curentScale.connType}</h3> */}
                             <h3 style={{ margin: 0, marginLeft: 10 }}>{props.curentScale.serial}</h3>
                             <h3 style={{ margin: 0, marginLeft: 10 }}>{props.curentScale.type}</h3>
                             <br></br>
@@ -222,16 +226,16 @@ export default function PaperSheet(props) {
 
             </div>
             <div className="details">
-                <Paper className="img">
+                <Paper className="img details_chart" >
                     <LastMeasurementChart
-                        scaleId={props.curentScale.id}
+                        scaleId={props.curentScale.guid}
                         chart={true}
                         host={props.host}
                     ></LastMeasurementChart>
                 </Paper>
                 <Paper className="img">
                     <LastMeasurementChart
-                        scaleId={props.curentScale.id}
+                        scaleId={props.curentScale.guid}
                         chart={false}
                         host={props.host}
                     ></LastMeasurementChart>

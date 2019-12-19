@@ -13,6 +13,9 @@
     margin-top: 16px;
     // height: 350px;
 }
+.small_sight {
+    display: none;
+}
 
 @media only screen and (max-width: 1200px) {
     .details {
@@ -23,6 +26,24 @@
     .img {
         width: 100%;
     }
+    
+    .details_chart {
+        display: none;
+    }
+    
+}
+
+@media only screen and (max-width: 500px) {
+    .small_sight {
+        display: flex;
+    }
+    .details {
+        display: none
+    }
+    .menu_title {
+        display:none
+    }
+    
 }
 
 @media only screen and (max-height: 850px) {

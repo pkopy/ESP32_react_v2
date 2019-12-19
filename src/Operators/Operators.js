@@ -12,6 +12,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
+import './Operators.scss';
 
 import DataGrid, {
     Column,
@@ -20,12 +21,18 @@ import DataGrid, {
     Paging,
     SearchPanel,
     Pager,
-    HeaderFilter
+    HeaderFilter, Export, ColumnChooser, LoadPanel, FilterRow
 } from 'devextreme-react/data-grid';
+import {Template} from "devextreme-react/core/template";
 
 
 
 class Operators extends Component {
+    constructor(props) {
+        super(props);
+        this.onToolbarPreparing = this.onToolbarPreparing.bind(this);
+        this.toolbarItemRender = this.toolbarItemRender.bind(this);
+    }
     state = {
         columns: [
             { name: 'firstName', title: this.props.lang.firstName },
@@ -177,12 +184,52 @@ class Operators extends Component {
         })
     }
 
+    toolbarItemRender() {
+        return (
+            <p></p>
+        );
+    }
+
+    showAddOperatorModal() {
+        this.setState({ openAddOperator: true })
+    }
+
+    onToolbarPreparing(e) {
+        e.toolbarOptions.items.unshift(
+            {
+                location: 'before',
+                template: 'totalGroupCount'
+
+
+            },
+            // {
+            //     location: 'after',
+            //     widget: 'dxButton',
+            //     options: {
+            //         icon: 'refresh',
+            //         hint: 'Refresh',
+            //         onClick: this.allMeasurments.bind(this)
+            //     }
+            //
+            // },
+            {
+                location: 'after',
+                widget: 'dxButton',
+                options: {
+                    icon: 'plus',
+                    hint: 'PDF',
+                    onClick:  this.showAddOperatorModal.bind(this)
+                }
+            }
+        );
+    }
+
 
 
     render() {
 
         return (
-            <div>
+            <div className="root root-styles">
                 <Dialog
                     open={this.state.openAddOperator}
                     maxWidth='lg'
@@ -331,15 +378,15 @@ class Operators extends Component {
                     </DialogActions>
                 </Dialog>
                 <div className="imgContainer" style={{ width: "70%", marginRight: "auto", marginLeft: "auto" }}>
-                    <Button style={{ margin: '15px' }} variant="outlined" color="primary" onClick={() => { this.props.drawerView('scales') }}>
-                        {this.props.lang.back}
-                    </Button>
-                    <Button style={{ margin: '15px', marginRight: 0 }} variant="outlined" color="primary" onClick={() => { this.setState({ openAddOperator: true }) }}>
-                        {this.props.lang.addOperator}
-                    </Button>
+                    {/*<Button style={{ margin: '15px' }} variant="outlined" color="primary" onClick={() => { this.props.drawerView('scales') }}>*/}
+                    {/*    {this.props.lang.back}*/}
+                    {/*</Button>*/}
+                    {/*<Button style={{ margin: '15px', marginRight: 0 }} variant="outlined" color="primary" onClick={() => { this.setState({ openAddOperator: true }) }}>*/}
+                    {/*    {this.props.lang.addOperator}*/}
+                    {/*</Button>*/}
 
                 </div>
-                <Paper style={{ width: '70%', marginLeft: 'auto', marginRight: 'auto' }}>
+                <Paper style={{ marginLeft: 'auto', marginRight: 'auto' }}>
                     {/* <Grid
                         rows={this.state.rows}
                         columns={this.state.columns}
@@ -347,6 +394,7 @@ class Operators extends Component {
                         onRowDblClick={(e) => this.props.orderDetails(e.data)}
                         // onDoubleClick={() => console.log('click')}
                     >
+
 
                         <Table />
                         
@@ -358,18 +406,43 @@ class Operators extends Component {
                         selection={{ mode: 'single' }}
                         showBorders={false}
                         hoverStateEnabled={true}
-                        keyExpr={'userName'}
+                        rowAlternationEnabled={true} //co drugi wiersz ma inny kolor
+                        showColumnLines={true} //pionowe bordery
+                        keyExpr={'user_name'}
                         style={{
-                            padding: 20
+                            padding: 5
                         }}
                         onRowDblClick={(e) => console.log(e.data)}
+                        onToolbarPreparing={this.onToolbarPreparing}
                     >
-                        <Column dataField={'firstName'} caption={this.props.lang.firstName} />
-                        <Column dataField={'lastName'} caption={this.props.lang.lastName} />
-                        <Column dataField={'userName'} caption={this.props.lang.user} />
+                        <Export enabled={true} />
+                        <ColumnChooser enabled={true} mode={"select"} />
+                        <FilterRow visible={true} />
+
+                        <GroupPanel visible={true}
+
+                                    emptyPanelText={
+                                        this.props.lang.dragColumn
+                                    }
+                                    onClick={console.log(this)}
+
+                        />
+                        <Grouping autoExpandAll={false} />
+                        <HeaderFilter visible={true} />
+                        <LoadPanel enabled={false} />
+                        <Pager
+                            backgroundColor='red'
+                            showPageSizeSelector={true}
+                            allowedPageSizes={[10, 15, 20]}
+                            showInfo={true}
+                            infoText={`${this.props.lang.page} {0} ${this.props.lang.of}  {1}`}
+                        />
+                        <Column dataField={'first_name'} caption={this.props.lang.firstName} />
+                        <Column dataField={'last_name'} caption={this.props.lang.lastName} />
+                        <Column dataField={'user_name'} caption={this.props.lang.user} />
                         <Column dataField={'right'} caption={this.props.lang.rights} />
 
-
+                        <Template name="totalGroupCount" render={this.toolbarItemRender} />
                     </DataGrid>
                 </Paper>
             </div>

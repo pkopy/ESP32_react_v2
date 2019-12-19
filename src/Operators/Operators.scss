@@ -1,0 +1,59 @@
+.root-styles {
+  max-width: none;
+  .imgContainer {
+    display: block;
+    width: 100%;
+    float: left;
+    .imgDiv {
+      text-align: center;
+      vertical-align: middle;
+      line-height: 40px;
+      float: left;
+      svg {
+        line-height: 40px;
+        vertical-align: middle;
+      }
+      img {
+        height: 24px;
+        line-height: 40px;
+        vertical-align: middle;
+        display: inline-block;
+      }
+
+    }
+
+    .toRight {
+      float: right;
+      button {
+        float: left;
+      }
+    }
+    .toLeft {
+      float: left;
+      .MuiFormControl-root {
+        margin-top: 0px !important;
+        margin-bottom: 0px !important;
+        float: left;
+        min-width: 200px;
+      }
+    }
+  }
+  .MuiPaper-root {
+    width: 100%;
+    display: block;
+    float: left;
+    // height: calc(100vh - 180px);
+  }
+  .datePickerContainer {
+    display: block;
+    float: left;
+    .MuiGrid-container {
+      float: left;
+      display: block;
+      width: auto;
+      .MuiInputBase-input {
+        padding-top: 3px;
+      }
+    }
+  }
+}

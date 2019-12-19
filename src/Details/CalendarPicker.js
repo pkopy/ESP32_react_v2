@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
+    KeyboardDateTimePicker
 } from '@material-ui/pickers';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -16,19 +17,20 @@ class CalendarPicker extends Component {
         { key: 1, name: this.props.lang.week },
         { key: 2, name: this.props.lang.month },
         { key: 3, name: this.props.lang.any }
-    
     ]
+
     state = {
         selectedDateEnd: new Date(Date.now()),
-        selectedDateStart: new Date(Date.now() - (86400000 * 30)),
-        rangeValue: 2,
+        selectedDateStart: new Date(Date.now() - (86400000 * 2)),
+        rangeValue: 3,
     }
 
     handleDateChange = (date, name, cb, rangeValue) => {
-        let start = new Date(this.setDate() - (86400000 * 30))
-        let end = new Date((this.setDate() + (86400000 * 1)))
+        let start = new Date(Date.now() - (86400000 * 2))
+        let end = new Date(Date.now())
         let newEnd, newStart
         // let onlyDate = 
+        console.log('data', date, name,  rangeValue, start, end)
         if (name === 'from' && date) {
             this.setState({ selectedDateStart: date })
             newStart = (Date.parse(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`) )
@@ -45,46 +47,54 @@ class CalendarPicker extends Component {
         switch (rangeValue) {
 
             case 0:
-                this.setState({ selectedDateStart: new Date(this.setDate()) })
-                this.setState({ selectedDateEnd: new Date((this.setDate())) })
-                start = new Date(this.setDate())
-                end = new Date((this.setDate() + (86400000 * 1)))
+                this.setState({ selectedDateStart: new Date(Date.now() - (86400000 * 1)) })
+                this.setState({ selectedDateEnd: new Date(Date.now()) })
+                start = new Date(Date.now() - (86400000 * 1))
+                end = new Date(Date.now())
+
                 break
             case 1:
-                this.setState({ selectedDateStart: new Date(this.setDate() - (86400000 * 7)) })
-                this.setState({ selectedDateEnd: new Date(this.setDate()) })
-                start = new Date(this.setDate() - (86400000 * 7))
-                end = new Date((this.setDate() + (86400000 * 1)))
+                this.setState({ selectedDateStart: new Date(Date.now() - (86400000 * 7)) })
+                this.setState({ selectedDateEnd: new Date(Date.now())})
+                start = new Date(Date.now() - (86400000 * 7))
+                end = new Date((Date.now() + (86400000 * 1)))
                 break
             case 2:
-                this.setState({ selectedDateStart: new Date(this.setDate() - (86400000 * 30)) })
-                this.setState({ selectedDateEnd: new Date(this.setDate()) })
-                start = new Date(this.setDate() - (86400000 * 30))
-                end = new Date((this.setDate() + (86400000 * 1)))
+                this.setState({ selectedDateStart: new Date(Date.now() - (86400000 * 30)) })
+                this.setState({ selectedDateEnd: new Date(Date.now()) })
+                start = new Date(Date.now() - (86400000 * 30))
+                end = new Date((Date.now() + (86400000 * 1)))
                 break
             case 3:
-                start = new Date(newStart + (86400000 * 0))
-                end = new Date(newEnd + (86400000 * 1))
+                start = new Date(this.state.selectedDateStart)
+                end = new Date(this.state.selectedDateEnd)
 
                 break
             default:
-                this.setState({ selectedDateStart: new Date(this.setDate() - (86400000 * 30)) })
-                this.setState({ selectedDateEnd: new Date(this.setDate()) })
-                start = new Date(this.setDate() - (86400000 * 30))
-                end = new Date((this.setDate() + (86400000 * 1)))
+                this.setState({ selectedDateStart: new Date(Date.now() - (86400000 * 2)) })
+                this.setState({ selectedDateEnd: new Date(Date.now()) })
+                start = new Date(Date.now() - (86400000 * 2))
+                end = new Date(Date.now())
         }
 
+        
         // this.setDate()
         // this.setDate()
         setTimeout(() => {
+            if (rangeValue === 3) {
+                start = new Date(this.state.selectedDateStart)
+                end = new Date(this.state.selectedDateEnd)
+            }
             cb(start, end)
+            console.log('start', start)
+            console.log('end', end)
+            console.log('selectedStart', this.state.selectedDateStart)
+            console.log('startEnd', this.state.selectedDateEnd)
             // this.orders('Dowolny')
-
         }, 300)
     }
 
     setDate = (array) => {
-
         if (array) {
             return new Date(`${array[2]}-${array[1]}-${array[0]}`)
 
@@ -97,7 +107,7 @@ class CalendarPicker extends Component {
     render() {
         return (
 
-            <div className="rangeContainer">
+            <div className= {this.props.customClass ||"rangeContainer"}>
                 <TextField
                     id="date_range"
                     select
@@ -135,10 +145,11 @@ class CalendarPicker extends Component {
                 {this.state.rangeValue === 3 && <div className="datePickerContainer">
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <Grid1 container justify="space-around">
-                            <KeyboardDatePicker
-                                disableToolbar
+                            <KeyboardDateTimePicker
+                                // disableToolbar
                                 // variant="inline"
-                                format="dd/MM/yyyy"
+                                ampm={false}
+                                format="dd/MM/yyyy HH:mm"
                                 margin="normal"
                                 id="from-date"
                                 label={this.props.lang.from}
@@ -155,10 +166,11 @@ class CalendarPicker extends Component {
                     </MuiPickersUtilsProvider>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <Grid1 container justify="space-around">
-                            <KeyboardDatePicker
-                                disableToolbar
+                            <KeyboardDateTimePicker
+                                // disableToolbar
                                 // variant="inline"
-                                format="dd/MM/yyyy"
+                                format="dd/MM/yyyy HH:mm"
+                                ampm={false}
                                 margin="normal"
                                 id="to-date"
                                 label={this.props.lang.to}

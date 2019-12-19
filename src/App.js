@@ -1,5 +1,5 @@
 import 'devextreme/dist/css/dx.common.css';
-import 'devextreme/dist/css/dx.light.css';
+import 'devextreme/dist/css/dx.material.blue.light.compact.css';
 import React, { Component } from 'react';
 import  './App.scss'
 import Drawer from './Drawer'
@@ -11,7 +11,7 @@ import Test from './helpers/Test';
 import { createMuiTheme } from '@material-ui/core/styles';
 import purple from '@material-ui/core/colors/purple';
 // eslint-disable-next-line
-import PDF from './helpers/pdfPrint'
+//import PDF from './helpers/pdfPrint'
 
 
 
@@ -48,7 +48,7 @@ class App extends Component {
         socketStatus:false,
         count:0,
         connection:true,
-        host: process.env.NODE_ENV !== 'production'? '10.10.3.57' : window.location.hostname
+        host: process.env.NODE_ENV !== 'production'? 'localhost' : window.location.hostname
 
     }
     componentDidMount = () => {
@@ -71,7 +71,8 @@ class App extends Component {
     socket = () => {
         
         
-        const socket = new WebSocket(`ws://${this.state.host}:4000`)
+        // const socket = new WebSocket(`ws://${this.state.host}:4000`)
+        const socket = new WebSocket(`ws://10.10.15.8:4000`)
         this.setState({connection: true})
         socket.onopen = () => {
             // this.gen.next().done= true

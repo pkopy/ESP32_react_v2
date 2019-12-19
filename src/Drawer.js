@@ -47,7 +47,9 @@ import LinkOffIcon from '@material-ui/icons/LinkOff';
 import { Tooltip } from '@material-ui/core';
 import reds from './img/3xred.gif'
 import UndoIcon from '@material-ui/icons/Undo';
-import SearchAndAddScales from './Scales/SearchAndAddScales'
+import SearchAndAddScales from './Scales/SearchAndAddScales';
+import AddIcon from '@material-ui/icons/Add';
+import HomeIcon from '@material-ui/icons/Home';
 
 const drawerWidth = 240;
 
@@ -107,7 +109,7 @@ const useStyles = makeStyles(theme => ({
         marginLeft: 0,
     },
     avatar: {
-        
+
         // right: theme.spacing(2),
         backgroundColor: deepOrange[500]
     },
@@ -116,8 +118,8 @@ const useStyles = makeStyles(theme => ({
         position: "absolute",
         right: theme.spacing(4),
     },
-    undo:{
-        marginRight:  theme.spacing(1),
+    undo: {
+        marginRight: theme.spacing(1),
         '&:hover': {
             cursor: 'pointer'
         }
@@ -137,7 +139,8 @@ export default function PersistentDrawerLeft(props) {
     const [order, setOrder] = React.useState()
     const [curentScale, setCurrentScale] = React.useState({})
     const [currentOrder, setCurrentOrder] = React.useState({})
-    const [home, setHome] = React.useState()
+    const [home, setHome] = React.useState(false)
+    const [scales, setScales] = React.useState(false)
     // const [alert,setAlert] = React.useState({visible:true, title:'Alert', context:'To jest test'})
     const [view, setView] = React.useState({
         login: true,
@@ -197,13 +200,26 @@ export default function PersistentDrawerLeft(props) {
         drawerView('order')
         setOrder(order)
     }
-    // useEffect(() => {
+    const getScales = () => {
+        fetch(`http://${props.host}:5000/scale`)
+            .then(data => data.json())
+            .then(data => {
+                setScales(data);
+                console.log(data)
+                // setLoader(false)
+            })
+            .catch((err) => {
 
-    // }, [user])
+            })
+    }
+
+    useEffect(() => {
+        getScales()
+    }, [])
+
     
 
     function drawerView(name) {
-        // console.log(props.newOrder)
         const valuesKeys = Object.keys(view)
         const helpView = {}
         for (let value of valuesKeys) {
@@ -213,7 +229,7 @@ export default function PersistentDrawerLeft(props) {
                 helpView[value] = true
             }
         }
-        
+
         setHome(name)
         switch (name) {
             case 'items':
@@ -230,7 +246,7 @@ export default function PersistentDrawerLeft(props) {
                 break;
             case 'scales':
                 helpView.name = props.lang.scales;
-                
+
                 break;
             case 'settings':
                 helpView.name = props.lang.settings;
@@ -246,22 +262,15 @@ export default function PersistentDrawerLeft(props) {
                 break;
             default:
                 helpView.name = props.lang.login;
-                
+
         }
 
         setOrder({})
         setView(helpView)
-        handleDrawerClose()
+        // handleDrawerClose()
 
     }
 
-
-
-
-
-
-    // console.log(x)
-    // x.palette.primary.main = '#1d9e21'
     return (
 
 
@@ -285,28 +294,33 @@ export default function PersistentDrawerLeft(props) {
                         >
                             <MenuIcon />
                         </IconButton>}
-                        <Typography variant="h6" noWrap>
+                        <Typography variant="h6" noWrap className={"menu_title"}>
                             E2R LITE -
                         </Typography>
-                        {view.name&&<Typography variant="h6" noWrap>
+                        {view.name && <Typography variant="h6" noWrap className={"menu_title"}>
                             &nbsp;{view.name.toUpperCase()}
                         </Typography>}
                         {/* <PowerIcon fontSize="large" style={{color:'green'}}></PowerIcon> */}
                         <div className={classes.socketStaus}>
-                            <div style={{marginRight:16}}>
-                                {props.socketStatus && home  === 'scales'&&<Tooltip title={props.lang.search}>
-                                    <SearchIcon fontSize='large' className={classes.undo} onClick={()=>setOpenSearch(!openSearch)}></SearchIcon>
-                                </Tooltip>} 
-
-                                {(home && home !== 'scales')&&<Tooltip title={props.lang.back}>
-                                    <UndoIcon fontSize='large' className={classes.undo} onClick={()=>drawerView('scales')}></UndoIcon>
+                            <div>
+                                {props.socketStatus && home === 'scales' && <Tooltip title={props.lang.search}>
+                                    <AddIcon  className={classes.undo} onClick={() => { console.log('addddd'); setOpenSearch(!openSearch) }}></AddIcon>
                                 </Tooltip>}
 
-                                {props.connection&&<img src={reds} width={34}></img>}
-
-                                {!props.connection&&<Tooltip  title={props.socketStatus?'Socket connected':'Socket disconnected'}>
-                                        {props.socketStatus?<LinkIcon onClick={()=>console.log('hhh')}fontSize='large' color='inherit'></LinkIcon>:<LinkOffIcon onClick={()=>props.resetSocket()} fontSize='large' color='inherit'></LinkOffIcon>}
+                                {(home && home !== 'scales') && <Tooltip title={props.lang.back}>
+                                    <HomeIcon  className={classes.undo} onClick={() => drawerView('scales')}></HomeIcon>
                                 </Tooltip>}
+
+                                {props.connection && <img src={reds} width={34}></img>}
+                                
+                                {user.right > 1 && <Tooltip title={props.lang.logout}>
+                                    {<PowerSettingsNewIcon className={classes.undo} onClick={() => { setUser({}); console.log('home', home); drawerView('login'); setHome(false) }}  color='inherit'></PowerSettingsNewIcon> }
+                                </Tooltip>}
+
+                                {!props.connection && <Tooltip title={props.socketStatus ? 'Socket connected' : 'Socket disconnected'}>
+                                    {props.socketStatus ? <LinkIcon   color='inherit'></LinkIcon> : <LinkOffIcon onClick={() => props.resetSocket()}  color='inherit'></LinkOffIcon>}
+                                </Tooltip>}
+
 
                             </div>
                             {/* <div>
@@ -317,7 +331,7 @@ export default function PersistentDrawerLeft(props) {
                             </div> */}
 
                         </div>
-                        
+
                         {/* <IconButton>
                         E2R LITE
                     </IconButton> */}
@@ -352,7 +366,7 @@ export default function PersistentDrawerLeft(props) {
                         </ListItem>
                         {user.right > 2 && <ListItem button onClick={myOperators}>
                             <ListItemIcon><SupervisorAccountIcon color="primary" /></ListItemIcon>
-                            <ListItemText primary={props.lang.operators} id="operators"/>
+                            <ListItemText primary={props.lang.operators} id="operators" />
                         </ListItem>}
                     </List>
                     <Divider />
@@ -396,22 +410,28 @@ export default function PersistentDrawerLeft(props) {
 
                     {view.scales && <Scales
                         lang={props.lang}
-                        scales={props.scales}
+                        scales={scales}
+                        setOpenSearch={setOpenSearch}
                         drawerView={drawerView}
                         setCurrentScale={setCurrentScale}
                         socket={props.socket}
                         socketStatus={props.socketStatus}
                         host={props.host}
+                        setScales={setScales}
+                        
+
                     />}
 
-                    {openSearch&&<SearchAndAddScales
+                    {openSearch && <SearchAndAddScales
                         setOpenSearch={setOpenSearch}
                         socket={props.socket}
                         lang={props.lang}
                         host={props.host}
+                        setScales={setScales}
+                        drawerView={drawerView}
                     />}
 
-                
+
 
                     {view.ordersList && user.right > 1 && <OrdersList
                         yourOrders={props.yourOrders}

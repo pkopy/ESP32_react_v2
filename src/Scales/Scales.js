@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     container: {
         display: 'flex',
         flexWrap: 'wrap',
-        width: '80%',
+        // width: '90%',
         justifyContent: 'center',
         marginLeft: 'auto',
         marginRight: 'auto',
@@ -85,10 +85,12 @@ export default function Scales(props) {
         getScales()
     }, [])
 
+    
+
 
     React.useEffect(() => {
         
-        const timer = setInterval(getScales, 5000) 
+        const timer = setInterval(getScales, 2000) 
         return () => {
             clearInterval(timer);
         };
@@ -142,6 +144,7 @@ export default function Scales(props) {
                     <Scale key={i}
                         setLoader={setLoader}
                         scale={elem}
+                        getScales={getScales}
                         socket={props.socket}
                         lang={props.lang}
                         drawerView={props.drawerView}
@@ -149,10 +152,10 @@ export default function Scales(props) {
                     />
                 )}
             </div>
-            {scales.length === 0&&<Button variant="outlined" color='primary' onClick={searchScales} disabled={!props.socketStatus}>
+            {scales.length === 0&&<Button variant="outlined" color='primary' onClick={props.setOpenSearch} disabled={!props.socketStatus}>
                 {props.lang.search}
             </Button>}
-            <Dialog
+            {/* <Dialog
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
@@ -205,7 +208,7 @@ export default function Scales(props) {
                         {props.lang.add}
                     </Button>
                 </DialogActions>
-            </Dialog>
+            </Dialog> */}
 
 
         </div>

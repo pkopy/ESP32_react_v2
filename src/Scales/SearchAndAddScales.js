@@ -17,6 +17,13 @@ import Checkbox from '@material-ui/core/Checkbox';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import reds from '../img/search.gif'
 import Alert from '../Alert/Alert'
+import { Tooltip } from '@material-ui/core';
+import CheckIcon from '@material-ui/icons/Check';
+import wtc from '../img/wtc.png'
+import c315 from '../img/C315.png'
+import hy10 from '../img/scale_hy10.png';
+import pue71 from '../img/pue71.png'
+import { Center } from 'devextreme-react/map';
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -43,10 +50,37 @@ const useStyles = makeStyles(theme => ({
     },
     listOfscales: {
         padding: 0,
-        
+
     },
     scale: {
         lineHeight: '25px'
+    },
+    img: {
+        transition: '0.5s',
+        "&:hover": {
+            cursor: 'pointer',
+            backgroundColor: '#f0f8ff',
+            boxShadow: '3px 3px 4px 0px rgba(0, 0, 0, 0.25)'
+        }
+    },
+    test: {
+        backgroundColor: '#f0f8ff',
+        boxShadow: '3px 3px 4px 0px rgba(0, 0, 0, 0.25)'
+    },
+    check: {
+        position: 'absolute',
+        right: 0,
+        margin: 10,
+        border: '1px solid rgb(0,0,0,0.25)',
+        width: 24,
+        height: 24,
+        // "&:hover": {
+        //     cursor: 'pointer',
+
+        // }
+    },
+    button: {
+        margin: '0 15px 15px 0'
     }
 
 }))
@@ -60,6 +94,7 @@ export default (props) => {
     const [checked, setChecked] = React.useState([]);
     const [alert, setAlert] = React.useState(false)
     const [searchWindowOpen, setSearchWindowOpen] = React.useState(true)
+    const [exit, setExit] = React.useState(false)
     const classes = useStyles();
 
     const handleClickOpen = () => {
@@ -68,20 +103,23 @@ export default (props) => {
 
     const handleClose = () => {
         props.setOpenSearch(false)
-        
+
     };
 
 
     const handleToggle = value => () => {
         const newChecked = [...checked];
         const helpArr = []
+        console.log(value)
         for (let elem of newChecked) {
             helpArr.push(elem.address)
         }
         const currentIndex = helpArr.indexOf(value.address);
         if (currentIndex === -1) {
+            value.checkIcon = true
             newChecked.push(value)
         } else {
+            value.checkIcon = false
             newChecked.splice(currentIndex, 1);
         }
 
@@ -90,6 +128,8 @@ export default (props) => {
     };
 
     const searchScales = () => {
+        
+        // setSearchWindowOpen(false)
         setSearchWindowOpen(true)
         setAlert(false)
         props.socket.send(JSON.stringify({ command: 'SEARCH_SCALES' }))
@@ -100,18 +140,41 @@ export default (props) => {
             const response = JSON.parse(data);
             console.log(response)
             if (response.scales && response.scales.length > 0) {
-
-                handleClickOpen(true)
-                setFoundScales(response.scales)
-                setSearchWindowOpen(false)
-                setLoader(false)
-                // props.setOpenSearch(false)
+                for (let scale of response.scales) {
+                    if (scale.type.startsWith('PUE C315')) {
+                        scale.foundImg = c315
+                    } else if (scale.type.startsWith('HY 10')) {
+                        scale.foundImg = hy10
+                    } else if (scale.type.startsWith('WTC')) {
+                        scale.foundImg = wtc
+                    } else if (scale.type.startsWith('Pue 71') || props.scale.type.startsWith('PUE 71')) {
+                        scale.foundImg = pue71
+                    }
+                }
                 
-            } else if (response.respond === "SCALE_NOT_FOUND"){
+                if (!exit) {
+
+                    handleClickOpen(true)
+                }
+                
+                setFoundScales(response.scales)
+                if (response.updateScales && response.updateScales.length > 0) {
+
+                    setUpdatedScales(response.updateScales)
+                }
+                setSearchWindowOpen(false)
+                setLoader(false)
+                setExit(false)
+                props.setOpenSearch(true)
+
+            } else if (response.respond === "SCALE_NOT_FOUND") {
                 setLoader(false)
                 setSearchWindowOpen(false)
-                // props.setOpenSearch(false)
-                setAlert(true)
+                props.setOpenSearch(false)
+                if (!exit) {
+                    setAlert(true)
+                    setExit(false)
+                }
 
             }
 
@@ -120,19 +183,45 @@ export default (props) => {
     }
 
     const addScales = () => {
+        setSearchWindowOpen(true)
+        setLoader(true)
         props.socket.send(JSON.stringify({ command: 'ADD_SCALES', scales: checked }))
+
         getScales()
+            
         // props.drawerView('scales')
         setOpen(false)
-        props.setOpenSearch(false)
+        props.socket.onmessage = (e) => {
+            let data = e.data;
+            const response = JSON.parse(data);
+            if (response.command === 'ADD_SCALES' && response.respond === 'OK') {
+                console.log('xxxx',response)
+                // props.yourScales()
+                    // getScales()
+                    setTimeout(() => {
+                    props.setOpenSearch(false)
+                    setSearchWindowOpen(false)
+                    setLoader(false)
+                    setExit(false)
+                        props.drawerView('scales')
+                    
+                }, 1000)
+            }
+            
+        }
+        // setTimeout(() => {
+        //     // props.setOpenSearch(false)
+            
+        // }, 4000)
     }
 
     const getScales = () => {
         fetch(`http://${props.host}:5000/scale`)
             .then(data => data.json())
             .then(data => {
-                setScales(data);
+                props.setScales(data);
                 console.log(data)
+                // setLoader(false)
             })
             .catch((err) => {
 
@@ -141,12 +230,30 @@ export default (props) => {
 
     React.useEffect(() => {
         searchScales()
-    },[])
+        const login = (e) => {
+            // console.log(e.keyCode)
+            if (e.keyCode === 27) {
+                setExit(true);
+                setLoader(false);
+                setSearchWindowOpen(false);
+            }
+        }
+
+        document.addEventListener('keydown', login)
+        return () => {
+            document.removeEventListener('keydown', login)
+        }
+    }, [exit])
+
+    React.useEffect(() => {
+        console.log('cccc')
+    }, [checked])
 
     return (
         <div>
             <Alert
                 open={alert}
+                // open={false}
                 func={searchScales}
                 close={props.setOpenSearch}
                 lang={props.lang}
@@ -154,72 +261,62 @@ export default (props) => {
             />
             <Dialog
                 open={open}
+                // open={true}
                 onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
+                // fullWidth={true}
+
+                maxWidth={'lg'}
             >
-                <DialogTitle id="alert-dialog-title">{"Znaleziono:"}</DialogTitle>
+                {/* <DialogTitle id="alert-dialog-title">{props.lang.scales}:</DialogTitle> */}
                 <DialogContent>
+                    <div style={{height:50, width: '100%', backgroundColor:'#3f51b5', color:'#fff', position:'absolute', left: 0, top: 0}}>
+                        <h3 style={{paddingLeft:15}}>ZNALEZIONE WAGI:</h3>
+                    </div>
+                    {foundScales &&
+                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', position: 'relative', paddingTop:50}}>
+                            {foundScales.map((value, i) => {
+                            // {[{ foundImg: pue71, checkIcon: false, address: '10.10.10.1', scaleName: 'C315', type: 'HY10' },
+                            // { foundImg: wtc, checkIcon: false, address: '10.10.10.11', scaleName: 'C315', type: 'HY10' },
+                            // { foundImg: hy10, checkIcon: false, address: '10.10.10.15', scaleName: 'Dupa', type: 'HY10' }
+                            // ].map((value, i) => {
+                                return (
+                                    // <Tooltip title={`${props.lang.scale}: ${value.address}`} key={i}>
+
+                                        <div className={`${classes.img} ${value.checkIcon && classes.test}`} onClick={handleToggle(value)} key={i} style={{ border: '1px solid rgb(0,0,0,0.25)',borderRadius:10, margin: 15, position: 'relative', width: 200, height: 200 }} >
+                                            {value.checkIcon && <CheckIcon style={{ position: 'absolute', right: 0, margin: 10 }}></CheckIcon>}
+                                            <div className={classes.check} ></div>
+                                            <div style={{ textAlign: 'center', position: 'relative', top: '10px' }}>
+                                                <img src={value.foundImg} width={100}></img>
+                                                <h3 style={{ margin: 5 }}>{`${props.lang.scale}: ${value.name.length < 10 ? value.name : value.name.slice(0, 9) + '...'}`}</h3>
+
+                                                <p style={{margin:0}}>{props.lang.type}: {value.type}</p>
+                                                <p style={{margin:0}}>{props.lang.addressIp}: {value.address}</p>
 
 
-                <List dense className={classes.listOfscales}>
-                    <ListSubheader className={classes.scale}>{`Nowe wagi`}</ListSubheader>
-                    {foundScales.map((value, i) => {
+                                            </div>
+                                            <div style={{position:'relative', top:'-15px', padding: 5}}>
 
-                        // const labelId = `checkbox-list-secondary-label-${value}`;
-                        return (
-                            <ListItem key={i} button >
-                                {/* <ListItemAvatar>
-                            <Avatar
-                                alt={`Avatar n°${value + 1}`}
-                                src={`/static/images/avatar/${value + 1}.jpg`}
-                            />
-                            </ListItemAvatar> */}
-                                <ListItemText id={i} primary={`${props.lang.scale}: ${value.address}`} />
-                                <ListItemSecondaryAction>
-                                    <Checkbox
-                                        edge="end"
-                                        onChange={handleToggle(value)}
-                                        // checked={checked.indexOf(value) !== -1}
-                                        inputProps={{ 'aria-labelledby': i }}
-                                    />
-                                </ListItemSecondaryAction>
-                            </ListItem>
-                        );
-                    })}
-                    <ListSubheader className={classes.scale}>{`Zaktualizowane wagi`}</ListSubheader>
-                    {updatedScales.map((value, i) => {
+                                            </div>
 
-                        // const labelId = `checkbox-list-secondary-label-${value}`;
-                        return (
-                            <ListItem key={i} button>
-                                {/* <ListItemAvatar>
-                        <Avatar
-                            alt={`Avatar n°${value + 1}`}
-                            src={`/static/images/avatar/${value + 1}.jpg`}
-                        />
-                        </ListItemAvatar> */}
-                                <ListItemText id={i} primary={`${props.lang.scale}: ${value.address}`} />
-                                <ListItemSecondaryAction>
-                                    <Checkbox
-                                        edge="end"
-                                        // onChange={handleToggle(value)}
-                                        // checked={checked.indexOf(value) !== -1}
-                                        inputProps={{ 'aria-labelledby': i }}
-                                    />
-                                </ListItemSecondaryAction>
-                            </ListItem>
-                        );
-                    })}
-                </List>
+                                        </div>
+                                    // </Tooltip>
+                                )
+                            })}
+
+                        </div>}
+
+
 
 
                 </DialogContent>
+                {updatedScales.length > 0&&<DialogTitle id="alert-dialog-title">{"Znaleziono:"}</DialogTitle>}
                 <DialogActions>
-                    <Button onClick={handleClose} color="primary">
+                    <Button className={classes.button} onClick={handleClose} variant="contained" color="primary">
                         {props.lang.cancel}
                     </Button>
-                    <Button onClick={addScales} color="primary" autoFocus disabled={checked.length === 0}>
+                    <Button className={classes.button} onClick={() =>addScales()} variant="contained" color="primary" autoFocus disabled={checked.length === 0}>
                         {props.lang.add}
                     </Button>
                 </DialogActions>
@@ -227,13 +324,13 @@ export default (props) => {
             <Dialog
                 open={searchWindowOpen}
             >
-            {/* <DialogTitle id="alert-dialog-title">{"Wyszukiwanie wag"}</DialogTitle> */}
-            <DialogContent style={{textAlign:'center'}}>
-                
-                    {loader&&<img src={reds} width={80}style={{position:'relative', top:-3}}></img>}
+                {/* <DialogTitle id="alert-dialog-title">{"Wyszukiwanie wag"}</DialogTitle> */}
+                <DialogContent style={{ textAlign: 'center' }}>
 
-                
-            </DialogContent>
+                    {loader && <img src={reds} width={80} style={{ position: 'relative', top: -3 }}></img>}
+
+
+                </DialogContent>
             </Dialog>
 
         </div>

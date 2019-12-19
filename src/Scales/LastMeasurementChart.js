@@ -30,17 +30,18 @@ export default (props) => {
     }, [])
 
     const getMeasurements = () => {
+        console.log(props.scaleId)
         fetch(`http://${props.host}:5000/addMeasurement`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'scaleid':props.scaleId,
-                'orderbyfield':'internalId'
+                'orderbyfield':'internal_id'
             }
         })
         .then(data => data.json())
         .then(data => {
-            // console.log(data);
+            console.log(data);
             let arr = []
             // let rows = []
             let x = 0;
@@ -82,7 +83,7 @@ export default (props) => {
                 </ArgumentAxis>
                 <Series
                     name={'mass'}
-                    valueField={'measure'}
+                    valueField={'mass'}
                     argumentField={'helpIndex'}
                     
                     type={'line'}
@@ -139,7 +140,7 @@ export default (props) => {
                     caption={'Stab'}
                 />
                 <Column
-                    dataField={'measure'}
+                    dataField={'mass'}
                     width={150}
                 />
                 <Column

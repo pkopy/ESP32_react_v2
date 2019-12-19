@@ -156,7 +156,8 @@ export default function TextFields(props) {
             }
         }
         
-        console.log('err:', err)
+        // console.log('err:', err)
+        console.log(values)
 
 
 
@@ -200,15 +201,15 @@ export default function TextFields(props) {
             quantity: values.quantity,
             type: values.type,
             intervalValue: values.intervalValue,
-            manualWeighing: false,
+            manualWeighing: values.manualWeighing,
             threshold: values.threshold,
             status:'NotStarted'
 
 
         }
 
-        fetch(`http://${props.host}:5000/order`, {
-        // fetch(`http://localhost:5000/order`, {
+        // fetch(`http://${props.host}:5000/order`, {
+        fetch(`http://localhost:5000/order`, {
             method: 'POST',
             body: JSON.stringify(valueToSend)
         })

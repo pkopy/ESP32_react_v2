@@ -50,7 +50,7 @@ export default function LinearDeterminate(props) {
         // }
         function send() {
             if (props.socket.readyState === 1) {
-                props.socket.send(JSON.stringify({ command: 'SCALE_STATUS', "scaleId": props.curentScale.id }))
+                props.socket.send(JSON.stringify({ command: 'SCALE_STATUS', "scaleGuid": props.curentScale.guid }))
                 props.socket.onmessage = (e) => {
                     // console.log('ffffffffffffffffffffffffff')
                     let data = e.data;
