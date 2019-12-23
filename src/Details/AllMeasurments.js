@@ -12,7 +12,7 @@ import DataGrid, {
     ColumnChooser,
     Export,
     FilterRow,
-    StateStoring
+    StateStoring, Summary, TotalItem
 } from 'devextreme-react/data-grid';
 import { Template } from 'devextreme-react/core/template';
 import { SortingState } from '@devexpress/dx-react-grid';
@@ -355,6 +355,17 @@ class AllMeasurments extends React.Component {
                         <Column dataField={'scale_name'} caption={this.props.lang.scaleName} /> */}
 
                         <Template name="totalGroupCount" render={this.toolbarItemRender} />
+
+                        <Summary>
+                            <TotalItem
+                                column="measure_number"
+                                summaryType="count" />
+
+                            <TotalItem
+                                column="mass"
+                                summaryType="sum"
+                               />
+                        </Summary>
 
                     </DataGrid>
                 </Paper>
