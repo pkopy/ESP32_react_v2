@@ -30,7 +30,7 @@
     "typeface-roboto": "0.0.75",
     "uuid": "^3.3.3",
     "uuidv4": "^6.0.0",
-    "xlsx": "^0.15.1"
+    "xlsx": "^0.17.0"
   },
   "scripts": {
     "start": "react-scripts start",
